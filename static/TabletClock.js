@@ -5,6 +5,11 @@ const userAgent = window.navigator.userAgent;
  */
 const isSafari = !userAgent.includes("Chrome") && userAgent.includes("Safari");
 /**
+ * WebSocketクライアントのインスタンス
+ * @type {SocketClient}
+ */
+const socketClient = new SocketClient(`ws://${serverIP}:5200`);
+/**
  * グラフのインスタンスを格納する配列
  * @type {Array}
  */
@@ -90,6 +95,7 @@ if(isSafari) {
 
 window.addEventListener("resize", () => refreshCanvasSize());
 
+socketClient.connect();
 refreshClock();
 let now = new Date();
 setTimeout(() => {
