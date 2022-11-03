@@ -1,5 +1,17 @@
-import { runWebServer } from "./WebServer";
-import { runSocketServer } from "./SocketServer";
+import { WebServer } from "./WebServer";
+import { SocketServer } from "./SocketServer";
 
-runWebServer();
-runSocketServer();
+/**
+ * Webサーバーのインスタンス
+ * @type {WebServer}
+ */
+const webServer: WebServer = new WebServer();
+
+/**
+ * WebSocketサーバーのインスタンス
+ * @type {SocketServer}
+ */
+const socketServer: SocketServer = new SocketServer();
+
+webServer.run();
+socketServer.run();

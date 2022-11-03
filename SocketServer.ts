@@ -1,11 +1,16 @@
 import WebSocket, { WebSocketServer } from "ws";
 
-/**
- * WebSocketサーバーのインスタンス
- * @type {WebSocket.Server<WebSocket.WebSocket>}
- */
-let socketServer: WebSocket.Server<WebSocket.WebSocket>;
+export class SocketServer {
+	/**
+	 * WebSocketサーバーのインスタンス
+	 * @type {WebSocket.Server<WebSocket.WebSocket>}
+	 */
+	private server: WebSocket.Server<WebSocket.WebSocket> | null = null;
 
-export function runSocketServer() {
-	socketServer = new WebSocketServer({port: 5200});
+	/**
+	 * WebSocketサーバーを起動する。
+	 */
+	public run() {
+		this.server = new WebSocketServer({port: 5200});
+	}
 }
