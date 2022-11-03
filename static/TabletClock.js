@@ -1,7 +1,23 @@
 const userAgent = window.navigator.userAgent;
+/**
+ * ブラウザがSafariならtrue、そうでなければfalse
+ * @type {Boolean}
+ */
 const isSafari = !userAgent.includes("Chrome") && userAgent.includes("Safari");
+/**
+ * グラフのインスタンスを格納する配列
+ * @type {Array}
+ */
+const graph = [new Graph("温度", document.querySelector("#temperature_area > canvas")), new Graph("湿度", document.querySelector("#humidity_area > canvas"))];
+/**
+ * 時計の更新の処理が最初の処理かどうか
+ * @type {Boolean}
+ */
+let initClock = true;
 
-//フルスクリーンのトグルボタンのクリックイベント
+/**
+ * フルスクリーンのトグルボタンのクリックされた時に発火するイベント
+ */
 function onToggleFullscreenButtonClick() {
 	if(isSafari) {
 		if(document.webkitFullscreenElement) document.exitFullscreen();
@@ -13,16 +29,55 @@ function onToggleFullscreenButtonClick() {
 	}
 }
 
-//時計の表示を更新する。
+/**
+ * 時計の表示を更新する。
+ */
 function refreshClock() {
 	const dateTime = new Date();
-	document.getElementById("date_month").innerText = dateTime.getMonth() + 1;
-	document.getElementById("date_date").innerText = dateTime.getDate();
+	const month = dateTime.getMonth() + 1;
+	const date = dateTime.getDate();
 	const dayName = ["日", "月", "火", "水", "木", "金", "土"];
-	document.getElementById("date_day").innerText = dayName[dateTime.getDay()];
-	document.getElementById("time_hour").innerText = dateTime.getHours();
-	document.getElementById("time_minute").innerText = `0${dateTime.getMinutes()}`.slice(-2);
-	console.info("時計が更新されました。");
+	const day = dayName[dateTime.getDay()];
+	const hour = dateTime.getHours();
+	const minute = `0${dateTime.getMinutes()}`.slice(-2);
+	document.getElementById("date_month").innerText = month;
+	document.getElementById("date_date").innerText = date;
+	document.getElementById("date_day").innerText = day;
+	document.getElementById("time_hour").innerText = hour;
+	document.getElementById("time_minute").innerText = minute;
+	console.group("時計が更新されました。");
+	console.debug(`日付：${month}月${date}日（${day}）`);
+	console.debug(`時刻：${hour}：${minute}`);
+	const second = dateTime.getSeconds();
+	const millisecond = dateTime.getMilliseconds();
+	if(initClock) initClock = false;
+	else {
+		if(second <= 30) console.debug(`誤差：${second * 1000 + millisecond}ms`);
+		else console.debug(`誤差：${(second - 60) * 1000 + millisecond}ms`);
+	}
+	console.groupEnd();
+}
+
+/**
+ * グラフのキャンバスの大きさを更新する。
+ */
+function refreshCanvasSize() {
+	const graphCanvas = document.querySelectorAll(".graph > canvas");
+	Array.prototype.forEach.call(graphCanvas, (element) => {
+		element.width = 0;
+		element.height = 0;
+	});
+	const temperatureHumidityPanels = document.getElementById("temperature_humidity_panel");
+	const canvasSize = [temperatureHumidityPanels.clientWidth - 20, temperatureHumidityPanels.clientHeight / 2 - 14];
+	Array.prototype.forEach.call(graphCanvas, (element) => {
+		element.width = canvasSize[0];
+		element.height = canvasSize[1];
+	});
+	graph.forEach((element) => element.draw());
+	console.group("グラフサイズが更新されました。");
+	console.debug(`縦：${canvasSize[0]}px`);
+	console.debug(`横：${canvasSize[1]}px`);
+	console.groupEnd();
 }
 
 if(isSafari) {
@@ -33,9 +88,12 @@ if(isSafari) {
 	});
 }
 
+window.addEventListener("resize", () => refreshCanvasSize());
+
 refreshClock();
 let now = new Date();
 setTimeout(() => {
 	refreshClock();
 	setInterval(() => refreshClock(), 60000);
 }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
+refreshCanvasSize();
