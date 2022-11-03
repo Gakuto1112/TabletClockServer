@@ -3,13 +3,13 @@
 	<head>
 		<meta charset="utf-8">
 		<title>タブレットクロック</title>
-		<script defer src="{{ url_for('static', filename='TabletClock.js') }}"></script>
-		<script src="{{ url_for('static', filename='Graph.js') }}"></script>
-		<link rel="stylesheet" href="{{ url_for('static', filename='TabletClock.css') }}"
+		<script defer src="TabletClock.js"></script>
+		<script src="Graph.js"></script>
+		<link rel="stylesheet" href="TabletClock.css">
 	</head>
 	<body>
 		<div id="toggle_fullscreen" onclick="onToggleFullscreenButtonClick()">
-			<img src="{{ url_for('static', filename='images/fullscreen.svg') }}">
+			<img src="images/fullscreen.svg">
 		</div>
 		<div id="main">
 			<div id="clock">
@@ -26,14 +26,14 @@
 				<div id="temperature_humidity_panel">
 					<div id="temperature_area" class="graph">
 						<div class="graph_current_value">
-							<img src="{{ url_for('static', filename='images/temperature.svg') }}">
+							<img src="images/temperature.svg">
 							<p><span id="temperature">--.-</span>℃</p>
 						</div>
 						<canvas width="0" height="0"></canvas>
 					</div>
 					<div id="humidity_area" class="graph">
 						<div class="graph_current_value">
-							<img src="{{ url_for('static', filename='images/humidity.svg') }}">
+							<img src="images/humidity.svg">
 							<p><span id="humidity">--</span>%</p>
 						</div>
 						<canvas width="0" height="0"></canvas>
