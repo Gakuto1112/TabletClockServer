@@ -10,9 +10,22 @@
 		<div id="toggle_fullscreen" onclick="onToggleFullscreenButtonClick()">
 			<img src="{{ url_for('static', filename='images/fullscreen.svg') }}">
 		</div>
-		<div id="main_area">
-			<p id="clock_area_date"><span id="clock_area_date_month"></span>月<span id="clock_area_date_date"></span>日 (<span id="clock_area_date_day"></span>)</p>
-			<p id="clock_area_time"><span id="clock_area_time_hour"></span>:<span id="clock_area_time_minute"></span></p>
+		<div id="main">
+			<div id="clock">
+				<p id="date"><span id="date_month"></span>月<span id="date_date"></span>日 (<span id="date_day"></span>)</p>
+				<p id="time"><span id="time_hour"></span>:<span id="time_minute"></span></p>
+			</div>
+			<div id="information_panels">
+				<div id="weather_forecast_panel">
+
+				</div>
+				<div id="schedule_panel">
+
+				</div>
+				<div id="temperature_humidity_panel">
+
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

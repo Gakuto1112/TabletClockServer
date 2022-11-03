@@ -1,4 +1,9 @@
+html {
+	height: 100%;
+}
 body {
+	height: 100%;
+	margin: 0;
 	background-color: #4a6bd4;
 	font-family: sans-serif;
 }
@@ -27,16 +32,51 @@ p {
 	transform: translate(-50%, -50%);
 	opacity: 75%;
 }
-#main_area {
+#main {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+}
+#clock {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	margin-top: 50px;
 }
-#clock_area_date {
+#date {
 	font-size: 32px;
 }
-#clock_area_time {
+#time {
 	font-size: 96px;
 	font-weight: bold;
+}
+#information_panels {
+	display: grid;
+	justify-content: center;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	width: calc(100% - 50px);
+	height: calc(100% - 270px);
+}
+#information_panels > div {
+	margin: 20px;
+	background-color: rgba(255, 255, 255, 50%);
+	border: solid 1px white;
+	border-radius: 20px;
+	box-shadow: 10px 10px 10px rgba(0, 0, 0, 25%);
+}
+#weather_forecast_panel {
+	grid-column: 1;
+	grid-row: 1;
+	margin-bottom: 10px !important;
+}
+#schedule_panel {
+	grid-column: 1;
+	grid-row: 2;
+	margin-top: 10px !important;
+}
+#temperature_humidity_panel {
+	grid-column: 2;
+	grid-row: 1 / 3;
 }
