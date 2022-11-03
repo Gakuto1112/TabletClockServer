@@ -1,3 +1,18 @@
+const userAgent = window.navigator.userAgent;
+const isSafari = !userAgent.includes("Chrome") && userAgent.includes("Safari");
+
+//フルスクリーンのトグルボタンのクリックイベント
+function onToggleFullscreenButtonClick() {
+	if(isSafari) {
+		if(document.webkitFullscreenElement) document.exitFullscreen();
+		else document.body.webkitRequestFullscreen();
+	}
+	else {
+		if(document.fullscreenElement) document.exitFullscreen();
+		else document.body.requestFullscreen();
+	}
+}
+
 //時計の表示を更新する。
 function refreshClock() {
 	const dateTime = new Date();
@@ -8,6 +23,14 @@ function refreshClock() {
 	document.getElementById("clock_area_time_hour").innerText = dateTime.getHours();
 	document.getElementById("clock_area_time_minute").innerText = `0${dateTime.getMinutes()}`.slice(-2);
 	console.info("時計が更新されました。");
+}
+
+if(isSafari) {
+	document.addEventListener("webkitfullscreenchange", () => {
+		const toggleFullscreenButton = document.getElementById("toggle_fullscreen")
+		if(document.webkitFullscreenElement) toggleFullscreenButton.classList.add("hidden");
+		else toggleFullscreenButton.classList.remove("hidden");
+	});
 }
 
 refreshClock();
