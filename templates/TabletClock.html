@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>タブレットクロック</title>
+		<script defer src="{{ url_for('static', filename='TabletClock.js') }}"></script>
+		<link rel="stylesheet" href="{{ url_for('static', filename='TabletClock.css') }}"
+	</head>
+	<body>
+		<div id="clock_area">
+			<p id="clock_area_date"><span id="clock_area_date_month"></span>月<span id="clock_area_date_date"></span>日 (<span id="clock_area_date_day"></span>)</p>
+			<p id="clock_area_time"><span id="clock_area_time_hour"></span>:<span id="clock_area_time_minute"></span></p>
+		</div>
+	</body>
+</html>
