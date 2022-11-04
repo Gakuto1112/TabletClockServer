@@ -1,6 +1,7 @@
 import { NetworkInterfaceInfo, networkInterfaces } from "os";
 import express from "express";
-import { Database, RecordObject } from "./Database";
+import { Database } from "./Database";
+import { RecordObject } from "./Interfaces";
 
 export class WebServer {
 	/**

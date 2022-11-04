@@ -1,16 +1,13 @@
 import fs from "fs";
 import { parse } from "jsonc-parser";
 import * as i2c from "i2c-bus";
+import { SensorsConfigObject } from "./Interfaces";
 const mcpadc: any = require("mcp-spi-adc");
-
-interface SensorsConfigObject {
-	busNumber: number;
-	adt7410Address: number;
-}
 
 export class Sensors {
 	/**
 	 * センサーに関する設定
+	 * @type {SensorsConfigObject}
 	 */
 	private readonly settings: SensorsConfigObject = parse(fs.readFileSync("config/sensors.jsonc", "utf-8"));
 

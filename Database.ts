@@ -1,17 +1,7 @@
 import fs from "fs";
 import { parse } from "jsonc-parser";
 import mysql from "mysql";
-
-interface DatabaseConfigObject {
-	mysqlUser: string;
-	mysqlPassword: string;
-}
-
-export interface RecordObject {
-	date: Date;
-	temperature: number;
-	humidity: number;
-}
+import { DatabaseConfigObject, RecordObject } from "./Interfaces";
 
 export class Database {
 	/**

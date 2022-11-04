@@ -32,6 +32,21 @@ class SocketClient {
 				console.group("ソケットサーバーからメッセージを受信しました。");
 				console.info(`メッセージ：${event.data}`);
 				console.groupEnd();
+				const messageArgs = event.data.split(" ");
+				switch(messageArgs[0]) {
+					case "updateTemperature":
+						document.getElementById("temperature").innerText = messageArgs[1];
+						console.group("現在の室温を更新しました。");
+						console.debug(`新しい室温：${messageArgs[1]}`);
+						console.groupEnd();
+						break;
+					case "updateHumidity":
+						document.getElementById("humidity").innerText = messageArgs[1];
+						console.group("現在の湿度を更新しました。");
+						console.debug(`新しい湿度：${messageArgs[1]}`);
+						console.groupEnd();
+						break;
+				}
 			});
 		});
 		this.#socket.addEventListener("error", () => console.error(`${this.#uri}への接続に失敗しました。`));
