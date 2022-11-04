@@ -12,7 +12,7 @@ export class SocketServer {
 	 */
 	public run() {
 		this.server = new WebSocketServer({port: 5200});
-		this.server.addListener("connection", () => console.info(`（WebSocketサーバー）クライアントと接続しました。`));
-		console.info("ポート番号5200番でWebSocketサーバーを起動しました。");
+		this.server.addListener("connection", () => console.info(`[SocketServer]: （WebSocketサーバー）クライアントと接続しました。`));
+		console.info("[SocketServer]: ポート番号5200番でWebSocketサーバーを起動しました。");
 	}
 }

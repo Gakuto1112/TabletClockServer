@@ -1,5 +1,7 @@
 import { WebServer } from "./WebServer";
 import { SocketServer } from "./SocketServer";
+import { Database } from "./Database";
+
 
 /**
  * Webサーバーのインスタンス
@@ -12,6 +14,12 @@ const webServer: WebServer = new WebServer();
  * @type {SocketServer}
  */
 const socketServer: SocketServer = new SocketServer();
+
+/**
+ * データベースのインスタンス
+ * @type {Database}
+ */
+const dataManager: Database = new Database();
 
 webServer.run();
 socketServer.run();

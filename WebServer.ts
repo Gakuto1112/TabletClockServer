@@ -8,6 +8,9 @@ export class WebServer {
 	 */
 	private readonly server: express.Express = express();
 
+	/**
+	 * サーバー設定を行う。
+	 */
 	constructor() {
 		//サーバーの設定
 		this.server.set("view engine", "ejs");
@@ -20,7 +23,7 @@ export class WebServer {
 				const family4Value: string | number = (typeof(net.family) == "string") ? "IPv4" : 4;
 				if(net.family == family4Value && !net.internal) {
 					serverIP = net.address;
-					console.group("サーバーマシンのローカルUPアドレスを取得しました。");
+					console.group("[WebServer]: サーバーマシンのローカルUPアドレスを取得しました。");
 					console.debug(`IPアドレス：${serverIP}`);
 					console.groupEnd();
 				}
@@ -28,7 +31,7 @@ export class WebServer {
 		});
 		this.server.get("/", (request: express.Request, response: express.Response) => {
 			response.render("TabletClock.ejs", {serverIP: serverIP});
-			console.group("（Webサーバー）クライアントからのリクエストを受信しました。");
+			console.group("[WebServer]: （Webサーバー）クライアントからのリクエストを受信しました。");
 			console.debug(`クライアント：${request.hostname}`);
 			console.debug("アドレス：/");
 			console.debug(`メソッド：${request.method}`);
@@ -41,6 +44,6 @@ export class WebServer {
 	 * Webサーバーを起動する。
 	 */
 	public run() {
-		this.server.listen(5000, () => console.info("ポート番号5000番でWebサーバーを起動しました。"));
+		this.server.listen(5000, () => console.info("[WebServer]: ポート番号5000番でWebサーバーを起動しました。"));
 	}
 }
