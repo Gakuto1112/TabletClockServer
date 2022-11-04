@@ -71,10 +71,11 @@ export class Sensors {
 							reject(error);
 						}
 						else {
+							const brightness: number = Number(reading.value.toFixed(2));
 							console.group("[Sensors]: 明るさ情報を取得しました。");
-							console.debug(`明るさ：${reading.value}`);
+							console.debug(`明るさ：${brightness}`);
 							console.groupEnd();
-							resolve(reading.value);
+							resolve(brightness);
 						}
 					});
 				}
