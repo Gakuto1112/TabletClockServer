@@ -17,17 +17,30 @@ export class WebServer {
 		const nets: NodeJS.Dict<NetworkInterfaceInfo[]> = networkInterfaces();
 		Object.keys(nets).forEach((netName: string) => {
 			nets[netName]?.forEach((net: NetworkInterfaceInfo) => {
-			const family4Value: string | number = (typeof(net.family) == "string") ? "IPv4" : 4;
-			if(net.family == family4Value && !net.internal) serverIP = net.address;
+				const family4Value: string | number = (typeof(net.family) == "string") ? "IPv4" : 4;
+				if(net.family == family4Value && !net.internal) {
+					serverIP = net.address;
+					console.group("サーバーマシンのローカルUPアドレスを取得しました。");
+					console.debug(`IPアドレス：${serverIP}`);
+					console.groupEnd();
+				}
 			});
 		});
-		this.server.get("/", (request: express.Request, response: express.Response) => response.render("TabletClock.ejs", {serverIP: serverIP}));
+		this.server.get("/", (request: express.Request, response: express.Response) => {
+			response.render("TabletClock.ejs", {serverIP: serverIP});
+			console.group("（Webサーバー）クライアントからのリクエストを受信しました。");
+			console.debug(`クライアント：${request.hostname}`);
+			console.debug("アドレス：/");
+			console.debug(`メソッド：${request.method}`);
+			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
+			console.groupEnd();
+		});
 	}
 
 	/**
 	 * Webサーバーを起動する。
 	 */
 	public run() {
-		this.server.listen(5000, () => console.info("ポート番号5000番でWebサーバーを起動します。"));
+		this.server.listen(5000, () => console.info("ポート番号5000番でWebサーバーを起動しました。"));
 	}
 }
