@@ -1,6 +1,7 @@
 import { Database } from "./Database";
 import { WebServer } from "./WebServer";
 import { SocketServer } from "./SocketServer";
+import { Sensors } from "./Sensors";
 
 /**
  * データベースのインスタンス
@@ -19,3 +20,9 @@ const webServer: WebServer = new WebServer(database);
  * @type {SocketServer}
  */
 const socketServer: SocketServer = new SocketServer();
+
+/**
+ * 各種センサーマネージャーのインスタンス
+ * @type {Sensors}
+ */
+const sensors: Sensors = new Sensors();

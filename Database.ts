@@ -2,7 +2,7 @@ import fs from "fs";
 import { parse } from "jsonc-parser";
 import mysql from "mysql";
 
-interface SettingsObject {
+interface DatabaseConfigObject {
 	mysqlUser: string;
 	mysqlPassword: string;
 }
@@ -24,7 +24,7 @@ export class Database {
 	 * データベースの準備
 	 */
 	constructor() {
-		const settings: SettingsObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
+		const settings: DatabaseConfigObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
 		this.database = mysql.createConnection({
 			user: settings.mysqlUser,
 			password: settings.mysqlPassword
