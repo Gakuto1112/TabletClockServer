@@ -23,7 +23,7 @@ export class Database {
 	/**
 	 * データベースの準備
 	 */
-	constructor() {
+	public constructor() {
 		const settings: DatabaseConfigObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
 		this.database = mysql.createConnection({
 			user: settings.mysqlUser,
@@ -67,7 +67,7 @@ export class Database {
 	 * @param temperature 気温データ（℃）
 	 * @param humidity 湿度データ（℃）
 	 */
-	insetData(temperature: number, humidity: number) {
+	public insetData(temperature: number, humidity: number) {
 		const now: Date = new Date();
 		const dateTime: string = `${now.getFullYear()}${`0${now.getMonth() + 1}`.slice(-2)}${`0${now.getDate()}`.slice(-2)}${`0${now.getHours()}`.slice(-2)}${`0${now.getMinutes()}`.slice(-2)}00`;
 		this.database.query(`INSERT INTO tabletclock_temphumid.temp_humid (date, temperature, humidity) VALUES (${dateTime}, ${temperature}, ${humidity})`, (error: mysql.MysqlError | null, result: any) => {
@@ -91,7 +91,7 @@ export class Database {
 	 * @param limit {number} 取得するデータの件数
 	 * @return {Promise<RecordObject[] | null>} 最新のデータ1件
 	 */
-	getData(limit: number): Promise<RecordObject[] | null> {
+	public getData(limit: number): Promise<RecordObject[] | null> {
 		return new Promise((resolve, reject) => {
 			this.database.query(`SELECT date, temperature, humidity FROM tabletclock_temphumid.temp_humid ORDER BY date DESC LIMIT ${limit}`, (error: mysql.MysqlError | null, result: any) => {
 				if(error) {

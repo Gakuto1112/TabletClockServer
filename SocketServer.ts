@@ -10,7 +10,7 @@ export class SocketServer {
 	/**
 	 * WebSocketサーバーを起動する。
 	 */
-	constructor() {
+	public constructor() {
 		this.server.addListener("connection", () => console.info(`[SocketServer]: （WebSocketサーバー）クライアントと接続しました。`));
 		console.info("[SocketServer]: ポート番号5200番でWebSocketサーバーを起動しました。");
 	}

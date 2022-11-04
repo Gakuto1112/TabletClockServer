@@ -10,11 +10,27 @@ export class WebServer {
 	private readonly server: express.Express = express();
 
 	/**
+	 * 現在の室温
+	 * @type {number}
+	 */
+	public currentTemperature: number;
+
+	/**
+	 * 現在の湿度
+	 * @type {number}
+	 */
+	public currentHumidity: number;
+
+	/**
 	 * サーバー設定と接続
 	 * @param {Database} database データベースのインスタンス
+	 * @param {number} temperature 現在の室温
+	 * @param {number} humidity 現在の湿度
 	 */
-	constructor(database: Database) {
+	public constructor(database: Database, temperature: number, humidity: number) {
 		//サーバーの設定
+		this.currentTemperature = temperature;
+		this.currentHumidity = humidity;
 		this.server.set("view engine", "ejs");
 		this.server.set("views", process.cwd());
 		this.server.use(express.static("static"));
@@ -32,7 +48,7 @@ export class WebServer {
 			});
 		});
 		this.server.get("/", (request: express.Request, response: express.Response) => {
-			response.render("TabletClock.ejs", {serverIP: serverIP});
+			response.render("TabletClock.ejs", {serverIP: serverIP, temperature: this.currentTemperature, humidity: this.currentHumidity});
 			console.group("[WebServer]: クライアントからのリクエストを受信しました。");
 			console.debug(`クライアント：${request.hostname}`);
 			console.debug("アドレス：/");

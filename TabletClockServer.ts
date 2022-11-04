@@ -1,19 +1,25 @@
 import { Database } from "./Database";
+import { Sensors } from "./Sensors";
 import { WebServer } from "./WebServer";
 import { SocketServer } from "./SocketServer";
-import { Sensors } from "./Sensors";
 
 /**
  * データベースのインスタンス
  * @type {Database}
  */
- const database: Database = new Database();
+const database: Database = new Database();
+
+/**
+ * 各種センサーマネージャーのインスタンス
+ * @type {Sensors}
+ */
+const sensors: Sensors = new Sensors();
 
 /**
  * Webサーバーのインスタンス
  * @type {WebServer}
  */
-const webServer: WebServer = new WebServer(database);
+let webServer: WebServer;
 
 /**
  * WebSocketサーバーのインスタンス
@@ -21,8 +27,9 @@ const webServer: WebServer = new WebServer(database);
  */
 const socketServer: SocketServer = new SocketServer();
 
-/**
- * 各種センサーマネージャーのインスタンス
- * @type {Sensors}
- */
-const sensors: Sensors = new Sensors();
+Promise.all([
+	sensors.getTemperature(),
+	sensors.getHumidity()
+]).then((values: [number, number]) => {
+	webServer = new WebServer(database, values[0], values[1]);
+});

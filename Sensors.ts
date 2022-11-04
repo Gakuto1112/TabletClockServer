@@ -18,7 +18,7 @@ export class Sensors {
 	 * センサーから温度を取得する。
 	 * @return {Promise<number>} センサーから取得した温度
 	 */
-	getTemperature(): Promise<number> {
+	public getTemperature(): Promise<number> {
 		return new Promise((resolve, reject) => {
 			i2c.openPromisified(this.settings.busNumber).then((bus: i2c.PromisifiedBus) => {
 				bus.readWord(this.settings.adt7410Address, 0x00).then((wordData: number) => {
@@ -43,11 +43,11 @@ export class Sensors {
 	 * センサーから湿度を取得する。
 	 * @return {Promise<number>} センサーから取得した湿度
 	 */
-	getHumidity(): Promise<number> {
+	public getHumidity(): Promise<number> {
 		return new Promise((resolve) => {
 			//現在、湿度センサーを取り寄せ中で手元にないので、取り敢えず固定値を返す。
 			console.group("[Sensors]: 湿度情報を取得しました。");
-			console.debug("湿度：0");
+			console.debug("湿度：0%");
 			console.groupEnd();
 			resolve(0);
 		});
@@ -57,7 +57,7 @@ export class Sensors {
 	 * センサーから明るさを取得する。
 	 * @return {Promise<number>} センサーから取得した明るさ（0-1）
 	 */
-	getBrightness(): Promise<number> {
+	public getBrightness(): Promise<number> {
 		return new Promise((resolve, reject) => {
 			const sensor: any = mcpadc.openMcp3208(0, (error: any) => {
 				if(error) {
