@@ -20,6 +20,3 @@ const socketServer: SocketServer = new SocketServer();
  * @type {Database}
  */
 const dataManager: Database = new Database();
-
-webServer.run();
-socketServer.run();

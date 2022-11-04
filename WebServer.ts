@@ -9,7 +9,7 @@ export class WebServer {
 	private readonly server: express.Express = express();
 
 	/**
-	 * サーバー設定を行う。
+	 * サーバー設定と接続
 	 */
 	constructor() {
 		//サーバーの設定
@@ -38,12 +38,6 @@ export class WebServer {
 			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
 			console.groupEnd();
 		});
-	}
-
-	/**
-	 * Webサーバーを起動する。
-	 */
-	public run() {
 		this.server.listen(5000, () => console.info("[WebServer]: ポート番号5000番でWebサーバーを起動しました。"));
 	}
 }
