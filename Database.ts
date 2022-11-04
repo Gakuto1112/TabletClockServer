@@ -7,7 +7,7 @@ interface SettingsObject {
 	mysqlPassword: string;
 }
 
-interface RecordObject {
+export interface RecordObject {
 	date: Date;
 	temperature: number;
 	humidity: number;
@@ -55,7 +55,7 @@ export class Database {
 								else {
 									console.info("[Database]: データベースを作成しました。");
 									console.info("[Database]: テーブルを作成しています...");
-									this.database.query("CREATE TABLE tabletclock_temphumid.temp_humid (id int not null AUTO_INCREMENT, date datetime not null, temperature double, humidity double, INDEX (id));", (error: mysql.MysqlError | null, result: any) => {
+									this.database.query("CREATE TABLE tabletclock_temphumid.temp_humid (id int not null AUTO_INCREMENT, date datetime not null, temperature double, humidity int, INDEX (id));", (error: mysql.MysqlError | null, result: any) => {
 										if(error) throw error;
 										else console.info("[Database]: テーブルを作成しました。");
 									});
@@ -94,13 +94,13 @@ export class Database {
 	}
 
 	/**
-	 * 最新のデータ1件を返す。
+	 * 最新のデータを返す。
 	 * @param limit {number} 取得するデータの件数
 	 * @return {Promise<RecordObject[] | null>} 最新のデータ1件
 	 */
 	getData(limit: number): Promise<RecordObject[] | null> {
 		return new Promise((resolve, reject) => {
-			this.database.query(`SELECT date, temperature, humidity FROM tabletclock_temphumid.temp_humid LIMIT ${limit}`, (error: mysql.MysqlError | null, result: any) => {
+			this.database.query(`SELECT date, temperature, humidity FROM tabletclock_temphumid.temp_humid ORDER BY date DESC LIMIT ${limit}`, (error: mysql.MysqlError | null, result: any) => {
 				if(error) {
 					console.group("[Database]: データの取得に失敗しました。");
 					console.error(`メッセージ：${error.message}`);
@@ -112,23 +112,25 @@ export class Database {
 						console.warn("[Database]: 取得するデータがありません。");
 						resolve(null);
 					}
-					const data: RecordObject[] = [];
-					console.group(`[Database]: データを${result.length}件取得しました。`);
-					result.forEach((record: any, index: number) => {
-						const date: Date = new Date(record.date);
-						data.push({
-							date: date,
-							temperature: record.temperature,
-							humidity: record.humidity
+					else {
+						const data: RecordObject[] = [];
+						console.group(`[Database]: データを${result.length}件取得しました。`);
+						result.forEach((record: any, index: number) => {
+							const date: Date = new Date(record.date);
+							data.push({
+								date: date,
+								temperature: record.temperature,
+								humidity: record.humidity
+							});
+							console.group(index);
+							console.debug(`date: ${date}`);
+							console.debug(`temperature: ${record.temperature}`);
+							console.debug(`humidity: ${record.humidity}`);
+							console.groupEnd();
 						});
-						console.group(index);
-						console.debug(`date: ${date}`);
-						console.debug(`temperature: ${record.temperature}`);
-						console.debug(`humidity: ${record.humidity}`);
 						console.groupEnd();
-					});
-					console.groupEnd();
-					resolve(data);
+						resolve(data);
+					}
 				}
 			});
 		});

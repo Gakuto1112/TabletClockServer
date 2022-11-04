@@ -97,7 +97,7 @@ class Graph {
 			context.closePath();
 			const gradation = context.createLinearGradient(0, 0, 0, this.#targetCanvas.height);
 			gradation.addColorStop(0, "rgba(255, 255, 255, 100%)");
-			gradation.addColorStop(0.5, "rgba(255, 255, 255, 50%)");
+			gradation.addColorStop(0.5, "rgba(255, 255, 255, 75%)");
 			gradation.addColorStop(1, "rgba(255, 255, 255, 0%)");
 			context.fillStyle = gradation;
 			context.fill();

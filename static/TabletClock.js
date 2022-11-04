@@ -95,6 +95,19 @@ if(isSafari) {
 
 window.addEventListener("resize", () => refreshCanvasSize());
 
+fetch("./get24HoursData").then((response) => {
+	response.json().then((data) => {
+		const temperatureData = new Array(24 - data.length).fill(0);
+		const humidityData = new Array(24 - data.length).fill(0);
+		data.forEach((record) => {
+			temperatureData.push(record.temperature);
+			humidityData.push(record.humidity);
+		});
+		graph[0].setData(temperatureData.reverse());
+		graph[1].setData(humidityData.reverse());
+	});
+});
+
 socketClient.connect();
 refreshClock();
 let now = new Date();

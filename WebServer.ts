@@ -1,5 +1,6 @@
 import { NetworkInterfaceInfo, networkInterfaces } from "os";
 import express from "express";
+import { Database, RecordObject } from "./Database";
 
 export class WebServer {
 	/**
@@ -10,8 +11,9 @@ export class WebServer {
 
 	/**
 	 * サーバー設定と接続
+	 * @param {Database} database データベースのインスタンス
 	 */
-	constructor() {
+	constructor(database: Database) {
 		//サーバーの設定
 		this.server.set("view engine", "ejs");
 		this.server.set("views", process.cwd());
@@ -31,9 +33,23 @@ export class WebServer {
 		});
 		this.server.get("/", (request: express.Request, response: express.Response) => {
 			response.render("TabletClock.ejs", {serverIP: serverIP});
-			console.group("[WebServer]: （Webサーバー）クライアントからのリクエストを受信しました。");
+			console.group("[WebServer]: クライアントからのリクエストを受信しました。");
 			console.debug(`クライアント：${request.hostname}`);
 			console.debug("アドレス：/");
+			console.debug(`メソッド：${request.method}`);
+			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
+			console.groupEnd();
+		});
+		this.server.get("/get24HoursData", (request: express.Request, response: express.Response) => {
+			database.getData(24).then((data: RecordObject[] | null) => {
+				if(data != null) response.json(data);
+				else response.json([]);
+			}).catch(() => {
+				response.json([]);
+			});
+			console.group("[WebServer]: クライアントからのリクエストを受信しました。");
+			console.debug(`クライアント：${request.hostname}`);
+			console.debug("アドレス：/get24HoursData");
 			console.debug(`メソッド：${request.method}`);
 			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
 			console.groupEnd();
