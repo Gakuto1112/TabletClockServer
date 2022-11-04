@@ -21,16 +21,10 @@ export class Database {
 	private database: mysql.Connection;
 
 	/**
-	 * データベースに接続されているかどうか。
-	 * @type {boolean}
-	 */
-	private databaseConnected: boolean = false;
-
-	/**
 	 * データベースの準備
 	 */
 	constructor() {
-		const settings: SettingsObject = parse(fs.readFileSync("./Settings.jsonc", "utf-8"));
+		const settings: SettingsObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
 		this.database = mysql.createConnection({
 			user: settings.mysqlUser,
 			password: settings.mysqlPassword
@@ -38,7 +32,6 @@ export class Database {
 		this.database.connect((error: mysql.MysqlError) => {
 			if(error) throw error;
 			else {
-				this.databaseConnected = true;
 				console.group("[Database]: データベースに接続しました。");
 				console.info("ホスト：localhost");
 				console.info(`ユーザー名：${settings.mysqlUser}`);
