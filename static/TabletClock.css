@@ -13,6 +13,12 @@ p {
 .hidden {
 	display: none;
 }
+.invisible {
+	opacity: 0%;
+}
+.small_text {
+	font-size: 12px;
+}
 #toggle_fullscreen {
 	position: absolute;
 	width: 60px;
@@ -69,7 +75,69 @@ p {
 #weather_forecast_panel {
 	grid-column: 1;
 	grid-row: 1;
+	display: flex;
+	position: relative;
 	margin-bottom: 10px !important;
+}
+#current_weather {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	width: 33%;
+}
+.weather_timewind {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-around;
+	width: 100%;
+}
+#current_weather > .weather_timewind > .weather_wind {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#current_weather > .weather_timewind > .weather_wind > .weather_wind_direction {
+	width: 30px;
+	height: 30px;
+}
+#current_weather > .weather_icon {
+	width: 90%;
+	min-height: 30px;
+	max-height: calc(100vh - 735px);
+}
+.weather_temphumid {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+}
+.weather_precipitation {
+	display: flex;
+}
+#current_weather > .weather_precipitation > img {
+	width: 20px;
+	height: 20px;
+}
+.weather_precipitation > p {
+	margin-left: 10px;
+}
+#weather_forecast {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	width: calc(67% - 20px);
+	margin-left: 20px;
+}
+#weather_forecast > div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+}
+#weather_forecast > div > .weather_icon {
+	width: 75%;
+	min-height: 30px;
+	max-height: calc(100vh - 625px);
 }
 #schedule_panel {
 	grid-column: 1;

@@ -62,7 +62,7 @@ setInterval(() => {
 }, sensorConfig.temperatureHumiditySensorInterval * 1000);
 
 //1時間おきに温湿度を記録
-cron.schedule("0 0 0 * * *", () => {
+cron.schedule("0 0 * * * *", () => {
 	Promise.all([
 		sensors.getTemperature(),
 		sensors.getHumidity()

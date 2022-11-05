@@ -61,7 +61,7 @@ export class WeatherForecast {
 
 	public constructor() {
 		this.fetchWeatherData().then((result: WeatherRecord[]) => this.weatherData = result);
-		cron.schedule("0 0 0 * * *", () => {
+		cron.schedule("0 0 * * * *", () => {
 			this.fetchWeatherData().then((result: WeatherRecord[]) => this.weatherData = result);
 		});
 	}
