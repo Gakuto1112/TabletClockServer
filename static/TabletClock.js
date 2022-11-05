@@ -44,6 +44,16 @@ function onToggleFullscreenButtonClick() {
 }
 
 /**
+ * 背景のグラデーションを設定する。
+ * @param {number} h 色相
+ * @param {number} s 彩度
+ * @param {number} l 明度
+ */
+function setBackground(h, s, l) {
+	document.body.style.background = `linear-gradient(hsl(${h}, ${s * 100}%, ${l * 100}%), hsl(${h}, ${s * 100}%, ${Math.min(l + 0.2, 1) * 100}%))`;
+}
+
+/**
  * 時計の表示を更新する。
  */
 function refreshClock() {
@@ -134,6 +144,7 @@ fetch("./getTempHumidData?length=24").then((response) => {
 });
 
 socketClient.connect();
+setBackground(200, 0.97, 0.45);
 refreshClock();
 let now = new Date();
 setTimeout(() => {
