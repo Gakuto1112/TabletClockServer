@@ -18,10 +18,10 @@ const socketClient = new SocketClient(`ws://${serverIP}:5200`);
 const graph = [new Graph("温度", document.querySelector("#temperature_area > canvas")), new Graph("湿度", document.querySelector("#humidity_area > canvas"))];
 
 /**
- * 時計の更新の処理が最初の処理かどうか
+ * 最初の処理かどうか
  * @type {boolean}
  */
-let initClock = true;
+let init = true;
 
 /**
  * 温湿度のデータを取得した最新のデータ
@@ -72,14 +72,14 @@ function refreshClock() {
 	console.group("時計が更新されました。");
 	console.debug(`日付：${month}月${date}日（${day}）`);
 	console.debug(`時刻：${hour}：${minute}`);
-	if(!initClock) {
+	if(!init) {
 		const second = dateTime.getSeconds();
 		const millisecond = dateTime.getMilliseconds();
 		if(second <= 30) console.debug(`誤差：${second * 1000 + millisecond}ms`);
 		else console.debug(`誤差：${(second - 60) * 1000 + millisecond}ms`);
 	}
 	console.groupEnd();
-	if(minute == 0 && !initClock) {
+	if(minute == 0 && !init) {
 		setTimeout(() => {
 			fetch("./getTempHumidData?length=1").then((response) => {
 				response.json().then((data) => {
@@ -95,7 +95,6 @@ function refreshClock() {
 			refreshWeatherForecast();
 		}, 10000);
 	}
-	if(initClock) initClock = false;
 }
 
 /**
@@ -124,8 +123,66 @@ function refreshCanvasSize() {
  * 天気予報を更新する。
  */
 function refreshWeatherForecast() {
+	/**
+	 * 天気コードから天気アイコンのパスを取得する。
+	 * @param {number} weatherCode 天気コード
+	 * @return {string} 天気アイコンのパス
+	 */
+	function getWeatherIcon(weatherCode) {
+		const pathToWeatherIcon = "images/weather/";
+		switch(weatherCode) {
+			case 0:
+			case 1:
+				return `${pathToWeatherIcon}sunny.svg`;
+			case 2:
+				return `${pathToWeatherIcon}partly_cloudy.svg`;
+			case 3:
+				return `${pathToWeatherIcon}clouldy.svg`;
+			case 45:
+			case 48:
+				return `${pathToWeatherIcon}fog.svg`;
+			case 51:
+			case 53:
+			case 55:
+			case 56:
+			case 57:
+			case 61:
+			case 63:
+			case 65:
+			case 66:
+			case 67:
+				return `${pathToWeatherIcon}rain.svg`;
+			case 71:
+			case 73:
+			case 75:
+			case 77:
+				return `${pathToWeatherIcon}snow.svg`;
+			case 80:
+			case 81:
+			case 82:
+				return `${pathToWeatherIcon}heavy_rain.svg`;
+			case 85:
+			case 86:
+				return `${pathToWeatherIcon}heavy_snow.svg`;
+			default:
+				return `${pathToWeatherIcon}unknown.svg`;
+		}
+	}
+
+	const weatherForecastInit = init;
 	fetch("./getWeatherForecast").then((response) => {
 		response.json().then((data) => {
+			//document.getElementById("test")
+			document.querySelector("#weather_timewind > .weather_time").innerText = `${new Date(data[0].time * 1000).getHours()}:00`;
+			document.getElementById("weather_wind_direction").style.rotate = `${data[0].winddirection_10m}deg`;
+			document.getElementById("weather_wind_speed").innerText = data[0].windspeed_10m;
+			document.querySelector("#current_weather > .weather_icon").src = getWeatherIcon(data[0].weathercode);
+			document.getElementById("weather_temperature").innerText = data[0].temperature_2m;
+			document.getElementById("weather_humidity").innerText = data[0].relativehumidity_2m;
+			document.getElementById("weather_precipitation_value").innerText = data[0].precipitation;
+			document.querySelectorAll("#weather_forecast > div > .weather_time").forEach((element, index) => element.innerHTML = new Date(data[index + 1].time * 1000).getHours());
+			document.querySelectorAll("#weather_forecast > div > .weather_icon").forEach((element, index) => element.src = getWeatherIcon(data[index + 1].weathercode));
+			if(weatherForecastInit) document.querySelectorAll(".weather_icon").forEach((element) => element.classList.remove("invisible"));
 			console.group("天気予報を更新しました。");
 			data.forEach((record) => console.debug(record));
 			console.groupEnd();
@@ -167,3 +224,4 @@ setTimeout(() => {
 	setInterval(() => refreshClock(), 60000);
 }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
 refreshCanvasSize();
+init = false;

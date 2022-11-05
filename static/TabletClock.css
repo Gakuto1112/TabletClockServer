@@ -86,18 +86,18 @@ p {
 	justify-content: space-between;
 	width: 33%;
 }
-.weather_timewind {
+#weather_timewind {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-around;
 	width: 100%;
 }
-#current_weather > .weather_timewind > .weather_wind {
+#weather_wind {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 }
-#current_weather > .weather_timewind > .weather_wind > .weather_wind_direction {
+#weather_wind_direction {
 	width: 30px;
 	height: 30px;
 }
@@ -106,19 +106,19 @@ p {
 	min-height: 30px;
 	max-height: calc(100vh - 735px);
 }
-.weather_temphumid {
+#weather_temphumid {
 	display: flex;
 	justify-content: space-around;
 	width: 100%;
 }
-.weather_precipitation {
+#weather_precipitation {
 	display: flex;
 }
-#current_weather > .weather_precipitation > img {
+#weather_precipitation > img {
 	width: 20px;
 	height: 20px;
 }
-.weather_precipitation > p {
+#weather_precipitation > p {
 	margin-left: 10px;
 }
 #weather_forecast {
