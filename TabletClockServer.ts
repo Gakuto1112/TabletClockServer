@@ -5,7 +5,7 @@ import { Database } from "./Database";
 import { Sensors } from "./Sensors";
 import { WebServer } from "./WebServer";
 import { SocketServer } from "./SocketServer";
-import { SensorsConfigObject } from "./Interfaces";
+import { SensorsConfigObject } from "./Sensors";
 
 /**
  * データベースのインスタンス

@@ -1,7 +1,17 @@
 import fs from "fs";
 import { parse } from "jsonc-parser";
 import mysql from "mysql";
-import { DatabaseConfigObject, RecordObject } from "./Interfaces";
+
+interface DatabaseConfigObject {
+	mysqlUser: string;
+	mysqlPassword: string;
+}
+
+export interface RecordObject {
+	date: Date;
+	temperature: number;
+	humidity: number;
+}
 
 export class Database {
 	/**
@@ -14,18 +24,18 @@ export class Database {
 	 * データベースの準備
 	 */
 	public constructor() {
-		const settings: DatabaseConfigObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
+		const config: DatabaseConfigObject = parse(fs.readFileSync("config/database.jsonc", "utf-8"));
 		this.database = mysql.createConnection({
-			user: settings.mysqlUser,
-			password: settings.mysqlPassword
+			user: config.mysqlUser,
+			password: config.mysqlPassword
 		});
 		this.database.connect((error: mysql.MysqlError) => {
 			if(error) throw error;
 			else {
 				console.group("[Database]: データベースに接続しました。");
 				console.info("ホスト：localhost");
-				console.info(`ユーザー名：${settings.mysqlUser}`);
-				console.info(`パスワード：${"*".repeat(settings.mysqlPassword.length)}`);
+				console.info(`ユーザー名：${config.mysqlUser}`);
+				console.info(`パスワード：${"*".repeat(config.mysqlPassword.length)}`);
 				console.groupEnd();
 				console.info("[Database]: 既存のデータベースを検索しています...");
 				this.database.query("SHOW DATABASES LIKE 'tabletclock_temphumid';", (error: mysql.MysqlError | null, result: any) => {

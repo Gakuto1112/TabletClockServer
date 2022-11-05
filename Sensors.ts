@@ -1,15 +1,20 @@
 import fs from "fs";
 import { parse } from "jsonc-parser";
 import * as i2c from "i2c-bus";
-import { SensorsConfigObject } from "./Interfaces";
 const mcpadc: any = require("mcp-spi-adc");
+
+export interface SensorsConfigObject {
+	busNumber: number;
+	adt7410Address: number;
+	temperatureHumiditySensorInterval: number;
+}
 
 export class Sensors {
 	/**
 	 * センサーに関する設定
 	 * @type {SensorsConfigObject}
 	 */
-	private readonly settings: SensorsConfigObject = parse(fs.readFileSync("config/sensors.jsonc", "utf-8"));
+	private readonly config: SensorsConfigObject = parse(fs.readFileSync("config/sensors.jsonc", "utf-8"));
 
 	/**
 	 * センサーから温度を取得する。
@@ -17,8 +22,8 @@ export class Sensors {
 	 */
 	public getTemperature(): Promise<number> {
 		return new Promise((resolve, reject) => {
-			i2c.openPromisified(this.settings.busNumber).then((bus: i2c.PromisifiedBus) => {
-				bus.readWord(this.settings.adt7410Address, 0x00).then((wordData: number) => {
+			i2c.openPromisified(this.config.busNumber).then((bus: i2c.PromisifiedBus) => {
+				bus.readWord(this.config.adt7410Address, 0x00).then((wordData: number) => {
 					let temperature: number = ((wordData & 0xff00) >> 8 | (wordData & 0xff) << 8) >> 3;
 					temperature = Number(((temperature & 0x1000) == 0 ? temperature * 0.0625 : ((~ temperature & 0x1fff) + 1) * -0.0625).toFixed(1));
 					console.group("[Sensors]: 温度情報を取得しました。");

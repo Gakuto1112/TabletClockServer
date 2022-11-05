@@ -92,7 +92,8 @@ function refreshClock() {
 					}
 				});
 			});
-		}, 1000);
+			refreshWeatherForecast();
+		}, 10000);
 	}
 	if(initClock) initClock = false;
 }
@@ -117,6 +118,19 @@ function refreshCanvasSize() {
 	console.debug(`縦：${canvasSize[0]}px`);
 	console.debug(`横：${canvasSize[1]}px`);
 	console.groupEnd();
+}
+
+/**
+ * 天気予報を更新する。
+ */
+function refreshWeatherForecast() {
+	fetch("./getWeatherForecast").then((response) => {
+		response.json().then((data) => {
+			console.group("天気予報を更新しました。");
+			data.forEach((record) => console.debug(record));
+			console.groupEnd();
+		});
+	});
 }
 
 if(isSafari) {
@@ -146,6 +160,7 @@ fetch("./getTempHumidData?length=24").then((response) => {
 socketClient.connect();
 setBackground(200, 0.97, 0.45);
 refreshClock();
+refreshWeatherForecast();
 let now = new Date();
 setTimeout(() => {
 	refreshClock();

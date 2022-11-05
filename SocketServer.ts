@@ -20,9 +20,7 @@ export class SocketServer {
 	 * @param {string} message クライアントに送信するメッセージ
 	 */
 	public sendMessage(message: string) {
-		this.server.clients.forEach((client: WebSocket.WebSocket) => {
-			client.send(message);
-		});
+		this.server.clients.forEach((client: WebSocket.WebSocket) => client.send(message));
 		console.group("[SocketServer]: クライアントにメッセージを送信しました。");
 		console.debug(`メッセージ：${message}`);
 		console.groupEnd();
