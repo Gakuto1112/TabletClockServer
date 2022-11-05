@@ -1,7 +1,7 @@
 class Graph {
 	/**
 	 * グラフの名前
-	 * @type {String}
+	 * @type {string}
 	 */
 	#name;
 	/**
@@ -22,7 +22,7 @@ class Graph {
 
 	/**
 	 * 折れ線グラフを描画するクラス
-	 * @param {String} name グラフの名前
+	 * @param {string} name グラフの名前
 	 * @param {HTMLElement} canvasToDrawGraph グラフを描画するキャンバス要素
 	 */
 	constructor(name, canvasToDrawGraph) {
@@ -41,6 +41,21 @@ class Graph {
 		console.group(`（${this.#name}）データを設定しました。`);
 		console.debug(this.#data);
 		console.groupEnd();
+		this.#analyzeDataRange();
+		this.draw();
+	}
+
+	/**
+	 * 最古のデータを1件削除して、新たに最新のデータを挿入する。
+	 * @param {number} data
+	 */
+	swapData(data) {
+		console.group(`（${this.#name}）データを入れ替えました。`);
+		console.debug(`削除したデータ：${this.#data[0]}`);
+		console.debug(`挿入したデータ：${data}`);
+		console.groupEnd();
+		this.#data.shift();
+		this.#data.push(data);
 		this.#analyzeDataRange();
 		this.draw();
 	}

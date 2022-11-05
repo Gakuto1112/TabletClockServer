@@ -53,21 +53,18 @@ export class WebServer {
 			console.group("[WebServer]: クライアントからのリクエストを受信しました。");
 			console.debug(`クライアント：${request.hostname}`);
 			console.debug("アドレス：/");
-			console.debug(`メソッド：${request.method}`);
 			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
 			console.groupEnd();
 		});
-		this.server.get("/get24HoursData", (request: express.Request, response: express.Response) => {
-			database.getData(24).then((data: RecordObject[] | null) => {
+		this.server.get("/getTempHumidData", (request: express.Request, response: express.Response) => {
+			database.getData(request.query.length ? Number(request.query.length) : 0).then((data: RecordObject[] | null) => {
 				if(data != null) response.json(data);
 				else response.json([]);
-			}).catch(() => {
-				response.json([]);
-			});
+			}).catch(() => response.json([]));
 			console.group("[WebServer]: クライアントからのリクエストを受信しました。");
 			console.debug(`クライアント：${request.hostname}`);
-			console.debug("アドレス：/get24HoursData");
-			console.debug(`メソッド：${request.method}`);
+			console.debug("アドレス：/getData");
+			console.debug(`長さ：${request.query.length}`);
 			console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
 			console.groupEnd();
 		});

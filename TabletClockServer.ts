@@ -1,5 +1,6 @@
 import fs from "fs";
 import { parse } from "jsonc-parser";
+import cron from "node-cron";
 import { Database } from "./Database";
 import { Sensors } from "./Sensors";
 import { WebServer } from "./WebServer";
@@ -30,6 +31,7 @@ let webServer: WebServer;
  */
 const socketServer: SocketServer = new SocketServer();
 
+//Webサーバーの立ち上げ
 Promise.all([
 	sensors.getTemperature(),
 	sensors.getHumidity()
@@ -37,6 +39,7 @@ Promise.all([
 	webServer = new WebServer(database, values[0], values[1]);
 });
 
+//現在の温湿度の更新
 /**
  * センサーに関する設定
  * @type {SensorsConfigObject}
@@ -57,3 +60,11 @@ setInterval(() => {
 		}
 	});
 }, sensorConfig.temperatureHumiditySensorInterval * 1000);
+
+//1時間おきに温湿度を記録
+cron.schedule("0 0 0 * * *", () => {
+	Promise.all([
+		sensors.getTemperature(),
+		sensors.getHumidity()
+	]).then((values: [number, number]) => database.insetData(values[0], values[1]));
+});

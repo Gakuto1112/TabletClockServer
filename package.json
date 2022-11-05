@@ -4,6 +4,7 @@
     "@types/i2c-bus": "^5.1.0",
     "@types/mysql": "^2.15.21",
     "@types/node": "^18.11.9",
+    "@types/node-cron": "^3.0.5",
     "@types/ws": "^8.5.3",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
@@ -11,6 +12,8 @@
     "jsonc-parser": "^3.2.0",
     "mcp-spi-adc": "^3.2.0",
     "mysql": "^2.18.1",
+    "node-cron": "^3.0.2",
+    "ts-node": "^10.9.1",
     "ws": "^8.10.0"
   }
 }
