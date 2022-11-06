@@ -120,9 +120,9 @@ function refreshClock() {
 	console.group("時計が更新されました。");
 	console.debug(`日付：${month}月${date}日（${day}）`);
 	console.debug(`時刻：${hour}：${minute}`);
+	const second = dateTime.getSeconds();
+	const millisecond = dateTime.getMilliseconds();
 	if(!init) {
-		const second = dateTime.getSeconds();
-		const millisecond = dateTime.getMilliseconds();
 		if(second <= 30) console.debug(`誤差：${second * 1000 + millisecond}ms`);
 		else console.debug(`誤差：${(second - 60) * 1000 + millisecond}ms`);
 	}
@@ -144,6 +144,7 @@ function refreshClock() {
 			refreshWeatherForecast();
 		}, 10000);
 	}
+	setTimeout(() => refreshClock(), 60000 - (second * 1000 + millisecond));
 }
 
 /**
@@ -270,10 +271,5 @@ refreshBackground();
 if(darkModeInit) document.querySelectorAll(".darkmode").forEach((element) => element.classList.remove("hidden"));
 refreshClock();
 refreshWeatherForecast();
-let now = new Date();
-setTimeout(() => {
-	refreshClock();
-	setInterval(() => refreshClock(), 60000);
-}, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
 refreshCanvasSize();
 init = false;
