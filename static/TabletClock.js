@@ -260,6 +260,7 @@ fetch("./getTempHumidData?length=24").then((response) => {
 
 socketClient.connect();
 refreshBackground();
+if(darkModeInit) document.querySelectorAll(".darkmode").forEach((element) => element.classList.remove("hidden"));
 refreshClock();
 refreshWeatherForecast();
 let now = new Date();

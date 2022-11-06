@@ -1,5 +1,7 @@
 {
 	"busNumber": 1, //I2Cのバス番号
 	"adt7410Address": 72, //adt7410温度センサーのアドレス（jsonは16進数表記をサポートしていないので、10進数に変換して下さい。）
-	"temperatureHumiditySensorInterval": 15 //温湿度センサーの値の更新間隔（秒）
+	"temperatureHumiditySensorInterval": 15, //温湿度センサーの値の更新間隔（秒）
+	"brightnessSensorInterval": 5, //明るさの値の更新間隔
+	"darkModeThreshold": 0.1 //ダークモードに切り替える閾値（0-1）
 }

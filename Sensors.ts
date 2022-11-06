@@ -7,6 +7,8 @@ export interface SensorsConfigObject {
 	busNumber: number;
 	adt7410Address: number;
 	temperatureHumiditySensorInterval: number;
+	brightnessSensorInterval: number;
+	darkModeThreshold: number;
 }
 
 export class Sensors {

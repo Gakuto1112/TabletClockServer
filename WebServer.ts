@@ -29,6 +29,12 @@ export class WebServer {
 	public currentHumidity: number;
 
 	/**
+	 * ダークモードかどうか
+	 * @type {boolean}
+	 */
+	public isDarkMode: boolean = false;
+
+	/**
 	 * サーバー設定と接続
 	 * @param {Database} database データベースのインスタンス
 	 * @param {number} temperature 現在の室温
@@ -55,7 +61,7 @@ export class WebServer {
 			});
 		});
 		this.server.get("/", (request: express.Request, response: express.Response) => {
-			response.render("TabletClock.ejs", {serverIP: serverIP, temperature: this.currentTemperature, humidity: this.currentHumidity});
+			response.render("TabletClock.ejs", {serverIP: serverIP, darkMode: this.isDarkMode, temperature: this.currentTemperature, humidity: this.currentHumidity});
 			this.logAccess(request, response);
 		});
 		this.server.get("/getTempHumidData", (request: express.Request, response: express.Response) => {

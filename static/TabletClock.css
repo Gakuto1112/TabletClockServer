@@ -30,6 +30,9 @@ p {
 #background_after {
 	opacity: 0%;
 }
+#background_darkmode {
+	background-color: black;
+}
 #toggle_fullscreen {
 	position: absolute;
 	width: 60px;
@@ -180,4 +183,13 @@ p {
 	margin-left: 10px;
 	font-size: 36px;
 	line-height: 36px;
+}
+#darkmode_filter {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(0, 0, 0, 50%);
+	pointer-events: none;
 }

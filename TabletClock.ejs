@@ -6,13 +6,17 @@
 		<script defer src="TabletClock.js"></script>
 		<script src="Graph.js"></script>
 		<script src="SocketClient.js"></script>
-		<script>const serverIP = "<%=serverIP%>";</script>
+		<script>
+			const serverIP = "<%=serverIP%>";
+			const darkModeInit = <%=darkMode%>;
+		</script>
 		<link rel="stylesheet" href="TabletClock.css">
 	</head>
 	<body>
 		<div id="background">
 			<div id="background_before"></div>
 			<div id="background_after"></div>
+			<div id="background_darkmode" class="darkmode hidden"></div>
 		</div>
 		<div id="toggle_fullscreen" onclick="onToggleFullscreenButtonClick()">
 			<img src="images/fullscreen.svg">
@@ -98,5 +102,6 @@
 				</div>
 			</div>
 		</div>
+		<div id="darkmode_filter" class="darkmode hidden"></div>
 	</body>
 </html>

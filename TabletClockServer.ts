@@ -31,6 +31,12 @@ let webServer: WebServer;
  */
 const socketServer: SocketServer = new SocketServer();
 
+/**
+ * 前回の明るさ測定時にダークモードに設定したかどうか
+ * @type {boolean}
+ */
+let isDarkModePrev: boolean = false;
+
 //Webサーバーの立ち上げ
 Promise.all([
 	sensors.getTemperature(),
@@ -60,6 +66,24 @@ setInterval(() => {
 		}
 	});
 }, sensorConfig.temperatureHumiditySensorInterval * 1000);
+
+//現在の明るさの更新
+setInterval(() => {
+	sensors.getBrightness().then((value: number) => {
+		if(value < sensorConfig.darkModeThreshold) {
+			if(!isDarkModePrev) {
+				socketServer.sendMessage("setDarkMode 1");
+				webServer.isDarkMode = true;
+				isDarkModePrev = true;
+			}
+		}
+		else if(isDarkModePrev) {
+			socketServer.sendMessage("setDarkMode 0");
+			webServer.isDarkMode = false;
+			isDarkModePrev = false;
+		}
+	});
+}, sensorConfig.brightnessSensorInterval * 1000);
 
 //1時間おきに温湿度を記録
 cron.schedule("0 0 * * * *", () => {

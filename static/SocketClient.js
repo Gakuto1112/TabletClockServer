@@ -46,6 +46,16 @@ class SocketClient {
 						console.debug(`新しい湿度：${messageArgs[1]}`);
 						console.groupEnd();
 						break;
+					case "setDarkMode":
+						const darkModeElements = document.querySelectorAll(".darkmode");
+						if(Number(messageArgs[1]) == 1) {
+							darkModeElements.forEach((element) => element.classList.remove("hidden"));
+							console.info("ダークモードを有効にしました。");
+						}
+						else {
+							darkModeElements.forEach((element) => element.classList.add("hidden"));
+							console.info("ダークモードを無効にしました。");
+						}
 				}
 			});
 		});
