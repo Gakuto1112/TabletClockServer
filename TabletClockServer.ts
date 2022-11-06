@@ -57,11 +57,11 @@ setInterval(() => {
 		sensors.getHumidity()
 	]).then((values: [number, number]) => {
 		if(values[0] != webServer.currentTemperature) {
-			socketServer.sendMessage(`updateTemperature ${values[0]}`);
+			socketServer.sendMessage(`updateTemperature ${values[0].toFixed(1)}`);
 			webServer.currentTemperature = values[0];
 		}
 		if(values[1] != webServer.currentHumidity) {
-			socketServer.sendMessage(`updateHumidity ${values[1]}`);
+			socketServer.sendMessage(`updateHumidity ${values[1].toFixed(1)}`);
 			webServer.currentHumidity = values[1];
 		}
 	});

@@ -223,13 +223,13 @@ function refreshWeatherForecast() {
 			//document.getElementById("test")
 			document.querySelector("#weather_timewind > .weather_time").innerText = `${new Date(data[0].time * 1000).getHours()}:00`;
 			document.getElementById("weather_wind_direction").style.rotate = `${data[0].winddirection_10m}deg`;
-			document.getElementById("weather_wind_speed").innerText = data[0].windspeed_10m;
+			document.getElementById("weather_wind_speed").innerText = data[0].windspeed_10m.toFixed(1);
 			const currentWeather = getWeatherString(data[0].weathercode);
 			document.querySelector("#current_weather > .weather_icon").src = `images/weather/${currentWeather}.svg`;
 			latestWeather = currentWeather;
-			document.getElementById("weather_temperature").innerText = data[0].temperature_2m;
+			document.getElementById("weather_temperature").innerText = data[0].temperature_2m.toFixed(1);
 			document.getElementById("weather_humidity").innerText = data[0].relativehumidity_2m;
-			document.getElementById("weather_precipitation_value").innerText = data[0].precipitation;
+			document.getElementById("weather_precipitation_value").innerText = data[0].precipitation.toFixed(1);
 			document.querySelectorAll("#weather_forecast > div > .weather_time").forEach((element, index) => element.innerHTML = new Date(data[index + 1].time * 1000).getHours());
 			document.querySelectorAll("#weather_forecast > div > .weather_icon").forEach((element, index) => element.src = `images/weather/${getWeatherString(data[index + 1].weathercode)}.svg`);
 			if(weatherForecastInit) document.querySelectorAll(".weather_icon").forEach((element) => element.classList.remove("invisible"));
