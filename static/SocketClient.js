@@ -26,6 +26,8 @@ class SocketClient {
 	connect() {
 		console.info("ソケットサーバーに接続中です。");
 		this.#socket = new WebSocket(this.#uri);
+		const reconnectButton = document.getElementById("no_socket");
+		reconnectButton.classList.add("invisible");
 		this.#socket.addEventListener("open", () => {
 			console.info(`${this.#uri}に接続しました。`);
 			this.#socket.addEventListener("message", (event) => {
@@ -61,6 +63,7 @@ class SocketClient {
 		});
 		this.#socket.addEventListener("error", () => console.error(`${this.#uri}への接続に失敗しました。`));
 		this.#socket.addEventListener("close", (event) => {
+			reconnectButton.classList.remove("invisible");
 			console.group(`${this.#uri}との接続を終了しました。`);
 			console.info(`終了コード：${event.code}`);
 			console.groupEnd();

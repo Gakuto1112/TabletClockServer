@@ -36,7 +36,7 @@ let latestTempHumidTime;
 let latestWeather;
 
 /**
- * フルスクリーンのトグルボタンのクリックされた時に発火するイベント
+ * フルスクリーンのトグルボタンがクリックされた時に発火するイベント
  */
 function onToggleFullscreenButtonClick() {
 	if(isSafari) {
@@ -47,6 +47,13 @@ function onToggleFullscreenButtonClick() {
 		if(document.fullscreenElement) document.exitFullscreen();
 		else document.body.requestFullscreen();
 	}
+}
+
+/**
+ * 再接続ボタンがクリックされた時に発火するイベント
+ */
+function onReconnectBottonClick() {
+	socketClient.connect();
 }
 
 /**
@@ -236,9 +243,9 @@ function refreshWeatherForecast() {
 
 if(isSafari) {
 	document.addEventListener("webkitfullscreenchange", () => {
-		const toggleFullscreenButton = document.getElementById("toggle_fullscreen")
-		if(document.webkitFullscreenElement) toggleFullscreenButton.classList.add("hidden");
-		else toggleFullscreenButton.classList.remove("hidden");
+		const toggleFullscreenButton = document.getElementById("toggle_fullscreen");
+		if(document.webkitFullscreenElement) toggleFullscreenButton.classList.add("invisible");
+		else toggleFullscreenButton.classList.remove("invisible");
 	});
 }
 

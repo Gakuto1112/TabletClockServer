@@ -12,6 +12,7 @@ p {
 }
 .invisible {
 	opacity: 0%;
+	pointer-events: none;
 }
 .small_text {
 	font-size: 12px;
@@ -33,16 +34,24 @@ p {
 #background_darkmode {
 	background-color: black;
 }
-#toggle_fullscreen {
+#top_buttons {
+	display: flex;
+	justify-content: space-between;
 	position: absolute;
+	width: calc(100% - 50px);
+	height: 50px;
+	top: 25px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+#top_buttons > div {
+	position: relative;
 	width: 60px;
 	height: 50px;
-	top: 10px;
-	left: 10px;
 	background-color: rgba(0, 0, 0, 50%);
 	border-radius: 10px;
 }
-#toggle_fullscreen > img {
+#top_buttons > div > img {
 	position: absolute;
 	width: 30px;
 	height: 30px;
@@ -55,7 +64,7 @@ p {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	height: 100%;
+	height: calc(100%);
 }
 #clock {
 	display: flex;
