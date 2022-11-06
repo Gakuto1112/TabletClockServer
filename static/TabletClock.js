@@ -30,6 +30,12 @@ let init = true;
 let latestTempHumidTime;
 
 /**
+ * 現在の天気
+ * @type {string | undefined}
+ */
+let latestWeather;
+
+/**
  * フルスクリーンのトグルボタンのクリックされた時に発火するイベント
  */
 function onToggleFullscreenButtonClick() {
@@ -44,13 +50,48 @@ function onToggleFullscreenButtonClick() {
 }
 
 /**
- * 背景のグラデーションを設定する。
- * @param {number} h 色相
- * @param {number} s 彩度
- * @param {number} l 明度
+ * 背景を更新する。
  */
-function setBackground(h, s, l) {
-	document.body.style.background = `linear-gradient(hsl(${h}, ${s * 100}%, ${l * 100}%), hsl(${h}, ${s * 100}%, ${Math.min(l + 0.2, 1) * 100}%))`;
+function refreshBackground() {
+	/**
+	 * 背景のグラデーションを設定する。
+	 * @param {number} h 色相
+	 * @param {number} s 彩度
+	 * @param {number} l 明度
+	 */
+	function setBackground(h, s, l) {
+		const backgroundBefore = document.getElementById("background_before");
+		if(init) backgroundBefore.style.background = `linear-gradient(hsl(${h}, ${s * 100}%, ${l * 100}%), hsl(${h}, ${s * 100}%, ${Math.min(l + 0.2, 1) * 100}%))`;
+		else {
+			const backgroundAfter = document.getElementById("background_after");
+			backgroundAfter.style.background = `linear-gradient(hsl(${h}, ${s * 100}%, ${l * 100}%), hsl(${h}, ${s * 100}%, ${Math.min(l + 0.2, 1) * 100}%))`;
+			backgroundAfter.style.transition = "3s";
+			backgroundAfter.style.opacity = "100%";
+			backgroundAfter.addEventListener("transitionend", () => {
+				backgroundBefore.style.background = `linear-gradient(hsl(${h}, ${s * 100}%, ${l * 100}%), hsl(${h}, ${s * 100}%, ${Math.min(l + 0.2, 1) * 100}%))`;
+				backgroundAfter.style.transition = "";
+				backgroundAfter.style.opacity = "0%";
+			}, {
+				once: true
+			});
+		}
+		console.group("背景を更新しました。");
+		console.debug(`h：${h}`);
+		console.debug(`s：${s}`);
+		console.debug(`l：${l}`);
+		console.groupEnd();
+	}
+
+	const hour = new Date().getHours();
+	if(!latestWeather || latestWeather == "sunny" || latestWeather == "partly_cloudy" || latestWeather == "cloudy" || latestWeather == "unknown") {
+		if(hour >= 7 && hour <= 16) setBackground(200, 0.97, 0.45);
+		else if(hour >= 19 || hour <= 4) setBackground(260, 0.54, 0.45);
+		else setBackground(33, 1, 0.49);
+	}
+	else {
+		if(hour >= 6 && hour <= 18) setBackground(0, 0, 0.46);
+		else setBackground(200, 0.19, 0.18);
+	}
 }
 
 /**
@@ -80,6 +121,7 @@ function refreshClock() {
 	}
 	console.groupEnd();
 	if(minute == 0 && !init) {
+		refreshBackground();
 		setTimeout(() => {
 			fetch("./getTempHumidData?length=1").then((response) => {
 				response.json().then((data) => {
@@ -124,23 +166,22 @@ function refreshCanvasSize() {
  */
 function refreshWeatherForecast() {
 	/**
-	 * 天気コードから天気アイコンのパスを取得する。
+	 * 天気コードから天気名を取得する。
 	 * @param {number} weatherCode 天気コード
 	 * @return {string} 天気アイコンのパス
 	 */
-	function getWeatherIcon(weatherCode) {
-		const pathToWeatherIcon = "images/weather/";
+	function getWeatherString(weatherCode) {
 		switch(weatherCode) {
 			case 0:
 			case 1:
-				return `${pathToWeatherIcon}sunny.svg`;
+				return "sunny";
 			case 2:
-				return `${pathToWeatherIcon}partly_cloudy.svg`;
+				return "partly_cloudy";
 			case 3:
-				return `${pathToWeatherIcon}clouldy.svg`;
+				return "clouldy";
 			case 45:
 			case 48:
-				return `${pathToWeatherIcon}fog.svg`;
+				return "fog";
 			case 51:
 			case 53:
 			case 55:
@@ -151,21 +192,21 @@ function refreshWeatherForecast() {
 			case 65:
 			case 66:
 			case 67:
-				return `${pathToWeatherIcon}rain.svg`;
+				return "rain";
 			case 71:
 			case 73:
 			case 75:
 			case 77:
-				return `${pathToWeatherIcon}snow.svg`;
+				return "snow";
 			case 80:
 			case 81:
 			case 82:
-				return `${pathToWeatherIcon}heavy_rain.svg`;
+				return "heavy_rain";
 			case 85:
 			case 86:
-				return `${pathToWeatherIcon}heavy_snow.svg`;
+				return "snow_rain";
 			default:
-				return `${pathToWeatherIcon}unknown.svg`;
+				return "unknown";
 		}
 	}
 
@@ -176,16 +217,19 @@ function refreshWeatherForecast() {
 			document.querySelector("#weather_timewind > .weather_time").innerText = `${new Date(data[0].time * 1000).getHours()}:00`;
 			document.getElementById("weather_wind_direction").style.rotate = `${data[0].winddirection_10m}deg`;
 			document.getElementById("weather_wind_speed").innerText = data[0].windspeed_10m;
-			document.querySelector("#current_weather > .weather_icon").src = getWeatherIcon(data[0].weathercode);
+			const currentWeather = getWeatherString(data[0].weathercode);
+			document.querySelector("#current_weather > .weather_icon").src = `images/weather/${currentWeather}.svg`;
+			latestWeather = currentWeather;
 			document.getElementById("weather_temperature").innerText = data[0].temperature_2m;
 			document.getElementById("weather_humidity").innerText = data[0].relativehumidity_2m;
 			document.getElementById("weather_precipitation_value").innerText = data[0].precipitation;
 			document.querySelectorAll("#weather_forecast > div > .weather_time").forEach((element, index) => element.innerHTML = new Date(data[index + 1].time * 1000).getHours());
-			document.querySelectorAll("#weather_forecast > div > .weather_icon").forEach((element, index) => element.src = getWeatherIcon(data[index + 1].weathercode));
+			document.querySelectorAll("#weather_forecast > div > .weather_icon").forEach((element, index) => element.src = `images/weather/${getWeatherString(data[index + 1].weathercode)}.svg`);
 			if(weatherForecastInit) document.querySelectorAll(".weather_icon").forEach((element) => element.classList.remove("invisible"));
 			console.group("天気予報を更新しました。");
 			data.forEach((record) => console.debug(record));
 			console.groupEnd();
+			refreshBackground();
 		});
 	});
 }
@@ -215,7 +259,7 @@ fetch("./getTempHumidData?length=24").then((response) => {
 });
 
 socketClient.connect();
-setBackground(200, 0.97, 0.45);
+refreshBackground();
 refreshClock();
 refreshWeatherForecast();
 let now = new Date();
