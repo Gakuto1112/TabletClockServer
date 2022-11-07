@@ -54,16 +54,14 @@ export class WeatherForecast {
 	private readonly config: WeatherForecastConfigObject = parse(fs.readFileSync("config/weather_forecast.jsonc", "utf-8"));
 
 	/**
-	 * 外部に提供する天気データ。APIを叩く回数を減らすために、サーバーで保持しておく。
-	 * @type {WeatherRecord[]}
+	 * 外部から提供された天気データ。APIを叩く回数を減らすために、サーバーで保持しておく。
+	 * @type {WeatherRecord[] | null}
 	 */
 	private weatherData: WeatherRecord[] | null = null;
 
 	public constructor() {
 		this.fetchWeatherData().then((result: WeatherRecord[]) => this.weatherData = result);
-		cron.schedule("0 0 * * * *", () => {
-			this.fetchWeatherData().then((result: WeatherRecord[]) => this.weatherData = result);
-		});
+		cron.schedule("0 0 * * * *", () => this.fetchWeatherData().then((result: WeatherRecord[]) => this.weatherData = result));
 	}
 
 	/**

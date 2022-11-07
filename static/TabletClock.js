@@ -142,6 +142,7 @@ function refreshClock() {
 				});
 			});
 			refreshWeatherForecast();
+			refreshSchedule();
 		}, 10000);
 	}
 	setTimeout(() => refreshClock(), 60000 - (second * 1000 + millisecond));
@@ -245,6 +246,19 @@ function refreshWeatherForecast() {
 	});
 }
 
+/**
+ * 予定情報を更新する。
+ */
+function refreshSchedule() {
+	fetch("./getSchedule").then((response) => {
+		response.json().then((data) => {
+			console.group("予定情報を更新しました。");
+			data.forEach((record) => console.debug(record));
+			console.groupEnd();
+		});
+	})
+}
+
 if(isSafari) {
 	document.addEventListener("webkitfullscreenchange", () => {
 		const toggleFullscreenButton = document.getElementById("toggle_fullscreen");
@@ -274,5 +288,6 @@ refreshBackground();
 if(darkModeInit) document.querySelectorAll(".darkmode").forEach((element) => element.classList.remove("hidden"));
 refreshClock();
 refreshWeatherForecast();
+refreshSchedule();
 refreshCanvasSize();
 init = false;

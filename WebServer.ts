@@ -3,6 +3,7 @@ import express from "express";
 import { Database } from "./Database";
 import { RecordObject } from "./Database";
 import { WeatherForecast } from "./WeatherForecast";
+import { GoogleCalendar } from "./GoogleCalendar";
 
 export class WebServer {
 	/**
@@ -15,6 +16,11 @@ export class WebServer {
 	 * 天気予報クラスのインスタンス
 	 */
 	private readonly weatherForecast: WeatherForecast = new WeatherForecast();
+
+	/**
+	 * Googleカレンダーのインスタンス
+	 */
+	private readonly schedule: GoogleCalendar = new GoogleCalendar();
 
 	/**
 	 * 現在の室温
@@ -75,6 +81,10 @@ export class WebServer {
 			response.json(this.weatherForecast.getWeatherData());
 			this.logAccess(request, response);
 		});
+		this.server.get("/getSchedule", (request: express.Request, response: express.Response) => {
+			response.json(this.schedule.getScheduleData());
+			this.logAccess(request, response);
+		})
 		this.server.listen(5000, () => console.info("[WebServer]: ポート番号5000番でWebサーバーを起動しました。"));
 	}
 
