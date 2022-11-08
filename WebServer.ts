@@ -50,6 +50,7 @@ export class WebServer {
 		//サーバーの設定
 		this.currentTemperature = temperature;
 		this.currentHumidity = humidity;
+		this.schedule.setCalendarTask();
 		this.server.set("view engine", "ejs");
 		this.server.set("views", process.cwd());
 		this.server.use(express.static("static"));
@@ -84,7 +85,7 @@ export class WebServer {
 		this.server.get("/getSchedule", (request: express.Request, response: express.Response) => {
 			response.json(this.schedule.getScheduleData());
 			this.logAccess(request, response);
-		})
+		});
 		this.server.listen(5000, () => console.info("[WebServer]: ポート番号5000番でWebサーバーを起動しました。"));
 	}
 

@@ -1,9 +1,11 @@
 import fs from "fs";
+import { parse } from "jsonc-parser";
 import { authenticate } from "@google-cloud/local-auth";
 import { OAuth2Client } from "google-auth-library";
 import { calendar_v3, google } from "googleapis";
 import { GaxiosResponse } from "gaxios";
 import cron from "node-cron";
+import { resolve } from "path";
 
 interface CredentialsObject {
 	installed: {
@@ -25,6 +27,12 @@ interface ScheduleObject {
 }
 
 export class GoogleCalendar {
+	/**
+	 * 取得するカレンダーリスト
+	 * @type {string[]}
+	 */
+	private readonly calendarList: string[] = parse(fs.readFileSync("config/google_calendar/calendar_list.jsonc", "utf-8"));
+
 	/**
 	 * 外部から提供された予定データ。APIを叩く回数を減らすために、サーバーで保持しておく。
 	 * @type {ScheduleObject[] | null}
@@ -57,23 +65,22 @@ export class GoogleCalendar {
 			}
 			else console.info("[GoogleCalendar]: 認証情報が見つかりました。");
 		});
-		this.fetchScheduleData().then((events: ScheduleObject[]) => this.scheduleData = events);
-		cron.schedule("0 0 * * * *", () => this.fetchScheduleData().then((events: ScheduleObject[]) => this.scheduleData = events));
 	}
 
 	/**
 	 * 予定情報を返す。
 	 * @return {ScheduleObject[]} 天気情報
 	 */
-	 public getScheduleData(): ScheduleObject[] {
+	public getScheduleData(): ScheduleObject[] {
 		return this.scheduleData != null ? this.scheduleData : [];
 	}
 
 	/**
 	 * 今日の予定を外部から取得する。
+	 * @param {string} calendarName カレンダーの名前
 	 * @returns {Promise<ScheduleObject[]>}
 	 */
-	private fetchScheduleData(): Promise<ScheduleObject[]> {
+	private fetchScheduleData(calendarName: string): Promise<ScheduleObject[]> {
 		return new Promise((resolve, reject) => {
 			const calendar: calendar_v3.Calendar = google.calendar({
 				version: "v3",
@@ -90,7 +97,7 @@ export class GoogleCalendar {
 			timeEnd.setSeconds(59);
 			timeEnd.setMilliseconds(999);
 			calendar.events.list({
-				calendarId: "primary",
+				calendarId: calendarName,
 				timeMin: timeStart.toISOString(),
 				timeMax: timeEnd.toISOString(),
 				singleEvents: true,
@@ -151,6 +158,61 @@ export class GoogleCalendar {
 				resolve(events);
 			}).catch((error) => {
 				console.error("[GoogleCalendar]: 予定情報の取得に失敗しました。");
+				reject(error);
+			});
+		});
+	}
+
+	/**
+	 * カレンダーリスト全てから予定を取得する。
+	 * @returns {Promise<ScheduleObject[]>}
+	 */
+	private fetchScheduleDataFromAllCalendars(): Promise<ScheduleObject[]> {
+		return new Promise((resolve, reject) => {
+			const result: ScheduleObject[] = [];
+			Promise.all(this.calendarList.map((entry: string) => this.fetchScheduleData(entry))).then((data: ScheduleObject[][]) => {
+				data.forEach((dataPart: ScheduleObject[]) => result.concat(dataPart));
+				result.sort((a: ScheduleObject, b: ScheduleObject) => {
+					if(a.allDay && b.allDay) return 0;
+					else if(a.allDay && !b.allDay) return -1;
+					else if(!a.allDay && b.allDay) return 1;
+					else if(a.startTime && b.startTime) return a.startTime > b.startTime ? 1 : -1;
+					else return 0;
+				});
+				resolve(result);
+			}).catch((error: any) => reject(error));
+		});
+	}
+
+	/**
+	 * 予定取得タスクを取得する。
+	 */
+	public setCalendarTask() {
+		this.fetchScheduleDataFromAllCalendars().then((events: ScheduleObject[]) => this.scheduleData = events);
+		cron.schedule("0 0 * * * *", () => this.fetchScheduleDataFromAllCalendars().then((events: ScheduleObject[]) => this.scheduleData = events));
+	}
+
+	/**
+	 * カレンダーリストを取得する。
+	 * @returns {Promise<string[]>} カレンダーリスト
+	 */
+	public listCalendar(): Promise<string[]> {
+		return new Promise((resolve, reject) => {
+			google.calendar({
+				version: "v3",
+				auth:google.auth.fromJSON(JSON.parse(fs.readFileSync("./config/google_calendar/token.json", {encoding: "utf-8"})))
+			}).calendarList.list().then((response: GaxiosResponse<calendar_v3.Schema$CalendarList>) => {
+				const entries: string[] = [];
+				response.data.items?.forEach((entry: calendar_v3.Schema$CalendarListEntry, index: number) => {
+					if(index == 0) entries.push("primary");
+					else if(entry.summary) entries.push(entry.summary);
+				});
+				console.group("[GoogleCalendar]: カレンダーリストを取得しました。");
+				entries.forEach((entry: string) => console.debug(entry));
+				console.groupEnd();
+				resolve(entries);
+			}).catch((error: any) => {
+				console.error("[GoogleCalendar]: カレンダーリストの取得に失敗しました。");
 				reject(error);
 			});
 		});

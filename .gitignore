@@ -107,3 +107,5 @@ dist
 .vscode
 config/database.jsonc
 config/weather_forecast.jsonc
+config/google_calendar/credentials.json
+config/google_calendar/token.json
