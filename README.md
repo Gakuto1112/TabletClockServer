@@ -93,7 +93,7 @@
 - 初期値の地点は東京駅です。
 
 ### google_calendar/calendar_list
-予定を取得するカレンダーの一覧です。アカウントのメインカレンダーは`primary`です。その他のカレンダー名は[ListGoogleCalendar.ts](./ListGoogleCalendar.ts)を実行すると取得できます。
+予定を取得するカレンダーのIDです。アカウントのメインカレンダーは`primary`です。その他のカレンダー名は[ListGoogleCalendar.ts](./ListGoogleCalendar.ts)を実行すると取得できます。
 
 ## 気が向いたらやるコト
 - 背景のフォトアルバム化

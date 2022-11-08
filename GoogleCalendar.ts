@@ -26,6 +26,11 @@ interface ScheduleObject {
 	endTime: Date | null;
 }
 
+interface CalendarListObject {
+	name: string | null | undefined;
+	id: string | null | undefined;
+}
+
 export class GoogleCalendar {
 	/**
 	 * 取得するカレンダーリスト
@@ -194,21 +199,27 @@ export class GoogleCalendar {
 
 	/**
 	 * カレンダーリストを取得する。
-	 * @returns {Promise<string[]>} カレンダーリスト
+	 * @returns {Promise<CalendarListObject[]>} カレンダーリスト
 	 */
-	public listCalendar(): Promise<string[]> {
+	public listCalendar(): Promise<CalendarListObject[]> {
 		return new Promise((resolve, reject) => {
 			google.calendar({
 				version: "v3",
 				auth:google.auth.fromJSON(JSON.parse(fs.readFileSync("./config/google_calendar/token.json", {encoding: "utf-8"})))
 			}).calendarList.list().then((response: GaxiosResponse<calendar_v3.Schema$CalendarList>) => {
-				const entries: string[] = [];
+				const entries: CalendarListObject[] = [];
 				response.data.items?.forEach((entry: calendar_v3.Schema$CalendarListEntry, index: number) => {
-					if(index == 0) entries.push("primary");
-					else if(entry.summary) entries.push(entry.summary);
+					if(index == 0) entries.push({
+						name: "primary",
+						id: entry.id
+					});
+					else if(entry.summary) entries.push({
+						name: entry.summary,
+						id: entry.id
+					});
 				});
 				console.group("[GoogleCalendar]: カレンダーリストを取得しました。");
-				entries.forEach((entry: string) => console.debug(entry));
+				entries.forEach((entry: CalendarListObject) => console.debug(`${entry.name} のIDは ${entry.id}`));
 				console.groupEnd();
 				resolve(entries);
 			}).catch((error: any) => {
