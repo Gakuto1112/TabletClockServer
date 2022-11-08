@@ -94,7 +94,10 @@ p {
 	border: solid 1px white;
 	border-radius: 20px;
 	box-shadow: 10px 10px 10px rgba(0, 0, 0, 25%);
-	overflow: hidden;
+	overflow: scroll;
+}
+#information_panels > div::-webkit-scrollbar {
+	display: none;
 }
 #weather_forecast_panel {
 	grid-column: 1;
@@ -169,7 +172,35 @@ p {
 #schedule_panel {
 	grid-column: 1;
 	grid-row: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
 	margin-top: 10px !important;
+}
+#schedule_panel > p {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	text-align: center;
+	font-size: 32px;
+}
+#schedule_panel > div {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	margin: 2px 0;
+	font-size: 20px;
+}
+#schedule_panel > div > .schedule_title {
+	width: calc(50vw - 235px);
+	height: 30px;
+	overflow-y: hidden;
+}
+#schedule_panel > div > .schedule_time {
+	width: 140px;
+	text-align: right;
 }
 #temperature_humidity_panel {
 	grid-column: 2;

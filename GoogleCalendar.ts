@@ -19,8 +19,6 @@ interface CredentialsObject {
 
 interface ScheduleObject {
 	title: string | null | undefined;
-	description: string | null | undefined;
-	location: string | null | undefined;
 	allDay: boolean;
 	startTime: Date | null;
 	endTime: Date | null;
@@ -102,15 +100,11 @@ export class GoogleCalendar {
 				response.data.items?.forEach((event: calendar_v3.Schema$Event) => {
 					const record: ScheduleObject = {
 						title: null,
-						description: null,
-						location: null,
 						allDay: true,
 						startTime: null,
 						endTime: null
 					}
 					record.title = event.summary;
-					record.description = event.description;
-					record.location = event.location;
 					if(event.start?.dateTime) {
 						record.allDay = false;
 						const startTimeSplit: string[] | undefined = event.start.dateTime.match(/\d{2}:\d{2}:\d{2}/)?.toString().split(":");
@@ -148,8 +142,6 @@ export class GoogleCalendar {
 				events.forEach((event: ScheduleObject, index: number) => {
 					console.group(index);
 					console.debug(`title: ${event.title}`);
-					console.debug(`description: ${event.description}`);
-					console.debug(`location: ${event.location}`);
 					console.debug(`allDay: ${event.allDay}`);
 					console.debug(`startTime: ${event.startTime}`);
 					console.debug(`endTime: ${event.endTime}`);
