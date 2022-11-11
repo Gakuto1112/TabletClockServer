@@ -1,11 +1,11 @@
-import WebSocket, { WebSocketServer } from "ws";
+import * as ws from "ws";
 
 export class SocketServer {
 	/**
 	 * WebSocketサーバーのインスタンス
 	 * @type {WebSocket.Server<WebSocket.WebSocket>}
 	 */
-	private server: WebSocket.Server<WebSocket.WebSocket> = new WebSocketServer({port: 5200});
+	private server: ws.Server<ws.WebSocket> = new ws.WebSocketServer({port: 5200});
 
 	/**
 	 * WebSocketサーバーを起動する。
@@ -20,7 +20,7 @@ export class SocketServer {
 	 * @param {string} message クライアントに送信するメッセージ
 	 */
 	public sendMessage(message: string) {
-		this.server.clients.forEach((client: WebSocket.WebSocket) => client.send(message));
+		this.server.clients.forEach((client: ws.WebSocket) => client.send(message));
 		console.group("[SocketServer]: クライアントにメッセージを送信しました。");
 		console.debug(`メッセージ：${message}`);
 		console.groupEnd();

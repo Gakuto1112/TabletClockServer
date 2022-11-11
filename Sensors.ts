@@ -1,6 +1,6 @@
-import fs from "fs";
+import * as fs from "fs";
 import { parse } from "jsonc-parser";
-import i2c from "i2c-bus";
+import * as i2c from "i2c-bus";
 const mcpadc: any = require("mcp-spi-adc");
 
 export interface SensorsConfigObject {

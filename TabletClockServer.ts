@@ -1,6 +1,6 @@
-import fs from "fs";
+import * as fs from "fs";
 import { parse } from "jsonc-parser";
-import cron from "node-cron";
+import * as cron from "node-cron";
 import { Database } from "./Database";
 import { Sensors } from "./Sensors";
 import { WebServer } from "./WebServer";

@@ -1,10 +1,10 @@
-import fs from "fs";
+import * as fs from "fs";
 import { parse } from "jsonc-parser";
 import { authenticate } from "@google-cloud/local-auth";
 import { OAuth2Client } from "google-auth-library";
 import { calendar_v3, google } from "googleapis";
 import { GaxiosResponse } from "gaxios";
-import cron from "node-cron";
+import * as cron from "node-cron";
 import { resolve } from "path";
 
 interface CredentialsObject {

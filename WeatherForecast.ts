@@ -1,7 +1,7 @@
-import fs from "fs";
+import * as fs from "fs";
 import { parse } from "jsonc-parser";
 import fetch, { Response } from "node-fetch";
-import cron from "node-cron";
+import * as cron from "node-cron";
 
 interface WeatherForecastConfigObject {
 	latitude: number;

@@ -1,6 +1,6 @@
-import fs from "fs";
+import * as fs from "fs";
 import { parse } from "jsonc-parser";
-import mysql from "mysql";
+import * as mysql from "mysql";
 
 interface DatabaseConfigObject {
 	mysqlUser: string;

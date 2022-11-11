@@ -1,5 +1,5 @@
 import { NetworkInterfaceInfo, networkInterfaces } from "os";
-import express from "express";
+import * as express from "express";
 import { Database } from "./Database";
 import { RecordObject } from "./Database";
 import { WeatherForecast } from "./WeatherForecast";
