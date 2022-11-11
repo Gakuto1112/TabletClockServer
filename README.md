@@ -31,9 +31,7 @@
   - GoogleカレンダーAPIを使用するために必要です。
 
 ## 回路図
-現在準備中です。
-
-- CdSセルはMCP3208-CI/Pの0チャネルに接続して下さい。
+![回路図](README_images/RaspberryPiCircuitDiagram.drawio.svg)
 
 ## セットアップ
 概要だけ説明します。詳しい手順は省きます[^2]。
