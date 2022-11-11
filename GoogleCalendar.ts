@@ -174,9 +174,9 @@ export class GoogleCalendar {
 	 */
 	private fetchScheduleDataFromAllCalendars(): Promise<ScheduleObject[]> {
 		return new Promise((resolve, reject) => {
-			const result: ScheduleObject[] = [];
+			let result: ScheduleObject[] = [];
 			Promise.all(this.calendarList.map((entry: string) => this.fetchScheduleData(entry))).then((data: ScheduleObject[][]) => {
-				data.forEach((dataPart: ScheduleObject[]) => result.concat(dataPart));
+				data.forEach((dataPart: ScheduleObject[]) => result = result.concat(dataPart));
 				result.sort((a: ScheduleObject, b: ScheduleObject) => {
 					if(a.allDay && b.allDay) return 0;
 					else if(a.allDay && !b.allDay) return -1;
