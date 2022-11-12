@@ -214,6 +214,10 @@ function refreshWeatherForecast() {
 			case 85:
 			case 86:
 				return "snow_rain";
+			case 95:
+			case 96:
+			case 99:
+				return "thunder";
 			default:
 				return "unknown";
 		}
