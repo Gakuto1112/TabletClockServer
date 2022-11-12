@@ -99,5 +99,11 @@
 - アラーム
 - （設定するものがあれば）設定画面
 
+## クレジット
+- アイコン：ICOOON MONO（[https://icooon-mono.com](https://icooon-mono.com)、一部改変を含みます）
+- 天気予報API：Open Meteo（[https://open-meteo.com](https://open-meteo.com)）
+- GoogleカレンダーAPI：Google Cloud Platform（[https://console.cloud.google.com](https://console.cloud.google.com)）
+- 回路図作成：diagrams.net（[https://www.diagrams.net](https://www.diagrams.net)）
+
 [^1]: 光量の減り具合は使用する端末によって変化します。
 [^2]: 今までやった作業を思い出しながら書いたので、もしかしたら抜けている工程があるかもしれません。
