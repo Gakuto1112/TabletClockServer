@@ -73,9 +73,7 @@ export class Sensors {
 					bus.i2cRead(0x38, 7, Buffer.alloc(7)).then((data: i2c.BytesRead) => {
 						const temperature: number = Number(((((data.buffer[3] & 0xf) << 16) + (data.buffer[4] << 8) + (data.buffer[5])) / Math.pow(2, 20) * 200 - 50).toFixed(1));
 						this.logger.info("温度情報を取得しました。");
-						this.logger.groupStart();
 						this.logger.debug(`温度：${temperature}℃`);
-						this.logger.groupEnd();
 						resolve(temperature);
 					}).catch((error: any) => {
 						this.logger.error("温度情報の取得に失敗しました。");
@@ -100,9 +98,7 @@ export class Sensors {
 					bus.i2cRead(0x38, 7, Buffer.alloc(7)).then((data: i2c.BytesRead) => {
 						const humidity: number = Number((((data.buffer[1] << 12) + (data.buffer[2] << 4) + ((data.buffer[3] & 0xf0) >> 4)) / Math.pow(2, 20) * 100).toFixed(1));
 						this.logger.info("湿度情報を取得しました。");
-						this.logger.groupStart();
 						this.logger.debug(`湿度：${humidity}%`);
-						this.logger.groupEnd();
 						resolve(humidity);
 					}).catch((error: any) => {
 						this.logger.error("湿度情報の取得に失敗しました。");
@@ -136,9 +132,7 @@ export class Sensors {
 						else {
 							const brightness: number = Number(reading.value.toFixed(2));
 							this.logger.info("明るさ情報を取得しました。");
-							this.logger.groupStart();
 							this.logger.debug(`明るさ：${brightness}`);
-							this.logger.groupEnd();
 							resolve(brightness);
 						}
 					});

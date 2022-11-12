@@ -40,11 +40,9 @@ export class Database {
 			if(error) throw error;
 			else {
 				this.logger.info("データベースに接続しました。");
-				this.logger.groupStart();
 				this.logger.debug("ホスト：localhost");
 				this.logger.debug(`ユーザー名：${config.mysqlUser}`);
 				this.logger.debug(`パスワード：${"*".repeat(config.mysqlPassword.length)}`);
-				this.logger.groupEnd();
 				this.logger.info("既存のデータベースを検索しています...");
 				this.database.query("SHOW DATABASES LIKE 'tabletclock_temphumid';", (error: mysql.MysqlError | null, result: any) => {
 					if(error) throw error;
@@ -81,17 +79,13 @@ export class Database {
 		this.database.query(`INSERT INTO tabletclock_temphumid.temp_humid (date, temperature, humidity) VALUES (${dateTime}, ${temperature}, ${humidity})`, (error: mysql.MysqlError | null, result: any) => {
 			if(error) {
 				this.logger.error("データの追加に失敗しました。");
-				this.logger.groupStart();
 				this.logger.debug(`メッセージ：${error.message}`);
-				this.logger.groupEnd();
 			}
 			else {
 				this.logger.info("データを追加しました。");
-				this.logger.groupStart();
 				this.logger.debug(`date：${dateTime}`);
 				this.logger.debug(`temperature：${temperature}`);
 				this.logger.debug(`humidity：${humidity}`);
-				this.logger.groupEnd();
 			}
 		});
 	}
@@ -106,9 +100,7 @@ export class Database {
 			this.database.query(`SELECT date, temperature, humidity FROM tabletclock_temphumid.temp_humid ORDER BY date DESC LIMIT ${limit}`, (error: mysql.MysqlError | null, result: any) => {
 				if(error) {
 					this.logger.error("データの取得に失敗しました。");
-					this.logger.groupStart();
 					this.logger.debug(`メッセージ：${error.message}`);
-					this.logger.groupEnd();
 					reject(error);
 				}
 				else {
@@ -119,7 +111,6 @@ export class Database {
 					else {
 						const data: RecordObject[] = [];
 						this.logger.info(`データを${result.length}件取得しました。`);
-						this.logger.groupStart();
 						result.forEach((record: any, index: number) => {
 							const date: Date = new Date(record.date);
 							data.push({
@@ -128,13 +119,10 @@ export class Database {
 								humidity: record.humidity
 							});
 							this.logger.debug(index.toString());
-							this.logger.groupStart();
 							this.logger.debug(`date: ${date}`);
 							this.logger.debug(`temperature: ${record.temperature}`);
 							this.logger.debug(`humidity: ${record.humidity}`);
-							this.logger.groupEnd();
 						});
-						this.logger.groupEnd();
 						resolve(data);
 					}
 				}

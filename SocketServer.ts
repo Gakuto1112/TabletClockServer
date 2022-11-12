@@ -29,8 +29,6 @@ export class SocketServer {
 	public sendMessage(message: string) {
 		this.server.clients.forEach((client: ws.WebSocket) => client.send(message));
 		this.logger.info("クライアントにメッセージを送信しました。");
-		this.logger.groupStart();
 		this.logger.debug(`メッセージ：${message}`);
-		this.logger.groupEnd();
 	}
 }

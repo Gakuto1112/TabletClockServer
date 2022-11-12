@@ -157,17 +157,13 @@ export class GoogleCalendar {
 					events.push(record);
 				});
 				this.logger.info("予定情報を取得しました。");
-				this.logger.groupStart();
 				events.forEach((event: ScheduleObject, index: number) => {
 					this.logger.debug(index.toString());
-					this.logger.groupStart();
 					this.logger.debug(`title: ${event.title}`);
 					this.logger.debug(`allDay: ${event.allDay}`);
 					this.logger.debug(`startTime: ${event.startTime}`);
 					this.logger.debug(`endTime: ${event.endTime}`);
-					this.logger.groupEnd();
 				});
-				this.logger.groupEnd();
 				resolve(events);
 			}).catch((error) => {
 				this.logger.error("予定情報の取得に失敗しました。");
@@ -227,9 +223,7 @@ export class GoogleCalendar {
 					});
 				});
 				this.logger.info("カレンダーリストを取得しました。");
-				this.logger.groupStart();
 				entries.forEach((entry: CalendarListObject) => this.logger.debug(`${entry.name} のIDは ${entry.id}`));
-				this.logger.groupEnd();
 				resolve(entries);
 			}).catch((error: any) => {
 				this.logger.error("カレンダーリストの取得に失敗しました。");

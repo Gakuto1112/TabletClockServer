@@ -69,9 +69,7 @@ export class WebServer {
 				if(net.family == family4Value && !net.internal) {
 					serverIP = net.address;
 					this.logger.info("サーバーマシンのローカルUPアドレスを取得しました。");
-					this.logger.groupStart();
 					this.logger.debug(`IPアドレス：${serverIP}`);
-					this.logger.groupEnd();
 				}
 			});
 		});
@@ -104,10 +102,8 @@ export class WebServer {
 	 */
 	private logAccess(request: express.Request, response: express.Response) {
 		this.logger.info("クライアントからのリクエストを受信しました。");
-		this.logger.groupStart();
 		this.logger.debug(`クライアント：${request.hostname}`);
 		this.logger.debug(`アドレス：${request.path}`);
 		this.logger.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
-		this.logger.groupEnd();
 	}
 }
