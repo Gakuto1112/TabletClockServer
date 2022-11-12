@@ -4,6 +4,7 @@ import { Database } from "./Database";
 import { RecordObject } from "./Database";
 import { WeatherForecast } from "./WeatherForecast";
 import { GoogleCalendar } from "./GoogleCalendar";
+import { Logger } from "./Logger";
 
 export class WebServer {
 	/**
@@ -11,6 +12,12 @@ export class WebServer {
 	 * @type {express.Express}
 	 */
 	private readonly server: express.Express = express();
+
+	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("WebServer");
 
 	/**
 	 * 天気予報クラスのインスタンス
@@ -61,9 +68,10 @@ export class WebServer {
 				const family4Value: string | number = (typeof(net.family) == "string") ? "IPv4" : 4;
 				if(net.family == family4Value && !net.internal) {
 					serverIP = net.address;
-					console.group("[WebServer]: サーバーマシンのローカルUPアドレスを取得しました。");
-					console.debug(`IPアドレス：${serverIP}`);
-					console.groupEnd();
+					this.logger.info("サーバーマシンのローカルUPアドレスを取得しました。");
+					this.logger.groupStart();
+					this.logger.debug(`IPアドレス：${serverIP}`);
+					this.logger.groupEnd();
 				}
 			});
 		});
@@ -86,7 +94,7 @@ export class WebServer {
 			response.json(this.schedule.getScheduleData());
 			this.logAccess(request, response);
 		});
-		this.server.listen(5000, () => console.info("[WebServer]: ポート番号5000番でWebサーバーを起動しました。"));
+		this.server.listen(5000, () => this.logger.info("ポート番号5000番でWebサーバーを起動しました。"));
 	}
 
 	/**
@@ -95,10 +103,11 @@ export class WebServer {
 	 * @param {express.Response} response レスポンスオブジェクト
 	 */
 	private logAccess(request: express.Request, response: express.Response) {
-		console.group("[WebServer]: クライアントからのリクエストを受信しました。");
-		console.debug(`クライアント：${request.hostname}`);
-		console.debug(`アドレス：${request.path}`);
-		console.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
-		console.groupEnd();
+		this.logger.info("クライアントからのリクエストを受信しました。");
+		this.logger.groupStart();
+		this.logger.debug(`クライアント：${request.hostname}`);
+		this.logger.debug(`アドレス：${request.path}`);
+		this.logger.debug(`レスポンス：${response.statusCode} ${response.statusMessage}`);
+		this.logger.groupEnd();
 	}
 }

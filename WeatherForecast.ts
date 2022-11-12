@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { parse } from "jsonc-parser";
 import fetch, { Response } from "node-fetch";
 import * as cron from "node-cron";
+import { Logger } from "./Logger";
 
 interface WeatherForecastConfigObject {
 	latitude: number;
@@ -48,6 +49,12 @@ interface WeatherRecord {
 
 export class WeatherForecast {
 	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("WeatherForecast");
+
+	/**
 	 * 天気予報APIに関する設定
 	 * @type {WeatherForecastConfigObject}
 	 */
@@ -82,7 +89,7 @@ export class WeatherForecast {
 			const tomorrow: Date = new Date();
 			tomorrow.setDate(tomorrow.getDate() + 1);
 			fetch(`https://api.open-meteo.com/v1/forecast?latitude=${this.config.latitude}&longitude=${this.config.longitude}&hourly=temperature_2m,relativehumidity_2m,precipitation,weathercode,windspeed_10m,winddirection_10m&timeformat=unixtime&timezone=Asia%2FTokyo&start_date=${now.getFullYear()}-${`0${now.getMonth() + 1}`.slice(-2)}-${`0${now.getDate()}`.slice(-2)}&end_date=${tomorrow.getFullYear()}-${`0${tomorrow.getMonth() + 1}`.slice(-2)}-${`0${tomorrow.getDate()}`.slice(-2)}`).then((response: Response) => {
-				console.info("[WeatherForecast]: 天気予報情報を取得しました。");
+				this.logger.info("天気予報情報を取得しました。");
 				response.json().then((data: any) => {
 					const rawData: WeatherRawData = data;
 					const weatherDataStartTime = new Date();

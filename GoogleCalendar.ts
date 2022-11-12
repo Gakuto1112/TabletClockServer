@@ -5,7 +5,7 @@ import { OAuth2Client } from "google-auth-library";
 import { calendar_v3, google } from "googleapis";
 import { GaxiosResponse } from "gaxios";
 import * as cron from "node-cron";
-import { resolve } from "path";
+import { Logger } from "./Logger";
 
 interface CredentialsObject {
 	installed: {
@@ -33,6 +33,12 @@ interface CalendarListObject {
 
 export class GoogleCalendar {
 	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("GoogleCalendar");
+
+	/**
 	 * 取得するカレンダーリスト
 	 * @type {string[]}
 	 */
@@ -45,16 +51,16 @@ export class GoogleCalendar {
 	private scheduleData: ScheduleObject[] | null = null;
 
 	public constructor() {
-		console.info("[GoogleCalendar]: 認証情報を検索しています...");
+		this.logger.info("認証情報を検索しています...");
 		fs.access("./config/google_calendar/token.json", fs.constants.R_OK, (error: NodeJS.ErrnoException | null) => {
 			if(error) {
-				if(error.code == "ENOENT") console.warn("[GoogleCalendar]: 認証情報が見つかりませんでした。新たに認証を行う必要があります。開いたWebページより認証を行ってください。");
-				else console.warn("[GoogleCalendar]: 認証情報を読み込めません。新たに認証を行うか、認証情報を読み込み可能にして下さい。新たに認証を行う場合、開いたWebページより認証を行ってください。");
+				if(error.code == "ENOENT") this.logger.warn("認証情報が見つかりませんでした。新たに認証を行う必要があります。開いたWebページより認証を行ってください。");
+				else this.logger.warn("認証情報を読み込めません。新たに認証を行うか、認証情報を読み込み可能にして下さい。新たに認証を行う場合、開いたWebページより認証を行ってください。");
 				authenticate({
 					scopes: "https://www.googleapis.com/auth/calendar.readonly",
 					keyfilePath: `${process.cwd()}/config/google_calendar/credentials.json`
 				}).then((client: OAuth2Client) => {
-					console.info("[GoogleCalendar]: 認証に成功しました。認証情報を保存しています...");
+					this.logger.info("認証に成功しました。認証情報を保存しています...");
 					const credentials: CredentialsObject = JSON.parse(fs.readFileSync("./config/google_calendar/credentials.json", {encoding: "utf-8"}));
 					fs.writeFileSync("./config/google_calendar/token.json", JSON.stringify({
 						type: "authorized_user",
@@ -62,13 +68,13 @@ export class GoogleCalendar {
 						client_secret: credentials.installed.client_secret,
 						refresh_token: client.credentials.refresh_token
 					}));
-					console.info("[GoogleCalendar]: 認証情報を保存しました。");
+					this.logger.info("認証情報を保存しました。");
 				}).catch(() => {
-					console.error("[GoogleCalendar]: 認証に失敗しました。");
+					this.logger.fatal("認証に失敗しました。");
 					throw new Error("GoogleカレンダーAPIの認証に失敗しました。");
 				});
 			}
-			else console.info("[GoogleCalendar]: 認証情報が見つかりました。");
+			else this.logger.info("認証情報が見つかりました。");
 		});
 	}
 
@@ -150,19 +156,21 @@ export class GoogleCalendar {
 					}
 					events.push(record);
 				});
-				console.group("[GoogleCalendar]: 予定情報を取得しました。");
+				this.logger.info("予定情報を取得しました。");
+				this.logger.groupStart();
 				events.forEach((event: ScheduleObject, index: number) => {
-					console.group(index);
-					console.debug(`title: ${event.title}`);
-					console.debug(`allDay: ${event.allDay}`);
-					console.debug(`startTime: ${event.startTime}`);
-					console.debug(`endTime: ${event.endTime}`);
-					console.groupEnd();
+					this.logger.debug(index.toString());
+					this.logger.groupStart();
+					this.logger.debug(`title: ${event.title}`);
+					this.logger.debug(`allDay: ${event.allDay}`);
+					this.logger.debug(`startTime: ${event.startTime}`);
+					this.logger.debug(`endTime: ${event.endTime}`);
+					this.logger.groupEnd();
 				});
-				console.groupEnd();
+				this.logger.groupEnd();
 				resolve(events);
 			}).catch((error) => {
-				console.error("[GoogleCalendar]: 予定情報の取得に失敗しました。");
+				this.logger.error("予定情報の取得に失敗しました。");
 				reject(error);
 			});
 		});
@@ -218,12 +226,13 @@ export class GoogleCalendar {
 						id: entry.id
 					});
 				});
-				console.group("[GoogleCalendar]: カレンダーリストを取得しました。");
-				entries.forEach((entry: CalendarListObject) => console.debug(`${entry.name} のIDは ${entry.id}`));
-				console.groupEnd();
+				this.logger.info("カレンダーリストを取得しました。");
+				this.logger.groupStart();
+				entries.forEach((entry: CalendarListObject) => this.logger.debug(`${entry.name} のIDは ${entry.id}`));
+				this.logger.groupEnd();
 				resolve(entries);
 			}).catch((error: any) => {
-				console.error("[GoogleCalendar]: カレンダーリストの取得に失敗しました。");
+				this.logger.error("カレンダーリストの取得に失敗しました。");
 				reject(error);
 			});
 		});

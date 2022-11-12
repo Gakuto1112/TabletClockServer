@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { parse } from "jsonc-parser";
 import * as i2c from "i2c-bus";
+import { Logger } from "./Logger";
 const mcpadc: any = require("mcp-spi-adc");
 
 export interface SensorsConfigObject {
@@ -11,6 +12,12 @@ export interface SensorsConfigObject {
 }
 
 export class Sensors {
+	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("Sensors");
+
 	/**
 	 * センサーに関する設定
 	 * @type {SensorsConfigObject}
@@ -65,16 +72,17 @@ export class Sensors {
 				i2c.openPromisified(this.config.busNumber).then((bus: i2c.PromisifiedBus) => {
 					bus.i2cRead(0x38, 7, Buffer.alloc(7)).then((data: i2c.BytesRead) => {
 						const temperature: number = Number(((((data.buffer[3] & 0xf) << 16) + (data.buffer[4] << 8) + (data.buffer[5])) / Math.pow(2, 20) * 200 - 50).toFixed(1));
-						console.group("[Sensors]: 温度情報を取得しました。");
-						console.debug(`温度：${temperature}℃`);
-						console.groupEnd();
+						this.logger.info("温度情報を取得しました。");
+						this.logger.groupStart();
+						this.logger.debug(`温度：${temperature}℃`);
+						this.logger.groupEnd();
 						resolve(temperature);
 					}).catch((error: any) => {
-						console.error("[Sensors]: 温度情報の取得に失敗しました。");
+						this.logger.error("温度情報の取得に失敗しました。");
 						reject(error);
 					});
 				}).catch((error: any) => {
-					console.error("[Sensors]: 温度情報の取得に失敗しました。");
+					this.logger.error("温度情報の取得に失敗しました。");
 					reject(error);
 				});
 			});
@@ -91,16 +99,17 @@ export class Sensors {
 				i2c.openPromisified(this.config.busNumber).then((bus: i2c.PromisifiedBus) => {
 					bus.i2cRead(0x38, 7, Buffer.alloc(7)).then((data: i2c.BytesRead) => {
 						const humidity: number = Number((((data.buffer[1] << 12) + (data.buffer[2] << 4) + ((data.buffer[3] & 0xf0) >> 4)) / Math.pow(2, 20) * 100).toFixed(1));
-						console.group("[Sensors]: 湿度情報を取得しました。");
-						console.debug(`湿度：${humidity}%`);
-						console.groupEnd();
+						this.logger.info("湿度情報を取得しました。");
+						this.logger.groupStart();
+						this.logger.debug(`湿度：${humidity}%`);
+						this.logger.groupEnd();
 						resolve(humidity);
 					}).catch((error: any) => {
-						console.error("[Sensors]: 湿度情報の取得に失敗しました。");
+						this.logger.error("湿度情報の取得に失敗しました。");
 						reject(error);
 					});
 				}).catch((error: any) => {
-					console.error("[Sensors]: 湿度情報の取得に失敗しました。");
+					this.logger.error("湿度情報の取得に失敗しました。");
 					reject(error);
 				});
 			});
@@ -115,20 +124,21 @@ export class Sensors {
 		return new Promise((resolve, reject) => {
 			const sensor: any = mcpadc.openMcp3208(0, (error: any) => {
 				if(error) {
-					console.error("[Sensors]: 明るさ情報の取得に失敗しました。");
+					this.logger.error("明るさ情報の取得に失敗しました。");
 					reject(error);
 				}
 				else {
 					sensor.read((error: any, reading: any) => {
 						if(error) {
-							console.error("[Sensors]: 明るさ情報の取得に失敗しました。");
+							this.logger.error("明るさ情報の取得に失敗しました。");
 							reject(error);
 						}
 						else {
 							const brightness: number = Number(reading.value.toFixed(2));
-							console.group("[Sensors]: 明るさ情報を取得しました。");
-							console.debug(`明るさ：${brightness}`);
-							console.groupEnd();
+							this.logger.info("明るさ情報を取得しました。");
+							this.logger.groupStart();
+							this.logger.debug(`明るさ：${brightness}`);
+							this.logger.groupEnd();
 							resolve(brightness);
 						}
 					});

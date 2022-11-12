@@ -1,18 +1,25 @@
 import * as ws from "ws";
+import { Logger } from "./Logger";
 
 export class SocketServer {
 	/**
 	 * WebSocketサーバーのインスタンス
 	 * @type {WebSocket.Server<WebSocket.WebSocket>}
 	 */
-	private server: ws.Server<ws.WebSocket> = new ws.WebSocketServer({port: 5200});
+	private readonly server: ws.Server<ws.WebSocket> = new ws.WebSocketServer({port: 5200});
+
+	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("SocketServer");
 
 	/**
 	 * WebSocketサーバーを起動する。
 	 */
 	public constructor() {
-		this.server.addListener("connection", () => console.info(`[SocketServer]: （WebSocketサーバー）クライアントと接続しました。`));
-		console.info("[SocketServer]: ポート番号5200番でWebSocketサーバーを起動しました。");
+		this.server.addListener("connection", () => this.logger.info("クライアントと接続しました。"));
+		this.logger.info("ポート番号5200番でWebSocketサーバーを起動しました。");
 	}
 
 	/**
@@ -21,8 +28,9 @@ export class SocketServer {
 	 */
 	public sendMessage(message: string) {
 		this.server.clients.forEach((client: ws.WebSocket) => client.send(message));
-		console.group("[SocketServer]: クライアントにメッセージを送信しました。");
-		console.debug(`メッセージ：${message}`);
-		console.groupEnd();
+		this.logger.info("クライアントにメッセージを送信しました。");
+		this.logger.groupStart();
+		this.logger.debug(`メッセージ：${message}`);
+		this.logger.groupEnd();
 	}
 }

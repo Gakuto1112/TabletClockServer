@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { parse } from "jsonc-parser";
 import * as mysql from "mysql";
+import { Logger } from "./Logger";
 
 interface DatabaseConfigObject {
 	mysqlUser: string;
@@ -18,7 +19,13 @@ export class Database {
 	 * データベースへのインターフェースのインスタンス
 	 * @type {mysql.Connection}
 	 */
-	private database: mysql.Connection;
+	private readonly database: mysql.Connection;
+
+	/**
+	 * ロガーのインスタンス
+	 * @type {Logger}
+	 */
+	private readonly logger: Logger = new Logger("Database");
 
 	/**
 	 * データベースの準備
@@ -32,30 +39,31 @@ export class Database {
 		this.database.connect((error: mysql.MysqlError) => {
 			if(error) throw error;
 			else {
-				console.group("[Database]: データベースに接続しました。");
-				console.info("ホスト：localhost");
-				console.info(`ユーザー名：${config.mysqlUser}`);
-				console.info(`パスワード：${"*".repeat(config.mysqlPassword.length)}`);
-				console.groupEnd();
-				console.info("[Database]: 既存のデータベースを検索しています...");
+				this.logger.info("データベースに接続しました。");
+				this.logger.groupStart();
+				this.logger.debug("ホスト：localhost");
+				this.logger.debug(`ユーザー名：${config.mysqlUser}`);
+				this.logger.debug(`パスワード：${"*".repeat(config.mysqlPassword.length)}`);
+				this.logger.groupEnd();
+				this.logger.info("既存のデータベースを検索しています...");
 				this.database.query("SHOW DATABASES LIKE 'tabletclock_temphumid';", (error: mysql.MysqlError | null, result: any) => {
 					if(error) throw error;
 					else {
 						if(result.length == 0) {
-							console.info("[Database]: データベースを作成しています...");
+							this.logger.info("データベースを作成しています...");
 							this.database.query("CREATE DATABASE tabletclock_temphumid;", (error: mysql.MysqlError | null, result: any) => {
 								if(error) throw error;
 								else {
-									console.info("[Database]: データベースを作成しました。");
-									console.info("[Database]: テーブルを作成しています...");
+									this.logger.info("データベースを作成しました。");
+									this.logger.info("テーブルを作成しています...");
 									this.database.query("CREATE TABLE tabletclock_temphumid.temp_humid (id int not null AUTO_INCREMENT, date datetime not null, temperature double, humidity int, INDEX (id));", (error: mysql.MysqlError | null, result: any) => {
 										if(error) throw error;
-										else console.info("[Database]: テーブルを作成しました。");
+										else this.logger.info("テーブルを作成しました。");
 									});
 								}
 							});
 						}
-						else console.info("[Database]: 既存のデータベースが見つかりました。");
+						else this.logger.info("既存のデータベースが見つかりました。");
 					}
 				});
 			}
@@ -72,16 +80,18 @@ export class Database {
 		const dateTime: string = `${now.getFullYear()}${`0${now.getMonth() + 1}`.slice(-2)}${`0${now.getDate()}`.slice(-2)}${`0${now.getHours()}`.slice(-2)}${`0${now.getMinutes()}`.slice(-2)}00`;
 		this.database.query(`INSERT INTO tabletclock_temphumid.temp_humid (date, temperature, humidity) VALUES (${dateTime}, ${temperature}, ${humidity})`, (error: mysql.MysqlError | null, result: any) => {
 			if(error) {
-				console.group("[Database]: データの追加に失敗しました。");
-				console.error(`メッセージ：${error.message}`);
-				console.groupEnd();
+				this.logger.error("データの追加に失敗しました。");
+				this.logger.groupStart();
+				this.logger.debug(`メッセージ：${error.message}`);
+				this.logger.groupEnd();
 			}
 			else {
-				console.group("[Database]: データを追加しました。");
-				console.debug(`date：${dateTime}`);
-				console.debug(`temperature：${temperature}`);
-				console.debug(`humidity：${humidity}`);
-				console.groupEnd();
+				this.logger.info("データを追加しました。");
+				this.logger.groupStart();
+				this.logger.debug(`date：${dateTime}`);
+				this.logger.debug(`temperature：${temperature}`);
+				this.logger.debug(`humidity：${humidity}`);
+				this.logger.groupEnd();
 			}
 		});
 	}
@@ -95,19 +105,21 @@ export class Database {
 		return new Promise((resolve, reject) => {
 			this.database.query(`SELECT date, temperature, humidity FROM tabletclock_temphumid.temp_humid ORDER BY date DESC LIMIT ${limit}`, (error: mysql.MysqlError | null, result: any) => {
 				if(error) {
-					console.group("[Database]: データの取得に失敗しました。");
-					console.error(`メッセージ：${error.message}`);
-					console.groupEnd();
+					this.logger.error("データの取得に失敗しました。");
+					this.logger.groupStart();
+					this.logger.debug(`メッセージ：${error.message}`);
+					this.logger.groupEnd();
 					reject(error);
 				}
 				else {
 					if(result.length == 0) {
-						console.warn("[Database]: 取得するデータがありません。");
+						this.logger.warn("取得するデータがありません。");
 						resolve(null);
 					}
 					else {
 						const data: RecordObject[] = [];
-						console.group(`[Database]: データを${result.length}件取得しました。`);
+						this.logger.info(`データを${result.length}件取得しました。`);
+						this.logger.groupStart();
 						result.forEach((record: any, index: number) => {
 							const date: Date = new Date(record.date);
 							data.push({
@@ -115,13 +127,14 @@ export class Database {
 								temperature: record.temperature,
 								humidity: record.humidity
 							});
-							console.group(index);
-							console.debug(`date: ${date}`);
-							console.debug(`temperature: ${record.temperature}`);
-							console.debug(`humidity: ${record.humidity}`);
-							console.groupEnd();
+							this.logger.debug(index.toString());
+							this.logger.groupStart();
+							this.logger.debug(`date: ${date}`);
+							this.logger.debug(`temperature: ${record.temperature}`);
+							this.logger.debug(`humidity: ${record.humidity}`);
+							this.logger.groupEnd();
 						});
-						console.groupEnd();
+						this.logger.groupEnd();
 						resolve(data);
 					}
 				}
