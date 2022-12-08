@@ -38,12 +38,14 @@ class SocketClient {
 				switch(messageArgs[0]) {
 					case "updateTemperature":
 						document.getElementById("temperature").innerText = messageArgs[1];
+						graph[0].setCurrentData(Number(messageArgs[1]));
 						console.group("現在の室温を更新しました。");
 						console.debug(`新しい室温：${messageArgs[1]}`);
 						console.groupEnd();
 						break;
 					case "updateHumidity":
 						document.getElementById("humidity").innerText = messageArgs[1];
+						graph[1].setCurrentData(Number(messageArgs[1]));
 						console.group("現在の湿度を更新しました。");
 						console.debug(`新しい湿度：${messageArgs[1]}`);
 						console.groupEnd();

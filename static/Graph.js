@@ -15,6 +15,11 @@ class Graph {
 	 */
 	#data = [];
 	/**
+	 * 現在のデータ（センサーで取得し続けるデータ）
+	 * @type {number|null}
+	 */
+	#currentData = null;
+	/**
 	 * データの上限と下限
 	 * @type {Array}
 	 */
@@ -33,7 +38,7 @@ class Graph {
 
 	/**
 	 * データをクリアして新たにデータを設定
-	 * @param {Array} data
+	 * @param {Array} data 設定するデータ群
 	 */
 	setData(data) {
 		this.#data = [];
@@ -47,7 +52,7 @@ class Graph {
 
 	/**
 	 * 最古のデータを1件削除して、新たに最新のデータを挿入する。
-	 * @param {number} data
+	 * @param {number} data 新しいデータ
 	 */
 	swapData(data) {
 		console.group(`（${this.#name}）データを入れ替えました。`);
@@ -71,15 +76,29 @@ class Graph {
 	}
 
 	/**
+	 * 現在のデータを更新する。（センサーで取得し続けるデータ）
+	 * @param {number} 新しいデータ
+	 */
+	setCurrentData(currentData) {
+		this.#currentData = currentData;
+		this.#analyzeDataRange();
+		this.draw();
+	}
+
+	/**
 	 * データを分析して、データの範囲を決定する。
 	 */
 	#analyzeDataRange() {
-		if(this.#data.length > 0) {
+		if(this.#data.length > 0 || this.#currentData) {
 			this.#dataRange = new Array(2).fill(this.#data[0]);
 			this.#data.forEach((record) => {
 				if(this.#dataRange[0] < record) this.#dataRange[0] = record;
-				if(this.#dataRange[1] > record) this.#dataRange[1] = record;
+				else if(this.#dataRange[1] > record) this.#dataRange[1] = record;
 			});
+			if(this.#currentData) {
+				if(this.#dataRange[0] < this.#currentData) this.#dataRange[0] = this.#currentData;
+				else if(this.#dataRange[1] > this.#currentData) this.#dataRange[1] = this.#currentData;
+			}
 			this.#dataRange[0] = Math.ceil(this.#dataRange[0] / 10) * 10;
 			this.#dataRange[1] = Math.floor(this.#dataRange[1] / 10) * 10;
 			console.group(`（${this.#name}）データ描画範囲を更新しました。`);
@@ -116,6 +135,14 @@ class Graph {
 			gradation.addColorStop(1, "rgba(255, 255, 255, 0%)");
 			context.fillStyle = gradation;
 			context.fill();
+			if(this.#currentData) {
+				context.beginPath();
+				context.moveTo(0, this.#targetCanvas.height * ((this.#dataRange[0] - this.#currentData) / (this.#dataRange[0] - this.#dataRange[1])));
+				context.lineTo(this.#targetCanvas.width, this.#targetCanvas.height * ((this.#dataRange[0] - this.#currentData) / (this.#dataRange[0] - this.#dataRange[1])));
+				context.strokeStyle = "white";
+				context.lineWidth = 2;
+				context.stroke();
+			}
 		}
 		console.info(`（${this.#name}）グラフを描画しました。`);
 	}

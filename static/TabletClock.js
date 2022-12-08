@@ -180,47 +180,17 @@ function refreshWeatherForecast() {
 	 * @return {string} 天気アイコンのパス
 	 */
 	function getWeatherString(weatherCode) {
-		switch(weatherCode) {
-			case 0:
-			case 1:
-				return "sunny";
-			case 2:
-				return "partly_cloudy";
-			case 3:
-				return "clouldy";
-			case 45:
-			case 48:
-				return "fog";
-			case 51:
-			case 53:
-			case 55:
-			case 56:
-			case 57:
-			case 61:
-			case 63:
-			case 65:
-			case 66:
-			case 67:
-				return "rain";
-			case 71:
-			case 73:
-			case 75:
-			case 77:
-				return "snow";
-			case 80:
-			case 81:
-			case 82:
-				return "heavy_rain";
-			case 85:
-			case 86:
-				return "snow_rain";
-			case 95:
-			case 96:
-			case 99:
-				return "thunder";
-			default:
-				return "unknown";
-		}
+		const degit10 = Math.floor(weatherCode / 10);
+		if(weatherCode <= 1) return "sunny";
+		else if(weatherCode == 2) return "partly_cloudy";
+		else if(weatherCode == 3) return "clouldy";
+		else if(degit10 == 4) return "fog";
+		else if(degit10 == 5 || degit10 == 6) return "rain";
+		else if(degit10 == 7) return "snow";
+		else if(weatherCode >= 80 && weatherCode <= 82) return "heavy_rain";
+		else if(weatherCode == 85 || weatherCode == 86) return "snow_rain";
+		else if(degit10 == 9) return "thunder";
+		else return "thunder";
 	}
 
 	const weatherForecastInit = init;
@@ -313,6 +283,8 @@ socketClient.connect();
 refreshBackground();
 if(darkModeInit) document.querySelectorAll(".darkmode").forEach((element) => element.classList.remove("hidden"));
 refreshClock();
+graph[0].setCurrentData(Number(document.getElementById("temperature").innerText));
+graph[1].setCurrentData(Number(document.getElementById("humidity").innerText));
 refreshWeatherForecast();
 refreshSchedule();
 refreshCanvasSize();
