@@ -142,7 +142,6 @@ function refreshClock() {
 				});
 			});
 			refreshWeatherForecast();
-			refreshSchedule();
 		}, 10000);
 	}
 	setTimeout(() => refreshClock(), 60000 - (second * 1000 + millisecond));
@@ -220,41 +219,6 @@ function refreshWeatherForecast() {
 	});
 }
 
-/**
- * 予定情報を更新する。
- */
-function refreshSchedule() {
-	fetch("./getSchedule").then((response) => {
-		response.json().then((data) => {
-			document.querySelectorAll("#schedule_panel > div").forEach((element) => {
-				if(element.id != "schedule_template") element.remove();
-			});
-			const noSchedule = document.getElementById("schedule_noschdule");
-			if(data.length > 0) {
-				noSchedule.classList.add("hidden");
-				const schedulePanel = document.getElementById("schedule_panel");
-				data.forEach((record) => {
-					const recordElement = document.createElement("div");
-					const scheduleTitle = document.createElement("p");
-					scheduleTitle.classList.add("schedule_title");
-					scheduleTitle.innerText = record.title;
-					recordElement.appendChild(scheduleTitle);
-					const scheduleTime = document.createElement("p");
-					scheduleTime.classList.add("schedule_time");
-					console.log(record.startTime);
-					scheduleTime.innerText = record.allDay ? "終日" : `${new Date(record.startTime).getHours()}:${`0${new Date(record.startTime).getMinutes()}`.slice(-2)} - ${new Date(record.endTime).getHours()}:${`0${new Date(record.endTime).getMinutes()}`}`;
-					recordElement.appendChild(scheduleTime);
-					schedulePanel.appendChild(recordElement);
-				});
-			}
-			else noSchedule.classList.remove("hidden");
-			console.group("予定情報を更新しました。");
-			data.forEach((record) => console.debug(record));
-			console.groupEnd();
-		});
-	})
-}
-
 if(isSafari) {
 	document.addEventListener("webkitfullscreenchange", () => {
 		const toggleFullscreenButton = document.getElementById("toggle_fullscreen");
@@ -286,6 +250,5 @@ refreshClock();
 graph[0].setCurrentData(Number(document.getElementById("temperature").innerText));
 graph[1].setCurrentData(Number(document.getElementById("humidity").innerText));
 refreshWeatherForecast();
-refreshSchedule();
 refreshCanvasSize();
 init = false;
