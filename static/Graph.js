@@ -11,7 +11,7 @@ class Graph {
 	#targetCanvas;
 	/**
 	 * グラフを描画するデータの配列
-	 * @type {Array}
+	 * @type {Array<number>}
 	 */
 	#data = [];
 	/**
@@ -21,18 +21,25 @@ class Graph {
 	#currentData = null;
 	/**
 	 * データの上限と下限
-	 * @type {Array}
+	 * @type {Array<number>}
 	 */
 	#dataRange = [0, 0];
+	/**
+	 * グラフの上限と下限のオフセット
+	 * @type {number}
+	 */
+	#rangeOffset = 0;
 
 	/**
 	 * 折れ線グラフを描画するクラス
 	 * @param {string} name グラフの名前
 	 * @param {HTMLElement} canvasToDrawGraph グラフを描画するキャンバス要素
+	 * @param {number} rangeOffset グラフの上限と下限の範囲のオフセット
 	 */
-	constructor(name, canvasToDrawGraph) {
+	constructor(name, canvasToDrawGraph, rangeOffset) {
 		this.#name = name
 		this.#targetCanvas = canvasToDrawGraph;
+		this.#rangeOffset = rangeOffset;
 		console.info(`グラフ「${this.#name}」のインスタンスが作成されました。`);
 	}
 
@@ -99,8 +106,8 @@ class Graph {
 				if(this.#dataRange[0] < this.#currentData) this.#dataRange[0] = this.#currentData;
 				else if(this.#dataRange[1] > this.#currentData) this.#dataRange[1] = this.#currentData;
 			}
-			this.#dataRange[0] = Math.ceil(this.#dataRange[0] / 10) * 10;
-			this.#dataRange[1] = Math.floor(this.#dataRange[1] / 10) * 10;
+			this.#dataRange[0] = Math.ceil(this.#dataRange[0]) + this.#rangeOffset;
+			this.#dataRange[1] = Math.floor(this.#dataRange[1]) - this.#rangeOffset;
 			console.group(`（${this.#name}）データ描画範囲を更新しました。`);
 			console.debug(`上限：${this.#dataRange[0]}`);
 			console.debug(`下限：${this.#dataRange[1]}`);

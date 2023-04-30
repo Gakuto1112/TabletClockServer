@@ -13,9 +13,9 @@ const socketClient = new SocketClient(`ws://${serverIP}:5200`);
 
 /**
  * グラフのインスタンスを格納する配列
- * @type {Array}
+ * @type {Array<Graph>}
  */
-const graph = [new Graph("温度", document.querySelector("#temperature_area > canvas")), new Graph("湿度", document.querySelector("#humidity_area > canvas"))];
+const graph = [new Graph("温度", document.querySelector("#temperature_area > canvas"), 1), new Graph("湿度", document.querySelector("#humidity_area > canvas"), 5)];
 
 /**
  * 最初の処理かどうか
