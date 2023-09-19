@@ -1,7 +1,7 @@
 # TabletClockServer
 使用していないタブレットを便利な置時計にするWebアプリを提供する、Raspberry Pi上で動作させる事を想定したWebサーバーです。
 
-![メイン](README_images/メイン.jpg)
+![メイン](./README_images/main.jpg)
 
 ## 経緯
 机上を整理していたら思ったよりもスペースができ、ここに何かを置こうかと考えたところ、[Google Nest Hub](https://store.google.com/jp/product/nest_hub_2nd_gen)のようなものを置いてみてはどうだろうかと思い、商品ページ等を見て検討していました。しかし、Google Nest Hubの機能に過不足を感じる（部屋の温度と湿度の表示が欲しかった）上、自分でもそれっぽいものを作ってみたいという思いがありました。そこで、代わりに（タッチ機能付きの）小型ディスプレイを置いてそこにRaspberry Piからインターフェースを表示させるという方法を検討しましたが、時計を表示させるためだけにディスプレイを新たに購入するのは高いと感じていました。それからも色々考えていたところ、ふと、（家では）あまり使用していないタブレットがある事を思い出し、これを有効活用すべく、これを作成する事になりました。
@@ -29,7 +29,7 @@
   - iPhoneは使用できません（フルスクリーンに移行しません）。
 
 ## 回路図
-![回路図](README_images/RaspberryPiCircuitDiagram.drawio.svg)
+![回路図](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
 
 ## セットアップ
 概要だけ説明します。詳しい手順は省きます[^2]。
