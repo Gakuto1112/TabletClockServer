@@ -105,5 +105,4 @@ dist
 
 # User difined
 .vscode
-config/database.jsonc
-config/weather_forecast.jsonc
+src/web/js
