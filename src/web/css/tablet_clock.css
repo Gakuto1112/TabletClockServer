@@ -57,6 +57,14 @@ main > div {
     line-height: 128px;
 }
 
+#clock_dot {
+    transition: 1s ease-in-out;
+}
+
+.clock_blink_animation {
+    opacity: 50%;
+}
+
 /* カード表示部分 */
 #card_area {
     grid-column: 2;

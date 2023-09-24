@@ -6,7 +6,36 @@ export class Clock {
      * 実行関数
      */
     public run(): void {
-        const now: Date = new Date();
-        console.log(now);
+        /**
+         * 時計を更新する。setTimeout()でこの関数は再帰的に呼ばれる。
+         */
+        function updateClock() {
+            const now: Date = new Date();
+            setTimeout(updateClock, 1000 - now.getMilliseconds());
+
+            const monthElement: HTMLElement = (document.getElementById("clock_month") as HTMLElement);
+            const monthName: string = new Intl.DateTimeFormat("en-US", {month: "short"}).format(now);
+            if(monthElement.innerText.slice(0, -1) != monthName) monthElement.innerText = `${monthName}.`;
+            const dayElement: HTMLElement = (document.getElementById("clock_day") as HTMLElement);
+            const day: number = now.getDate();
+            if(Number(dayElement.innerText.slice(0, -2)) != day) {
+                const firstDigit: number = day % 10;
+                dayElement.innerText = `${day}${firstDigit == 0 || firstDigit >= 4 || Math.floor(day / 10) == 1 ? "th" : (firstDigit == 1 ? "st" : (firstDigit == 2 ? "nd" : "rd"))}`;
+                (document.getElementById("clock_weekday") as HTMLElement).innerText = `${new Intl.DateTimeFormat("en-US", {weekday: "short"}).format(now)}.`;
+            }
+            const hourElement: HTMLElement = (document.getElementById("clock_hour") as HTMLElement);
+            const hour = now.getHours();
+            if(Number(hourElement.innerText) != hour) hourElement.innerText = hour.toString();
+            const minuteElement: HTMLElement = (document.getElementById("clock_minute") as HTMLElement);
+            const minute: number = now.getMinutes();
+            if(Number(minuteElement.innerText) != minute) minuteElement.innerText = `0${minute.toString()}`.slice(-2);
+
+            const dotElement: HTMLElement = (document.getElementById("clock_dot") as HTMLElement);
+            if(now.getSeconds() % 2 == 0) dotElement.classList.add("clock_blink_animation");
+            else dotElement.classList.remove("clock_blink_animation");
+
+        }
+
+        setTimeout(updateClock, 1000 - new Date().getMilliseconds());
     }
 }
