@@ -1,5 +1,6 @@
 import fs from "fs";
 import express, { Express, Request, Response } from "express";
+import { debug, info } from "@gakuto1112/nodejs-logger";
 
 /**
  * Webサーバー本体を管理するクラス
@@ -24,20 +25,10 @@ export class WebServer {
 
         //サーバールーティングの設定
         //時計画面
-        this.app.get("/", (_request: Request, response: Response) => {
+        this.app.get("/", (request: Request, response: Response) => {
             response.type("html");
             response.sendFile("./src/web/html/tablet_clock.html", {root: this.rootPath});
-        });
-        this.app.get("/js/*", (request: Request, response: Response) => {
-            const filePath: string = `${this.rootPath}/src/web/js/${request.params[0]}.js`;
-            if(fs.existsSync(filePath)) {
-                response.type("text/javascript");
-                response.sendFile(filePath);
-            }
-            else {
-                response.status(404);
-                response.end();
-            }
+            this.logHttpRequest(request, response);
         });
 
         //javascriptを返す。
@@ -46,10 +37,12 @@ export class WebServer {
             if(fs.existsSync(filePath)) {
                 response.type("text/javascript");
                 response.sendFile(filePath);
+                this.logHttpRequest(request, response);
             }
             else {
                 response.status(404);
                 response.end();
+                this.logHttpRequest(request, response);
             }
         });
 
@@ -59,12 +52,23 @@ export class WebServer {
             if(fs.existsSync(filePath)) {
                 response.type("text/css");
                 response.sendFile(filePath);
+                this.logHttpRequest(request, response);
             }
             else {
                 response.status(404);
                 response.end();
+                this.logHttpRequest(request, response);
             }
         });
+    }
+
+    /**
+     * サーバーが受信したhttpリクエストのログを出力する。
+     * @param request httpリクエスト
+     * @param response httpレスポンス
+     */
+    private logHttpRequest(request: Request, response: Response): void {
+        debug(`${request.url} -> ${response.statusCode < 400 ? "\u001b[32m" : "\u001b[31m"}${response.statusCode}\u001b[0m`);
     }
 
     /**
@@ -72,6 +76,6 @@ export class WebServer {
      */
     public run(): void {
         this.app.listen(5000);
-        console.info("Listening http request at port 5000...");
+        info("Listening http requests at port 5000.");
     }
 }

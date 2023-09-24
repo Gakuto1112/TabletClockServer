@@ -1,3 +1,4 @@
+import { info, setColoredLog, setLogDebugLevel } from "@gakuto1112/nodejs-logger";
 import { WebServer } from "./WebServer";
 
 /**
@@ -13,6 +14,9 @@ class TabletClockServer {
      * メイン関数
      */
     public main(): void {
+        setColoredLog(true);
+        setLogDebugLevel(true);
+        info("System starting...");
         this.webServer.run();
     }
 }
