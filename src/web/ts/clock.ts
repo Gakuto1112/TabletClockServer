@@ -33,7 +33,6 @@ export class Clock {
             const dotElement: HTMLElement = (document.getElementById("clock_dot") as HTMLElement);
             if(now.getSeconds() % 2 == 0) dotElement.classList.add("clock_blink_animation");
             else dotElement.classList.remove("clock_blink_animation");
-
         }
 
         setTimeout(updateClock, 1000 - new Date().getMilliseconds());

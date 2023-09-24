@@ -1,3 +1,9 @@
+/* CSS変数 */
+:root {
+    --card-flip-interval: 10s;
+    --card-bar-width: 0px;
+}
+
 /* 全体 */
 body {
     margin: 0;
@@ -72,6 +78,7 @@ main > div {
     display: flex;
     flex-direction: column;
     align-items: center;
+    perspective: 1000px;
 }
 
 #card {
@@ -83,16 +90,52 @@ main > div {
     box-shadow: 0 0 5px 2px #00000011;
 }
 
+.card_flip_animation {
+    transform: rotateY(180deg);
+    transition: 1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
 #card_bar {
     display: flex;
     justify-content: space-around;
     width: 500px;
+    height: 5px;
     padding: 10px 0;
 }
 
 #card_bar > div {
-    width: calc(500px / 3 - 10px * 3);
+    width: var(--card-bar-width);
     height: 5px;
     border-radius: 5px;
-    background-color: #888888aa;
+    background-color: #888;
+    opacity: 75%;
+}
+
+#card_bar > div::after {
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 5px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.card_bar_progression::after {
+    width: var(--card-bar-width) !important;
+    transition: var(--card-flip-interval) linear;
+}
+
+.card_bar_progression_end::after {
+    animation: card-bar-progression-end 1s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes card-bar-progression-end {
+    0% {
+        width: var(--card-bar-width);
+        transform: translateX(0px);
+    }
+    100% {
+        width: 0px;
+        transform: translateX(var(--card-bar-width));
+    }
 }
