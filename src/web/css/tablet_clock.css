@@ -12,6 +12,7 @@ html {
 }
 
 body {
+    position: relative;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -175,4 +176,116 @@ main > div {
         width: 0px;
         transform: translateX(var(--card-bar-width));
     }
+}
+
+/* ハンバーガーメニュー */
+#hamburger_menu {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#hamburger_menu_background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: black;
+    opacity: 0%;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.hamburger_menu_opened #hamburger_menu_background {
+    opacity: 50%;
+    pointer-events: fill;
+}
+
+nav {
+    position: absolute;
+    display: flex;
+    width: 360px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    transform: translateX(300px);
+    pointer-events: fill;
+    z-index: 1;
+    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.hamburger_menu_opened nav {
+    transform: translateX(0px);
+}
+
+/* ハンバーガータブ */
+#hamburger_menu_tab {
+    display: flex;
+    flex-direction: column;
+    width: 60px;
+    height: 60px;
+    margin-top: 30px;
+    background-color: whitesmoke;
+    border-radius: 10px 0 0 10px;
+}
+
+#hamburger_menu_tab > div {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+
+#menu_button_open_close {
+    position: relative;
+}
+
+#menu_button_open_close > div {
+    position: absolute;
+    width: 40px;
+    height: 6px;
+    left: 10px;
+    background-color: dimgray;
+    transition: 0.5s;
+}
+
+.hamburger_menu_opened #menu_button_open_close > div {
+    background-color: maroon;
+}
+
+#menu_button_icon_open_close_1 {
+    top: 12px;
+}
+
+.hamburger_menu_opened #menu_button_icon_open_close_1 {
+    transform: translateY(15px) rotateZ(45deg);
+}
+
+#menu_button_icon_open_close_2 {
+    top: 27px;
+}
+
+.hamburger_menu_opened #menu_button_icon_open_close_2 {
+    transform: scaleX(0%);
+}
+
+#menu_button_icon_open_close_3 {
+    top: 42px;
+}
+
+.hamburger_menu_opened #menu_button_icon_open_close_3 {
+    transform: translateY(-15px) rotateZ(-45deg);
+}
+
+/* ハンバーガーカラム */
+
+#hamburger_menu_column {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    height: 100%;
+    background-color: white;
 }
