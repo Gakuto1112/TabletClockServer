@@ -1,7 +1,9 @@
+import { WebModule } from "./web_module";
+
 /**
  * デジタル時計を管理するクラス
  */
-export class Clock {
+export class Clock implements WebModule {
     /**
      * 実行関数
      */

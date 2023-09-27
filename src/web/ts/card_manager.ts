@@ -1,4 +1,6 @@
-export class CardManager {
+import { WebModule } from "./web_module";
+
+export class CardManager implements WebModule {
     /**
      * 現在のカード
      */

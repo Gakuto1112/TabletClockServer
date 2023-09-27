@@ -1,7 +1,9 @@
+import { WebModule } from "./web_module";
+
 /**
  * ハンバーガーメニューを管理するクラス
  */
-export class HamburgerMenu {
+export class HamburgerMenu implements WebModule {
     /**
      * 実行関数
      */
