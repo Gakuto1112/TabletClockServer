@@ -26,7 +26,6 @@ body {
     width: 100%;
     height: 100%;
     background-color: lightskyblue;
-    z-index: -1;
 }
 
 /* メイン表示部分 */
@@ -207,19 +206,23 @@ main > div {
 
 nav {
     position: absolute;
-    display: flex;
     width: 360px;
     height: 100%;
     top: 0;
     right: 0;
     transform: translateX(300px);
-    pointer-events: fill;
     z-index: 1;
     transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .hamburger_menu_opened nav {
     transform: translateX(0px);
+}
+
+nav > div {
+    position: absolute;
+    left: 60px;
+    pointer-events: fill;
 }
 
 /* ハンバーガータブ */
@@ -231,6 +234,11 @@ nav {
     margin-top: 30px;
     background-color: whitesmoke;
     border-radius: 10px 0 0 10px;
+    transition: 0.25s;
+}
+
+.hamburger_menu_tab_visible {
+    left: 0px;
 }
 
 #hamburger_menu_tab > div {
