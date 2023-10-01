@@ -23,7 +23,7 @@ export class HamburgerMenu extends TabletClockWebModule {
      * ハンバーガーメニューのタブを非表示にさせる。
      */
     private hideHamburgerMenuTab(): void {
-        (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.remove("hamburger_menu_tab_visible");
+        if(!(document.getElementById("hamburger_menu") as HTMLDivElement).classList.contains("hamburger_menu_opened")) (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.remove("hamburger_menu_tab_visible");
         this.tabCloseTimeoutHandler = undefined;
     }
 
@@ -68,8 +68,8 @@ export class HamburgerMenu extends TabletClockWebModule {
         document.addEventListener("fullscreenchange", onFullscreenChange);
         document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 
+        const messageBox: MessageBox = this.parent.getMessageBox();
         fullscreenButtonElement.addEventListener("click", async () => {
-            const messageBox: MessageBox = this.parent.getMessageBox();
             if(document.fullscreenEnabled) {
                 if(document.fullscreenElement == null) {
                     try {
@@ -92,10 +92,43 @@ export class HamburgerMenu extends TabletClockWebModule {
                     }
                 }
             }
-            else if(!messageBox.contains("fullscreen_incompatible_error")) messageBox.addMessageQueue({content: "お使いのデバイスはフルスクリーンモードへの移行に対応していません。", type: "ERROR", name: "fullscreen_incompatible_error"});
+            else if(!messageBox.contains("fullscreen_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザはフルスクリーンモードへの移行に対応していません。", type: "ERROR", name: "fullscreen_incompatible_error"});
             this.showHamburgerMenuTab();
         });
         if(!document.fullscreenEnabled) fullscreenButtonElement.classList.add("disabled");
+
+        //起動ロック
+        const keepAwakeButtonElement: HTMLDivElement = document.getElementById("menu_button_keep_awake") as HTMLDivElement;
+        let wakeLock: WakeLockSentinel | undefined = undefined;
+        keepAwakeButtonElement.addEventListener("click", async () => {
+            if("wakeLock" in navigator) {
+                if(keepAwakeButtonElement.classList.contains("keep_awake_enabled")) {
+                    try {
+                        wakeLock = await navigator.wakeLock.request("screen");
+                        wakeLock.addEventListener("release", () => keepAwakeButtonElement.classList.remove("keep_awake_enabled"), {once: true});
+                        keepAwakeButtonElement.classList.add("keep_awake_enabled");
+                        messageBox.addMessageQueue({content: "起動ロックを要求しました。\nもう一度同じボタンを押すか別のタブへ移動するまでデバイスはスリープしません。\nバッテリー残量にご注意下さい。", type: "INFO"});
+                    }
+                    catch(_error: any) {
+                        console.error("[HamburgerMenu]: Cannot request wake lock.");
+                        if(!messageBox.contains("wake_lock_request_error")) messageBox.addMessageQueue({content: "起動ロックを要求できませんでした。", type: "ERROR", name: "wake_lock_request_error"});
+                    }
+                }
+                else {
+                    try {
+                        await (wakeLock as WakeLockSentinel).release();
+                        messageBox.addMessageQueue({content: "起動ロックを解除しました。", type: "INFO"});
+                        wakeLock = undefined;
+                    }
+                    catch(_error: any) {
+                        console.error("[HamburgerMenu]: Cannot release wake lock.");
+                        if(!messageBox.contains("wake_lock_release_error")) messageBox.addMessageQueue({content: "起動ロックを解除できませんでした。", type: "ERROR", name: "wake_lock_release_error"});
+                    }
+                }
+            }
+            else if(!messageBox.contains("wake_lock_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザは起動ロック対応していないか、接続がhttpsでないため、利用できません。", type: "ERROR", name: "wake_lock_incompatible_error"});
+        });
+        if(!("wakeLock" in navigator)) keepAwakeButtonElement.classList.add("disabled");
 
         //背景クリックでハンバーガーメニューのタブを出す。
         (document.getElementById("background") as HTMLDivElement).addEventListener("click", () => this.showHamburgerMenuTab());
