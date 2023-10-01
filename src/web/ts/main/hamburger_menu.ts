@@ -1,4 +1,5 @@
 import { TabletClockWebModule } from "./tablet_clock_web_module";
+import { MessageBox } from "./message_box";
 
 /**
  * ハンバーガーメニューを管理するクラス
@@ -59,7 +60,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         /**
          * フルスクリーンが変更された場合に呼ばれる関数
          */
-        function onFullscreenChange() {
+        function onFullscreenChange(): void {
             if(document.fullscreenElement != null) fullscreenButtonElement.classList.add("fullscreen");
             else fullscreenButtonElement.classList.remove("fullscreen");
         }
@@ -68,24 +69,30 @@ export class HamburgerMenu extends TabletClockWebModule {
         document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 
         fullscreenButtonElement.addEventListener("click", async () => {
+            const messageBox: MessageBox = this.parent.getMessageBox();
             if(document.fullscreenEnabled) {
                 if(document.fullscreenElement == null) {
                     try {
                         await document.body.requestFullscreen();
+                        messageBox.addMessageQueue({content: "フルスクリーンモードを要求しました。\n解除する場合は同じボタンを押して下さい。", type: "INFO"});
                     }
                     catch(_error: any) {
-                        console.error("Cannot enter fullscreen mode.");
+                        console.error("[HamburgerMenu]: Cannot enter fullscreen mode.");
+                        if(!messageBox.contains("fullscreen_enter_error")) messageBox.addMessageQueue({content: "フルスクリーンモードを要求できませんでした。", type: "ERROR", name: "fullscreen_enter_error"});
                     }
                 }
                 else {
                     try {
                         await document.exitFullscreen();
+                        this.parent.getMessageBox().addMessageQueue({content: "フルスクリーンモードを解除しました。", type: "INFO"});
                     }
                     catch(_error: any) {
-                        console.error("Cannot exit fullscreen mode.");
+                        console.error("[HamburgerMenu]: Cannot exit fullscreen mode.");
+                        if(!messageBox.contains("fullscreen_exit_error")) messageBox.addMessageQueue({content: "フルスクリーンモードを解除できませんでした。", type: "ERROR", name: "fullscreen_exit_error"});
                     }
                 }
             }
+            else if(!messageBox.contains("fullscreen_incompatible_error")) messageBox.addMessageQueue({content: "お使いのデバイスはフルスクリーンモードへの移行に対応していません。", type: "ERROR", name: "fullscreen_incompatible_error"});
             this.showHamburgerMenuTab();
         });
         if(!document.fullscreenEnabled) fullscreenButtonElement.classList.add("disabled");

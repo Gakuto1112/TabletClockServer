@@ -11,7 +11,7 @@ export class Clock extends TabletClockWebModule {
         /**
          * 時計を更新する。setTimeout()でこの関数は再帰的に呼ばれる。
          */
-        function updateClock() {
+        function updateClock(): void {
             const now: Date = new Date();
             setTimeout(updateClock, 1000 - now.getMilliseconds());
 

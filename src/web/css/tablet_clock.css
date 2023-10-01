@@ -28,6 +28,37 @@ body {
     background-color: lightskyblue;
 }
 
+/* メッセージボックス */
+#message_box {
+    position: fixed;
+    margin: 0;
+    padding: 20px 40px;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, calc(-100% - 30px));
+    background-color: white;
+    border: solid 1px #0004;
+    border-radius: 10px;
+    box-shadow: 0 5px 5px 0 #0002;
+    z-index: 2;
+    pointer-events: none;
+    transition: 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+#message_box.message_box_warn {
+    background-color: #ffa;
+}
+
+#message_box.message_box_error {
+    background-color: #fcc;
+}
+
+
+#message_box.message_box_visible {
+    transform: translateX(-50%);
+    transition: 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
 /* メイン表示部分 */
 main {
     position: absolute;
@@ -93,9 +124,9 @@ main > div {
     width: 500px;
     aspect-ratio: 3 / 1;
     background-color: whitesmoke;
-    border: solid 1px #00000011;
+    border: solid 1px #0001;
     border-radius: 10px;
-    box-shadow: 0 0 5px 2px #00000011;
+    box-shadow: 0 0 5px 2px #0001;
     transform-style: preserve-3d;
 }
 
@@ -352,7 +383,6 @@ nav > div {
 }
 
 /* ハンバーガーカラム */
-
 #hamburger_menu_column {
     display: flex;
     flex-direction: column;
