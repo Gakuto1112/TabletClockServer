@@ -60,6 +60,21 @@ export class WebServer {
                 this.logHttpRequest(request, response);
             }
         });
+
+        //アイコン画像を返す。
+        this.app.get("/icons/*", (request: Request, response: Response) => {
+            const filePath: string = `${this.rootPath}/src/web/icons/${request.params[0]}`;
+            if(fs.existsSync(filePath)) {
+                response.type("image/svg+xml");
+                response.sendFile(filePath);
+                this.logHttpRequest(request, response);
+            }
+            else {
+                response.status(404);
+                response.end();
+                this.logHttpRequest(request, response);
+            }
+        });
     }
 
     /**
