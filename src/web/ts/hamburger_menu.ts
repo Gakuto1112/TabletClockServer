@@ -7,34 +7,41 @@ export class HamburgerMenu implements WebModule {
     /**
      * ハンバーガーメニューのタブを隠すタイムアウトのハンドラー。undefinedの場合はハンドラー未登録を示す。
      */
-    private tabCloseTimeoutHandler: NodeJS.Timeout | undefined;
+    private tabCloseTimeoutHandler: NodeJS.Timeout | undefined = undefined;
+
+    /**
+     * ハンバーガーメニューのタブを表示させる。既に表示されている場合は、非表示までの時間をリセットする。
+     */
+    private showHamburgerMenuTab(): void {
+        (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.add("hamburger_menu_tab_visible");
+        if(this.tabCloseTimeoutHandler != undefined) clearTimeout(this.tabCloseTimeoutHandler);
+        this.tabCloseTimeoutHandler = setTimeout(this.hideHamburgerMenuTab, 5000);
+    }
+
+    /**
+     * ハンバーガーメニューのタブを非表示にさせる。
+     */
+    private hideHamburgerMenuTab(): void {
+        (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.remove("hamburger_menu_tab_visible");
+        this.tabCloseTimeoutHandler = undefined;
+    }
 
     /**
      * 実行関数
      */
     public run(): void {
-        const hamburgerMenuTabElement: HTMLDivElement = document.getElementById("hamburger_menu_tab") as HTMLDivElement;
-
-        /**
-         * ハンバーガーメニューのタブを隠す。
-         */
-        function  hideHamburgerMenuTab(): void {
-            hamburgerMenuTabElement.classList.remove("hamburger_menu_tab_visible");
-        }
-
-        const hamburgerMenuElement: HTMLDivElement = document.getElementById("hamburger_menu") as HTMLDivElement;
-
         //バックグラウンドクリックでハンバーガーメニューを閉じる。
+        const hamburgerMenuElement: HTMLDivElement = document.getElementById("hamburger_menu") as HTMLDivElement;
         (document.getElementById("hamburger_menu_background") as HTMLDivElement).addEventListener("click", () => {
             hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-            (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", hideHamburgerMenuTab, {once: true});
+            (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.hideHamburgerMenuTab, {once: true});
         });
 
         //ハンバーガーメニューを開閉するボタン
         (document.getElementById("menu_button_open_close") as HTMLDivElement).addEventListener("click", () => {
             if(hamburgerMenuElement.classList.contains("hamburger_menu_opened")) {
                 hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-                (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", hideHamburgerMenuTab, {once: true});
+                (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.hideHamburgerMenuTab, {once: true});
             }
             else {
                 hamburgerMenuElement.classList.add("hamburger_menu_opened");
@@ -42,7 +49,7 @@ export class HamburgerMenu implements WebModule {
                     clearTimeout(this.tabCloseTimeoutHandler);
                     this.tabCloseTimeoutHandler = undefined;
                 }
-                hamburgerMenuTabElement.classList.add("hamburger_menu_tab_visible");
+                (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.add("hamburger_menu_tab_visible");
             }
         });
 
@@ -60,8 +67,8 @@ export class HamburgerMenu implements WebModule {
         document.addEventListener("fullscreenchange", onFullscreenChange);
         document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 
-        if(document.fullscreenEnabled) {
-            fullscreenButtonElement.addEventListener("click", async () => {
+        fullscreenButtonElement.addEventListener("click", async () => {
+            if(document.fullscreenEnabled) {
                 if(document.fullscreenElement == null) {
                     try {
                         await document.body.requestFullscreen();
@@ -78,15 +85,12 @@ export class HamburgerMenu implements WebModule {
                         console.error("Cannot exit fullscreen mode.");
                     }
                 }
-            });
-        }
-        else fullscreenButtonElement.classList.add("disabled");
+            }
+            this.showHamburgerMenuTab();
+        });
+        if(!document.fullscreenEnabled) fullscreenButtonElement.classList.add("disabled");
 
         //背景クリックでハンバーガーメニューのタブを出す。
-        (document.getElementById("background") as HTMLDivElement).addEventListener("click", () => {
-            hamburgerMenuTabElement.classList.add("hamburger_menu_tab_visible");
-            if(this.tabCloseTimeoutHandler != undefined) clearTimeout(this.tabCloseTimeoutHandler);
-            this.tabCloseTimeoutHandler = setTimeout(hideHamburgerMenuTab, 5000);
-        });
+        (document.getElementById("background") as HTMLDivElement).addEventListener("click", () => this.showHamburgerMenuTab());
     }
 }
