@@ -5,7 +5,7 @@ export abstract class TabletClockWebModule implements WebModule {
     /**
      * タブレットクロックのメインクラス
      */
-    private readonly parent: TabletClock;
+    protected readonly parent: TabletClock;
 
     /**
      * コンストラクタ
