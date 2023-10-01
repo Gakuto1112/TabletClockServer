@@ -1,9 +1,9 @@
-import { WebModule } from "./web_module";
+import { TabletClockWebModule } from "./tablet_clock_web_module";
 
 /**
  * デジタル時計を管理するクラス
  */
-export class Clock implements WebModule {
+export class Clock extends TabletClockWebModule {
     /**
      * 実行関数
      */

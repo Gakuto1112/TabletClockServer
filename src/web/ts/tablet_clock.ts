@@ -5,21 +5,21 @@ import { HamburgerMenu } from "./hamburger_menu";
 /**
  * タブレットクロックメインクラス
  */
-class TabletClock {
+export class TabletClock {
     /**
      * デジタル時計のインスタンス
      */
-    private clock: Clock = new Clock();
+    private clock: Clock = new Clock(this);
 
     /**
      * カードマネージャーのインスタンス
      */
-    private cardManager: CardManager = new CardManager();
+    private cardManager: CardManager = new CardManager(this);
 
     /**
      * ハンバーガーメニューのインスタンス
      */
-    private hamburgerMenu: HamburgerMenu = new HamburgerMenu();
+    private hamburgerMenu: HamburgerMenu = new HamburgerMenu(this);
 
     /**
      * メイン関数

@@ -1,9 +1,9 @@
-import { WebModule } from "./web_module";
+import { TabletClockWebModule } from "./tablet_clock_web_module";
 
 /**
  * ハンバーガーメニューを管理するクラス
  */
-export class HamburgerMenu implements WebModule {
+export class HamburgerMenu extends TabletClockWebModule {
     /**
      * ハンバーガーメニューのタブを隠すタイムアウトのハンドラー。undefinedの場合はハンドラー未登録を示す。
      */
