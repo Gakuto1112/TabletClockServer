@@ -1,6 +1,6 @@
-import { Clock } from "./clock";
-import { CardManager } from "./card_manager";
-import { HamburgerMenu } from "./hamburger_menu";
+import { Clock } from "./main/clock";
+import { Card } from "./main/card";
+import { HamburgerMenu } from "./main/hamburger_menu";
 
 /**
  * タブレットクロックメインクラス
@@ -14,7 +14,7 @@ export class TabletClock {
     /**
      * カードマネージャーのインスタンス
      */
-    private cardManager: CardManager = new CardManager(this);
+    private cardManager: Card = new Card(this);
 
     /**
      * ハンバーガーメニューのインスタンス

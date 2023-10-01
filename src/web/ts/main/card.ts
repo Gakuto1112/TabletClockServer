@@ -1,6 +1,6 @@
 import { TabletClockWebModule } from "./tablet_clock_web_module";
 
-export class CardManager extends TabletClockWebModule {
+export class Card extends TabletClockWebModule {
     /**
      * 現在のカード
      */

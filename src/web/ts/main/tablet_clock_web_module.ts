@@ -1,5 +1,5 @@
-import { TabletClock } from "./tablet_clock";
-import { WebModule } from "./web_module";
+import { TabletClock } from "../tablet_clock";
+import { WebModule } from "../abstract/web_module";
 
 export abstract class TabletClockWebModule implements WebModule {
     /**
