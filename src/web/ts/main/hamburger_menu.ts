@@ -16,15 +16,10 @@ export class HamburgerMenu extends TabletClockWebModule {
     private showHamburgerMenuTab(): void {
         (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.add("hamburger_menu_tab_visible");
         if(this.tabCloseTimeoutHandler != undefined) clearTimeout(this.tabCloseTimeoutHandler);
-        this.tabCloseTimeoutHandler = setTimeout(this.hideHamburgerMenuTab, 5000);
-    }
-
-    /**
-     * ハンバーガーメニューのタブを非表示にさせる。
-     */
-    private hideHamburgerMenuTab(): void {
-        if(!(document.getElementById("hamburger_menu") as HTMLDivElement).classList.contains("hamburger_menu_opened")) (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.remove("hamburger_menu_tab_visible");
-        this.tabCloseTimeoutHandler = undefined;
+        this.tabCloseTimeoutHandler = setTimeout(() => {
+            if(!(document.getElementById("hamburger_menu") as HTMLDivElement).classList.contains("hamburger_menu_opened")) (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.remove("hamburger_menu_tab_visible");
+            this.tabCloseTimeoutHandler = undefined;
+        }, 5000);
     }
 
     /**
@@ -35,14 +30,14 @@ export class HamburgerMenu extends TabletClockWebModule {
         const hamburgerMenuElement: HTMLDivElement = document.getElementById("hamburger_menu") as HTMLDivElement;
         (document.getElementById("hamburger_menu_background") as HTMLDivElement).addEventListener("click", () => {
             hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-            (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.hideHamburgerMenuTab, {once: true});
+            (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
         });
 
         //ハンバーガーメニューを開閉するボタン
         (document.getElementById("menu_button_open_close") as HTMLDivElement).addEventListener("click", () => {
             if(hamburgerMenuElement.classList.contains("hamburger_menu_opened")) {
                 hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-                (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.hideHamburgerMenuTab, {once: true});
+                (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
             }
             else {
                 hamburgerMenuElement.classList.add("hamburger_menu_opened");
