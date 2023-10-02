@@ -19,6 +19,14 @@ body {
     font-family: sans-serif;
 }
 
+button {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
 /* 個別 */
 /* 背景 */
 #background {
@@ -274,24 +282,26 @@ nav > div {
     left: 0px;
 }
 
-#hamburger_menu_tab > div {
+#hamburger_menu_tab > button {
+    position: relative;
     width: 60px;
     height: 60px;
-    cursor: pointer;
 }
 
-#hamburger_menu_tab > div.disabled {
+#hamburger_menu_tab > button.disabled {
     opacity: 25%;
     cursor:not-allowed;
 }
 
-#hamburger_menu_tab > div:not(:last-child)::after {
+#hamburger_menu_tab > button:not(:last-child)::after {
     content: "";
     position: absolute;
     display: block;
     width: 50px;
     height: 2px;
-    margin: 60px 0 0 5px;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: lightgray;
 }
 
@@ -397,7 +407,6 @@ nav > div {
 }
 
 #menu_button_keep_awake_cross {
-    position: relative;
     width: 40px;
     height: 40px;
     transform: translate(-50%, -50%) scale(100%);

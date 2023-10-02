@@ -34,7 +34,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         });
 
         //ハンバーガーメニューを開閉するボタン
-        (document.getElementById("menu_button_open_close") as HTMLDivElement).addEventListener("click", () => {
+        (document.getElementById("menu_button_open_close") as HTMLButtonElement).addEventListener("click", () => {
             if(hamburgerMenuElement.classList.contains("hamburger_menu_opened")) {
                 hamburgerMenuElement.classList.remove("hamburger_menu_opened");
                 (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
@@ -50,7 +50,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         });
 
         //フルスクリーンイベントとボタン
-        const fullscreenButtonElement: HTMLDivElement = document.getElementById("menu_button_fullscreen") as HTMLDivElement;
+        const fullscreenButtonElement: HTMLButtonElement = document.getElementById("menu_button_fullscreen") as HTMLButtonElement;
 
         /**
          * フルスクリーンが変更された場合に呼ばれる関数
@@ -93,7 +93,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         if(!document.fullscreenEnabled) fullscreenButtonElement.classList.add("disabled");
 
         //起動ロック
-        const keepAwakeButtonElement: HTMLDivElement = document.getElementById("menu_button_keep_awake") as HTMLDivElement;
+        const keepAwakeButtonElement: HTMLButtonElement = document.getElementById("menu_button_keep_awake") as HTMLButtonElement;
         let wakeLock: WakeLockSentinel | undefined = undefined;
         keepAwakeButtonElement.addEventListener("click", async () => {
             if("wakeLock" in navigator) {
