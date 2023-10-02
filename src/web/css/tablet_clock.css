@@ -431,5 +431,6 @@ nav > div {
     flex-direction: column;
     width: 300px;
     height: 100%;
+    top: 0;
     background-color: white;
 }
