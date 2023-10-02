@@ -11,6 +11,15 @@ export class HamburgerMenu extends TabletClockWebModule {
     private tabCloseTimeoutHandler: NodeJS.Timeout | undefined = undefined;
 
     /**
+     * ハンバーガーメニューを閉じる。
+     */
+    private closeHamburgerMenu(): void {
+        (document.getElementById("hamburger_menu") as HTMLDivElement).classList.remove("hamburger_menu_opened");
+        (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
+        for(let element of document.querySelectorAll(".collapse_menu_opened") as NodeListOf<HTMLDivElement>) element.classList.remove("collapse_menu_opened");
+    }
+
+    /**
      * ハンバーガーメニューのタブを表示させる。既に表示されている場合は、非表示までの時間をリセットする。
      */
     private showHamburgerMenuTab(): void {
@@ -28,17 +37,11 @@ export class HamburgerMenu extends TabletClockWebModule {
     public run(): void {
         //バックグラウンドクリックでハンバーガーメニューを閉じる。
         const hamburgerMenuElement: HTMLDivElement = document.getElementById("hamburger_menu") as HTMLDivElement;
-        (document.getElementById("hamburger_menu_background") as HTMLDivElement).addEventListener("click", () => {
-            hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-            (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
-        });
+        (document.getElementById("hamburger_menu_background") as HTMLDivElement).addEventListener("click", () => this.closeHamburgerMenu());
 
         //ハンバーガーメニューを開閉するボタン
         (document.getElementById("menu_button_open_close") as HTMLButtonElement).addEventListener("click", () => {
-            if(hamburgerMenuElement.classList.contains("hamburger_menu_opened")) {
-                hamburgerMenuElement.classList.remove("hamburger_menu_opened");
-                (document.querySelector("nav") as HTMLElement).addEventListener("transitionend", this.showHamburgerMenuTab, {once: true});
-            }
+            if(hamburgerMenuElement.classList.contains("hamburger_menu_opened")) this.closeHamburgerMenu();
             else {
                 hamburgerMenuElement.classList.add("hamburger_menu_opened");
                 if(this.tabCloseTimeoutHandler != undefined) {
@@ -121,11 +124,20 @@ export class HamburgerMenu extends TabletClockWebModule {
                     }
                 }
             }
-            else if(!messageBox.contains("wake_lock_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザは起動ロック対応していないか、接続がhttpsでないため、利用できません。", type: "ERROR", name: "wake_lock_incompatible_error"});
+            else if(!messageBox.contains("wake_lock_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザは起動ロックに対応していないか、接続がhttpsでないため、利用できません。", type: "ERROR", name: "wake_lock_incompatible_error"});
         });
         if(!("wakeLock" in navigator)) keepAwakeButtonElement.classList.add("disabled");
 
         //背景クリックでハンバーガーメニューのタブを出す。
         (document.getElementById("background") as HTMLDivElement).addEventListener("click", () => this.showHamburgerMenuTab());
+
+        //ハンバーガーメニューの折り畳みメニュー
+        for(let element of document.querySelectorAll(".hamburger_menu_collapse_button") as NodeListOf<HTMLDivElement>) {
+            element.addEventListener("click", (event: MouseEvent) => {
+                const buttonRootElement: HTMLDivElement = ((event.target as HTMLDivElement).parentElement as HTMLDivElement).parentElement as HTMLDivElement;
+                if(buttonRootElement.classList.contains("collapse_menu_opened")) buttonRootElement.classList.remove("collapse_menu_opened");
+                else buttonRootElement.classList.add("collapse_menu_opened");
+            });
+        }
     }
 }

@@ -299,7 +299,7 @@ nav > div {
     display: block;
     width: 50px;
     height: 2px;
-    top: 60px;
+    bottom: -2px;
     left: 50%;
     transform: translateX(-50%);
     background-color: lightgray;
@@ -438,8 +438,101 @@ nav > div {
 #hamburger_menu_column {
     display: flex;
     flex-direction: column;
+    gap: 2px 0;
     width: 300px;
     height: 100%;
     top: 0;
     background-color: white;
+}
+
+#hamburger_menu_column button, #hamburger_menu_column label {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    font-size: large;
+    cursor: pointer;
+}
+
+#hamburger_menu_column button::after, #hamburger_menu_column label::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 280px;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: lightgray;
+}
+
+#tablet_clock_title {
+    margin: 0 0 3px 0;
+    padding: 30px 0;
+    text-align: center;
+    color: white;
+    background-color: royalblue;
+    box-shadow: 0 3px 5px 0 #0004;
+}
+
+#tablet_clock_title::after {
+    content: none;
+}
+
+.hamburger_menu_collapse_button > :first-child {
+    position: relative;
+}
+
+.hamburger_menu_collapse_button > :first-child > img {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%) rotateZ(0deg);
+    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.collapse_menu_opened > :first-child > img {
+    transform: translateY(-50%) rotateZ(180deg);
+}
+
+.hamburger_menu_column_radio_selection {
+    display: none;
+    flex-direction: column;
+    gap: 2px 0;
+    margin-top: 2px;
+    background-color: whitesmoke;
+    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.collapse_menu_opened .hamburger_menu_column_radio_selection {
+    display: flex;
+}
+
+.hamburger_menu_column_radio_selection > button {
+    width: 100%;
+}
+
+.hamburger_menu_column_radio_selection > div {
+    position: relative;
+}
+
+.hamburger_menu_column_radio_selection > div > input {
+    position: absolute;
+    visibility: hidden;
+}
+
+.hamburger_menu_column_radio_selection > div > input:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    color: lime;
+    font-size: large;
+    font-weight: bold;
+    visibility: visible;
+}
+
+.hamburger_menu_column_radio_selection > div > label {
+    user-select: none;
 }
