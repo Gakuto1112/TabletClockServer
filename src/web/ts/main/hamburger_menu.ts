@@ -160,7 +160,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 }
                 catch(error: any) {
                     this.parent.getMessageBox().addMessageQueue({
-                        content: "設定値が保存できませんでした。",
+                        content: "設定値を保存できませんでした。",
                         type: "ERROR"
                     });
                 }
@@ -175,7 +175,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         }
         catch(_error: any) {
             this.parent.getMessageBox().addMessageQueue({
-                content: "設定値が保存できませんでした。",
+                content: "設定値を読み込めませんでした。",
                 type: "ERROR"
             });
         }
@@ -186,7 +186,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 }
                 catch(error: any) {
                     this.parent.getMessageBox().addMessageQueue({
-                        content: "設定値が保存できませんでした。",
+                        content: "設定値を保存できませんでした。",
                         type: "ERROR"
                     });
                 }
