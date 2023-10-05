@@ -72,6 +72,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 if(document.fullscreenElement == null) {
                     try {
                         await document.body.requestFullscreen();
+                        console.info("[HamburgerMenu]: Entered fullscreen mode.");
                         messageBox.addMessageQueue({content: "フルスクリーンモードを要求しました。\n解除する場合は同じボタンを押して下さい。", type: "INFO"});
                     }
                     catch(_error: any) {
@@ -82,6 +83,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 else {
                     try {
                         await document.exitFullscreen();
+                        console.info("[HamburgerMenu]: Exited fullscreen mode.");
                         this.parent.getMessageBox().addMessageQueue({content: "フルスクリーンモードを解除しました。", type: "INFO"});
                     }
                     catch(_error: any) {
@@ -90,7 +92,10 @@ export class HamburgerMenu extends TabletClockWebModule {
                     }
                 }
             }
-            else if(!messageBox.contains("fullscreen_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザはフルスクリーンモードへの移行に対応していません。", type: "ERROR", name: "fullscreen_incompatible_error"});
+            else if(!messageBox.contains("fullscreen_incompatible_error")) {
+                console.warn("[HamburgerMenu]: Fullscreen is not supported on your browser.");
+                messageBox.addMessageQueue({content: "お使いのブラウザはフルスクリーンモードへの移行に対応していません。", type: "WARN", name: "fullscreen_incompatible_error"});
+            }
             this.showHamburgerMenuTab();
         });
         if(!document.fullscreenEnabled) fullscreenButtonElement.classList.add("disabled");
@@ -105,6 +110,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                         wakeLock = await navigator.wakeLock.request("screen");
                         wakeLock.addEventListener("release", () => keepAwakeButtonElement.classList.remove("keep_awake_enabled"), {once: true});
                         keepAwakeButtonElement.classList.add("keep_awake_enabled");
+                        console.info("[HamburgerMenu]: Requested keep awake.");
                         messageBox.addMessageQueue({content: "起動ロックを要求しました。\nもう一度同じボタンを押すか別のタブへ移動するまでデバイスはスリープしません。\nバッテリー残量にご注意下さい。", type: "INFO"});
                     }
                     catch(_error: any) {
@@ -115,6 +121,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 else {
                     try {
                         await (wakeLock as WakeLockSentinel).release();
+                        console.info("[HamburgerMenu]: Released keep awake.");
                         messageBox.addMessageQueue({content: "起動ロックを解除しました。", type: "INFO"});
                         wakeLock = undefined;
                     }
@@ -124,7 +131,10 @@ export class HamburgerMenu extends TabletClockWebModule {
                     }
                 }
             }
-            else if(!messageBox.contains("wake_lock_incompatible_error")) messageBox.addMessageQueue({content: "お使いのブラウザは起動ロックに対応していないか、接続がhttpsでないため、利用できません。", type: "ERROR", name: "wake_lock_incompatible_error"});
+            else if(!messageBox.contains("wake_lock_incompatible_error")) {
+                console.warn("[HamburgerMenu]: Cannot force this device awake because your browser does not support this or the connection scheme is not \"HTTPS\".");
+                messageBox.addMessageQueue({content: "お使いのブラウザは起動ロックに対応していないか、接続がhttpsでないため、利用できません。", type: "WARN", name: "wake_lock_incompatible_error"});
+            }
         });
         if(!("wakeLock" in navigator)) keepAwakeButtonElement.classList.add("disabled");
 
@@ -167,7 +177,7 @@ export class HamburgerMenu extends TabletClockWebModule {
                 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", displayModeSystemAutoEvent);
             }
             else {
-                console.warn("Dark mode detection is not supported on this browser.");
+                console.warn("[HamburgerMenu]: Dark mode detection is not supported on this browser.");
                 thisClass.parent.getMessageBox().addMessageQueue({
                     content: "お使いのブラウザはダークモード検出に対応していません。",
                     type: "WARN"
@@ -211,11 +221,23 @@ export class HamburgerMenu extends TabletClockWebModule {
             });
         }
 
+        //表示モード -> ライトモード
+        (document.getElementById("options_display_mode_light_button") as HTMLInputElement).addEventListener("change", () => console.info("[HamburgerMenu]: Set display mode to light."));
+
         //表示モード -> ダークモード
-        (document.getElementById("options_display_mode_dark_button") as HTMLInputElement).addEventListener("change", displayModeDark);
+        (document.getElementById("options_display_mode_dark_button") as HTMLInputElement).addEventListener("change", () => {
+            displayModeDark();
+            console.info("[HamburgerMenu]: Set display mode to dark.");
+        });
 
         //表示モード -> システムに基づく
-        (document.getElementById("options_display_mode_system_auto_button") as HTMLInputElement).addEventListener("change", () => displayModeSystemAuto(this));
+        (document.getElementById("options_display_mode_system_auto_button") as HTMLInputElement).addEventListener("change", () => {
+            displayModeSystemAuto(this);
+            console.info("[HamburgerMenu]: Set display mode to system auto.");
+        });
+
+        //表示モード -> センサーに基づく
+        (document.getElementById("options_display_mode_sensor_auto_button") as HTMLInputElement).addEventListener("change", () => console.info("[HamburgerMenu]: Set display mode to sensor auto."));
 
         //折り畳みメニュー（背景画像）
         const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
