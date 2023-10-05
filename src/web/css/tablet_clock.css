@@ -53,12 +53,27 @@ button {
     transition: 0.25s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+.dark_mode #message_box {
+    color: white;
+    background-color: #555;
+    border: solid 1px #fff4;
+    box-shadow: 0 5px 5px 0 #fff2;
+}
+
 #message_box.message_box_warn {
     background-color: #ffa;
 }
 
+.dark_mode #message_box.message_box_warn {
+    background-color: #550;
+}
+
 #message_box.message_box_error {
     background-color: #fcc;
+}
+
+.dark_mode #message_box.message_box_error {
+    background-color: #500;
 }
 
 
@@ -83,6 +98,22 @@ main > div {
     height: fit-content;
 }
 
+/* 暗くするフィルター */
+.dim_filter {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: black;
+    opacity: 0%;
+    pointer-events: none;
+}
+
+.dark_mode #dark_mode_filter {
+    opacity: 75%;
+}
+
 /* 時計表示部分 */
 #clock_area {
     position: relative;
@@ -102,6 +133,10 @@ main > div {
     color: white;
 }
 
+.dark_mode #clock_area > p {
+    color: darkgray;
+}
+
 #clock_date {
     font-size: 32px;
 }
@@ -111,7 +146,7 @@ main > div {
 }
 
 #clock_dot {
-    transition: 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
 }
 
 .clock_blink_animation {
@@ -136,6 +171,13 @@ main > div {
     border-radius: 10px;
     box-shadow: 0 0 5px 2px #0001;
     transform-style: preserve-3d;
+}
+
+.dark_mode #card {
+    color: white;
+    background-color: #555;
+    border: solid 1px #fff1;
+    box-shadow: 0 0 5px 2px #fff1;
 }
 
 #card > div {
@@ -166,7 +208,7 @@ main > div {
     transform: translate(-50%, -50%);
 }
 
-.card_flip_animation {
+#card.card_flip_animation {
     transform: rotateY(180deg);
     transition: 1s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -227,14 +269,6 @@ main > div {
 }
 
 #hamburger_menu_background {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: black;
-    opacity: 0%;
-    pointer-events: none;
     transition: 0.5s;
 }
 
@@ -275,7 +309,11 @@ nav > div {
     margin-top: 30px;
     background-color: whitesmoke;
     border-radius: 10px 0 0 10px;
-    transition: 0.25s;
+    transition: left 0.25s;
+}
+
+.dark_mode #hamburger_menu_tab {
+    background-color: #444;
 }
 
 .hamburger_menu_tab_visible {
@@ -305,6 +343,10 @@ nav > div {
     background-color: lightgray;
 }
 
+.dark_mode #hamburger_menu_tab > button:not(:last-child)::after {
+    background-color: dimgray;
+}
+
 /* ハンバーガータブのボタンアイコン */
 /* ハンバーガータブの開閉ボタン*/
 #menu_button_open_close {
@@ -317,11 +359,19 @@ nav > div {
     height: 6px;
     left: 10px;
     background-color: dimgray;
-    transition: 0.5s;
+    transition: background-color 0.5s, transform 0.5s;
+}
+
+.dark_mode #menu_button_open_close > div {
+    background-color: gainsboro;
 }
 
 .hamburger_menu_opened #menu_button_open_close > div {
     background-color: maroon;
+}
+
+.dark_mode .hamburger_menu_opened #menu_button_open_close > div, .dark_mode #menu_button_keep_awake_cross > div {
+    background-color: red;
 }
 
 #menu_button_icon_open_close_1 {
@@ -357,6 +407,10 @@ nav > div {
 
 #menu_button_fullscreen > img {
     transition: 0.5s;
+}
+
+.dark_mode #menu_button_fullscreen > img, .dark_mode #menu_button_keep_awake > img {
+    filter: brightness(215%);
 }
 
 #menu_button_icon_fullscreen_1 {
@@ -445,6 +499,14 @@ nav > div {
     background-color: white;
 }
 
+.dark_mode #hamburger_menu_column {
+    background-color: #555;
+}
+
+.dark_mode #hamburger_menu_column button, .dark_mode #hamburger_menu_column label {
+    color: white;
+}
+
 #hamburger_menu_column button, #hamburger_menu_column label {
     position: relative;
     display: block;
@@ -467,6 +529,10 @@ nav > div {
     background-color: lightgray;
 }
 
+.dark_mode #hamburger_menu_column button::after, .dark_mode #hamburger_menu_column label::after {
+    background-color: dimgray;
+}
+
 #tablet_clock_title {
     margin: 0 0 3px 0;
     padding: 30px 0;
@@ -474,6 +540,14 @@ nav > div {
     color: white;
     background-color: royalblue;
     box-shadow: 0 3px 5px 0 #0004;
+}
+
+.dark_mode #tablet_clock_title {
+    background-color: darkblue;
+}
+
+.dark_mode #hamburger_menu_column {
+    box-shadow: 0 3px 5px 0 #fff4;
 }
 
 #tablet_clock_title::after {
@@ -492,6 +566,10 @@ nav > div {
     transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+.dark_mode .hamburger_menu_collapse_button > :first-child > img {
+    filter: brightness(215%);
+}
+
 .collapse_menu_opened > :first-child > img {
     transform: translateY(-50%) rotateZ(180deg);
 }
@@ -502,7 +580,10 @@ nav > div {
     gap: 2px 0;
     margin-top: 2px;
     background-color: whitesmoke;
-    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.dark_mode .hamburger_menu_column_radio_selection {
+    background-color: #444;
 }
 
 .collapse_menu_opened .hamburger_menu_column_radio_selection {
