@@ -497,6 +497,7 @@ nav > div {
     height: 100%;
     top: 0;
     background-color: white;
+    overflow-y: scroll;
 }
 
 .dark_mode #hamburger_menu_column {
