@@ -141,10 +141,53 @@ export class HamburgerMenu extends TabletClockWebModule {
         }
 
         //折り畳みメニュー（表示モード）
+        /**
+         * 表示モードをダークモードにする際に実行する関数
+         */
+        function displayModeDark() {
+            document.body.classList.add("dark_mode");
+        }
+
+        /**
+         * システムの表示モードが変化した際に発火するイベント
+         * @param event イベント変数
+         */
+        function displayModeSystemAutoEvent(event: MediaQueryListEvent) {
+            if(event.matches) document.body.classList.add("dark_mode");
+            else document.body.classList.remove("dark_mode");
+        }
+
+        /**
+         * 表示モードをシステムに基づくにする際に実行する関数
+         * @param thisClass このクラスのインスタンス
+         */
+        function displayModeSystemAuto(thisClass: HamburgerMenu) {
+            if(window.matchMedia != undefined) {
+                if(window.matchMedia("(prefers-color-scheme: dark)").matches) document.body.classList.add("dark_mode");
+                window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", displayModeSystemAutoEvent);
+            }
+            else {
+                console.warn("Dark mode detection is not supported on this browser.");
+                thisClass.parent.getMessageBox().addMessageQueue({
+                    content: "お使いのブラウザはダークモード検出に対応していません。",
+                    type: "WARN"
+                });
+            }
+        }
+
         const displayModeSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_display_mode']") as NodeListOf<HTMLInputElement>;
         try {
             const initialDisplayModeRaw: string | null = localStorage.getItem("display_mode");
-            displayModeSelections.item(initialDisplayModeRaw != null ? Number(initialDisplayModeRaw) : 0).checked = true;
+            const initialDisplayMode: number = initialDisplayModeRaw != null ? Number(initialDisplayModeRaw) : 0;
+            displayModeSelections.item(initialDisplayMode).checked = true;
+            switch(initialDisplayMode) {
+                case 1:
+                    displayModeDark();
+                    break;
+                case 2:
+                    displayModeSystemAuto(this);
+                    break;
+            }
         }
         catch(_error: any) {
             this.parent.getMessageBox().addMessageQueue({
@@ -154,7 +197,8 @@ export class HamburgerMenu extends TabletClockWebModule {
         }
         for(let i = 0; i < displayModeSelections.length; i++) {
             displayModeSelections.item(i).addEventListener("change", () => {
-                console.log(i);
+                document.body.classList.remove("dark_mode");
+                if(window.matchMedia != null) window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", displayModeSystemAutoEvent);
                 try {
                     localStorage.setItem("display_mode", i.toString());
                 }
@@ -166,6 +210,12 @@ export class HamburgerMenu extends TabletClockWebModule {
                 }
             });
         }
+
+        //表示モード -> ダークモード
+        (document.getElementById("options_display_mode_dark_button") as HTMLInputElement).addEventListener("change", displayModeDark);
+
+        //表示モード -> システムに基づく
+        (document.getElementById("options_display_mode_system_auto_button") as HTMLInputElement).addEventListener("change", () => displayModeSystemAuto(this));
 
         //折り畳みメニュー（背景画像）
         const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
