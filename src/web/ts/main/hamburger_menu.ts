@@ -139,5 +139,58 @@ export class HamburgerMenu extends TabletClockWebModule {
                 else buttonRootElement.classList.add("collapse_menu_opened");
             });
         }
+
+        //折り畳みメニュー（表示モード）
+        const displayModeSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_display_mode']") as NodeListOf<HTMLInputElement>;
+        try {
+            const initialDisplayModeRaw: string | null = localStorage.getItem("display_mode");
+            displayModeSelections.item(initialDisplayModeRaw != null ? Number(initialDisplayModeRaw) : 0).checked = true;
+        }
+        catch(_error: any) {
+            this.parent.getMessageBox().addMessageQueue({
+                content: "設定値を読み込めませんでした。",
+                type: "ERROR"
+            });
+        }
+        for(let i = 0; i < displayModeSelections.length; i++) {
+            displayModeSelections.item(i).addEventListener("change", () => {
+                console.log(i);
+                try {
+                    localStorage.setItem("display_mode", i.toString());
+                }
+                catch(error: any) {
+                    this.parent.getMessageBox().addMessageQueue({
+                        content: "設定値が保存できませんでした。",
+                        type: "ERROR"
+                    });
+                }
+            });
+        }
+
+        //折り畳みメニュー（背景画像）
+        const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
+        try {
+            const initialBackgroundRaw: string | null = localStorage.getItem("options");
+            backgroundSelections.item(initialBackgroundRaw != null ? Number(initialBackgroundRaw) : 0).checked = true;
+        }
+        catch(_error: any) {
+            this.parent.getMessageBox().addMessageQueue({
+                content: "設定値が保存できませんでした。",
+                type: "ERROR"
+            });
+        }
+        for(let i = 0; i < backgroundSelections.length; i++) {
+            backgroundSelections.item(i).addEventListener("change", () => {
+                try {
+                    localStorage.setItem("options", i.toString());
+                }
+                catch(error: any) {
+                    this.parent.getMessageBox().addMessageQueue({
+                        content: "設定値が保存できませんでした。",
+                        type: "ERROR"
+                    });
+                }
+            });
+        }
     }
 }
