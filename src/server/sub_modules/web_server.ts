@@ -25,7 +25,14 @@ export class WebServer extends SubModule {
         super(parent);
 
         //ルートパスの取得
-        this.rootPath = ((new Error().stack as string).split("\n")[1].replace(/\\/g, "/").match(/\((.+)\/src\/server\/WebServer\.ts:\d+:\d+\)/) as RegExpMatchArray)[1];
+        Error.prepareStackTrace = (_error: Error, stackTraces: NodeJS.CallSite[]) => {
+            const filePath: string | null = stackTraces[2].getFileName();
+            if(filePath != null) return filePath;
+        };
+        Error.stackTraceLimit = 3;
+        this.rootPath = ((new Error().stack as string).replace(/\\/g, "/").match(/(.+)\/src\/server\/tablet_clock_server\.ts/) as RegExpMatchArray)[1];
+        Error.prepareStackTrace = undefined;
+        Error.stackTraceLimit = 10;
 
         //サーバールーティングの設定
         //時計画面
