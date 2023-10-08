@@ -1,11 +1,13 @@
 import fs from "fs";
 import express, { Express, Request, Response } from "express";
 import { debug, info } from "@gakuto1112/nodejs-logger";
+import { SubModule } from "./sub_module";
+import { TabletClockServer } from "../tablet_clock_server";
 
 /**
  * Webサーバー本体を管理するクラス
  */
-export class WebServer {
+export class WebServer extends SubModule {
     /**
      * サーバーアプリケーションのインスタンス
      */
@@ -19,7 +21,9 @@ export class WebServer {
     /**
      * コンストラクタ
      */
-    constructor() {
+    constructor(parent: TabletClockServer) {
+        super(parent);
+
         //ルートパスの取得
         this.rootPath = ((new Error().stack as string).split("\n")[1].replace(/\\/g, "/").match(/\((.+)\/src\/server\/WebServer\.ts:\d+:\d+\)/) as RegExpMatchArray)[1];
 

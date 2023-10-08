@@ -1,14 +1,14 @@
 import { info, setColoredLog, setLogDebugLevel } from "@gakuto1112/nodejs-logger";
-import { WebServer } from "./WebServer";
+import { WebServer } from "./sub_modules/web_server";
 
 /**
  * タブレットクロックサーバーのメインクラス
  */
-class TabletClockServer {
+export class TabletClockServer {
     /**
      * Webサーバー本体のインスタンス
      */
-    private readonly webServer: WebServer = new WebServer();
+    private readonly webServer: WebServer = new WebServer(this);
 
     /**
      * メイン関数
