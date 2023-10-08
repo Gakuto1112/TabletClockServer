@@ -17,6 +17,14 @@ export class TabletClockServer {
     private readonly sensors: Sensors = new Sensors(this);
 
     /**
+     * Webサーバーのインスタンスを返す。
+     * @returns Webサーバーのインスタンス
+     */
+    public getWebServer(): WebServer {
+        return this.webServer;
+    }
+
+    /**
      * メイン関数
      */
     public main(): void {
@@ -25,6 +33,7 @@ export class TabletClockServer {
         info("System starting...");
         this.sensors.init();
         this.webServer.run();
+        info("System started!");
     }
 }
 

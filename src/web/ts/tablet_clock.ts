@@ -2,30 +2,36 @@ import { MessageBox } from "./main/message_box";
 import { Clock } from "./main/clock";
 import { Card } from "./main/card";
 import { HamburgerMenu } from "./main/hamburger_menu";
+import { SocketClient } from "./main/socket_client";
 
 /**
  * タブレットクロックメインクラス
  */
 export class TabletClock {
     /**
+     * Webソケットクライアントのインスタンス
+     */
+    private readonly socketClient: SocketClient = new SocketClient(this);
+
+    /**
      * メッセージボックスのインスタンス
      */
-    private messageBox: MessageBox = new MessageBox(this);
+    private readonly messageBox: MessageBox = new MessageBox(this);
 
     /**
      * デジタル時計のインスタンス
      */
-    private clock: Clock = new Clock(this);
+    private readonly clock: Clock = new Clock(this);
 
     /**
      * カードマネージャーのインスタンス
      */
-    private cardManager: Card = new Card(this);
+    private readonly cardManager: Card = new Card(this);
 
     /**
      * ハンバーガーメニューのインスタンス
      */
-    private hamburgerMenu: HamburgerMenu = new HamburgerMenu(this);
+    private readonly hamburgerMenu: HamburgerMenu = new HamburgerMenu(this);
 
     /**
      * メッセージボックスのインスタンスを返す。
@@ -39,6 +45,7 @@ export class TabletClock {
      * メイン関数
      */
     public main(): void {
+        this.socketClient.connect();
         this.messageBox.run();
         this.clock.run();
         this.cardManager.run();

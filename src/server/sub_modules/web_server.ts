@@ -3,15 +3,26 @@ import express, { Express, Request, Response } from "express";
 import { debug, info } from "@gakuto1112/nodejs-logger";
 import { SubModule } from "./sub_module";
 import { TabletClockServer } from "../tablet_clock_server";
+import { SocketServer } from "./socket_server";
 
 /**
  * Webサーバー本体を管理するクラス
  */
 export class WebServer extends SubModule {
     /**
+     * Webサーバーを開けるポート番号。他のサービスやWebソケットと重複しないように注意する。
+     */
+    private readonly PORT: number = 5000;
+
+    /**
      * サーバーアプリケーションのインスタンス
      */
     private readonly app: Express = express();
+
+    /**
+     * Webソケットサーバーのインスタンス
+     */
+    private readonly socketServer: SocketServer = new SocketServer();
 
     /**
      * プログラムのルートパス
@@ -98,10 +109,19 @@ export class WebServer extends SubModule {
     }
 
     /**
+     * Webソケットサーバーのインスタンスを返す。
+     * @returns Webソケットサーバーのインスタンス
+     */
+    public getSocketServer(): SocketServer {
+        return this.socketServer;
+    }
+
+    /**
      * 実行関数
      */
     public run(): void {
-        this.app.listen(5000);
-        info("Listening http requests at port 5000.");
+        this.app.listen(this.PORT);
+        info(`Listening http requests at port ${this.PORT}.`);
+        this.socketServer.run();
     }
 }
