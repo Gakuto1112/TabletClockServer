@@ -26,7 +26,7 @@ export class WebServer extends SubModule {
 
         //ルートパスの取得
         Error.prepareStackTrace = (_error: Error, stackTraces: NodeJS.CallSite[]) => {
-            const filePath: string | null = stackTraces[2].getFileName();
+            const filePath: string | undefined = stackTraces[2].getFileName();
             if(filePath != null) return filePath;
         };
         Error.stackTraceLimit = 3;
