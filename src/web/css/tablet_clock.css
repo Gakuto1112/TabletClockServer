@@ -305,7 +305,7 @@ nav > div {
     flex-direction: column;
     gap: 2px 0;
     width: 60px;
-    height: 184px;
+    height: 246px;
     margin-top: 30px;
     background-color: whitesmoke;
     border-radius: 10px 0 0 10px;
@@ -327,8 +327,11 @@ nav > div {
 }
 
 #hamburger_menu_tab > button.disabled {
-    opacity: 25%;
     cursor:not-allowed;
+}
+
+#hamburger_menu_tab > button.disabled > img {
+    opacity: 25%;
 }
 
 #hamburger_menu_tab > button:not(:last-child)::after {
@@ -348,6 +351,26 @@ nav > div {
 }
 
 /* ハンバーガータブのボタンアイコン */
+.icon_button {
+    position: relative;
+}
+
+.icon_button > img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.icon_button .icon_button_popup {
+    transform: translate(-50%, -50%) scale(0%);
+    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.icon_button.popup_visible .icon_button_popup {
+    transform: translate(-50%, -50%) scale(100%);
+}
+
 /* ハンバーガータブの開閉ボタン*/
 #menu_button_open_close {
     position: relative;
@@ -370,7 +393,7 @@ nav > div {
     background-color: maroon;
 }
 
-.dark_mode .hamburger_menu_opened #menu_button_open_close > div, .dark_mode #menu_button_keep_awake_cross > div {
+.dark_mode .hamburger_menu_opened #menu_button_open_close > div {
     background-color: red;
 }
 
@@ -409,7 +432,7 @@ nav > div {
     transition: 0.5s;
 }
 
-.dark_mode #menu_button_fullscreen > img, .dark_mode #menu_button_keep_awake > img {
+.dark_mode #menu_button_fullscreen > img, .dark_mode .icon_button > img {
     filter: brightness(215%);
 }
 
@@ -446,46 +469,6 @@ nav > div {
 
 .fullscreen #menu_button_icon_fullscreen_4 {
     transform: rotateZ(360deg);
-}
-
-/* ハンバーガータブの起動ロックボタン*/
-#menu_button_keep_awake {
-    position: relative;
-}
-
-#menu_button_keep_awake > * {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#menu_button_keep_awake_cross {
-    width: 40px;
-    height: 40px;
-    transform: translate(-50%, -50%) scale(100%);
-    transition: 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.keep_awake_enabled #menu_button_keep_awake_cross {
-    transform: translate(-50%, -50%) scale(0%);
-}
-
-#menu_button_keep_awake_cross > div {
-    position: absolute;
-    width: 40px;
-    height: 6px;
-    top: 50%;
-    left: 50%;
-    background-color: maroon;
-}
-
-#menu_button_keep_awake_cross_1 {
-    transform: translate(-50%, -50%) rotateZ(45deg);
-}
-
-#menu_button_keep_awake_cross_2 {
-    transform: translate(-50%, -50%) rotateZ(-45deg);
 }
 
 /* ハンバーガーカラム */

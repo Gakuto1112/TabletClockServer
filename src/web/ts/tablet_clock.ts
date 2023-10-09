@@ -34,6 +34,14 @@ export class TabletClock {
     private readonly hamburgerMenu: HamburgerMenu = new HamburgerMenu(this);
 
     /**
+     * Webソケットクライアントのインスタンスを返す。
+     * @returns Webソケットクライアントのインスタンス
+     */
+    public getSocketClient(): SocketClient {
+        return this.socketClient;
+    }
+
+    /**
      * メッセージボックスのインスタンスを返す。
      * @returns メッセージボックスのインスタンス
      */

@@ -1,5 +1,6 @@
 import { TabletClockWebModule } from "./tablet_clock_web_module";
 import { MessageBox } from "./message_box";
+import { SocketClient } from "./socket_client";
 
 /**
  * ハンバーガーメニューを管理するクラス
@@ -49,6 +50,33 @@ export class HamburgerMenu extends TabletClockWebModule {
                     this.tabCloseTimeoutHandler = undefined;
                 }
                 (document.getElementById("hamburger_menu_tab") as HTMLDivElement).classList.add("hamburger_menu_tab_visible");
+            }
+        });
+
+        //ソケット接続ボタン
+        const socketClient: SocketClient = this.parent.getSocketClient();
+        const connectSocketButtonElement: HTMLButtonElement = document.getElementById("menu_button_connect_socket") as HTMLButtonElement;
+        socketClient.addEventListener("open", () => {
+            connectSocketButtonElement.classList.add("popup_visible");
+            connectSocketButtonElement.classList.remove("disabled");
+        });
+        socketClient.addEventListener("close", onCloseConnection);
+        socketClient.addEventListener("error", onCloseConnection);
+
+        /**
+         * ソケットが切断された時に呼ばれる関数
+         */
+        function onCloseConnection() {
+            connectSocketButtonElement.classList.remove("disabled", "popup_visible");
+        }
+
+        connectSocketButtonElement.addEventListener("click", () => {
+            if(!connectSocketButtonElement.classList.contains("disabled")) {
+                if(connectSocketButtonElement.classList.contains("popup_visible")) socketClient.close();
+                else {
+                    socketClient.connect();
+                    connectSocketButtonElement.classList.add("disabled");
+                }
             }
         });
 
@@ -105,20 +133,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         let wakeLock: WakeLockSentinel | undefined = undefined;
         keepAwakeButtonElement.addEventListener("click", async () => {
             if("wakeLock" in navigator) {
-                if(keepAwakeButtonElement.classList.contains("keep_awake_enabled")) {
-                    try {
-                        wakeLock = await navigator.wakeLock.request("screen");
-                        wakeLock.addEventListener("release", () => keepAwakeButtonElement.classList.remove("keep_awake_enabled"), {once: true});
-                        keepAwakeButtonElement.classList.add("keep_awake_enabled");
-                        console.info("[HamburgerMenu]: Requested keep awake.");
-                        messageBox.addMessageQueue({content: "起動ロックを要求しました。\nもう一度同じボタンを押すか別のタブへ移動するまでデバイスはスリープしません。\nバッテリー残量にご注意下さい。", type: "INFO"});
-                    }
-                    catch(_error: any) {
-                        console.error("[HamburgerMenu]: Cannot request wake lock.");
-                        if(!messageBox.contains("wake_lock_request_error")) messageBox.addMessageQueue({content: "起動ロックを要求できませんでした。", type: "ERROR", name: "wake_lock_request_error"});
-                    }
-                }
-                else {
+                if(keepAwakeButtonElement.classList.contains("popup_visible")) {
                     try {
                         await (wakeLock as WakeLockSentinel).release();
                         console.info("[HamburgerMenu]: Released keep awake.");
@@ -128,6 +143,19 @@ export class HamburgerMenu extends TabletClockWebModule {
                     catch(_error: any) {
                         console.error("[HamburgerMenu]: Cannot release wake lock.");
                         if(!messageBox.contains("wake_lock_release_error")) messageBox.addMessageQueue({content: "起動ロックを解除できませんでした。", type: "ERROR", name: "wake_lock_release_error"});
+                    }
+                }
+                else {
+                    try {
+                        wakeLock = await navigator.wakeLock.request("screen");
+                        wakeLock.addEventListener("release", () => keepAwakeButtonElement.classList.remove("popup_visible"), {once: true});
+                        keepAwakeButtonElement.classList.add("popup_visible");
+                        console.info("[HamburgerMenu]: Requested keep awake.");
+                        messageBox.addMessageQueue({content: "起動ロックを要求しました。\nもう一度同じボタンを押すか別のタブへ移動するまでデバイスはスリープしません。\nバッテリー残量にご注意下さい。", type: "INFO"});
+                    }
+                    catch(_error: any) {
+                        console.error("[HamburgerMenu]: Cannot request wake lock.");
+                        if(!messageBox.contains("wake_lock_request_error")) messageBox.addMessageQueue({content: "起動ロックを要求できませんでした。", type: "ERROR", name: "wake_lock_request_error"});
                     }
                 }
             }
