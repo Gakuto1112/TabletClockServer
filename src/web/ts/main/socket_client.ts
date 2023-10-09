@@ -1,4 +1,4 @@
-import { MessageData, OPERATION_ID } from "../global/socket_message_type";
+import { MessageData, OPERATION_ID, SOCKET_PORT } from "../global/socket_message_type";
 import { TabletClock } from "../tablet_clock";
 import { MessageBox } from "./message_box";
 
@@ -11,11 +11,6 @@ type SocketClientEvent = "open" | "error" | "close";
  * Webソケットクライアントを管理するクラス
  */
 export class SocketClient {
-    /**
-     * 接続先のポート番号
-     */
-    private readonly TARGET_PORT: number = 5001;
-
     /**
      * タブレットクロックのメインクラス
      */
@@ -54,7 +49,7 @@ export class SocketClient {
     public connect(): void {
         if(this.webSocketClient == undefined) {
             console.info("[SocketClient]: Connecting to the web socket server...");
-            this.webSocketClient = new WebSocket(`ws://${location.hostname}:${this.TARGET_PORT}`);
+            this.webSocketClient = new WebSocket(`ws://${location.hostname}:${SOCKET_PORT}`);
             this.webSocketClient.addEventListener("open", () => {
                 console.info("[SocketClient]: Connected to the web socket server.");
                 this.parent.getMessageBox().addMessageQueue({

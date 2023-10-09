@@ -12,7 +12,7 @@ export const OPERATION_ID = {
     TEMPERATURE: 3,
     /** 湿度データ送信 */
     HUMIDITY: 4
-}
+} as const;
 
 /**
  * Webソケットを通じて指示される命令型
@@ -26,3 +26,8 @@ export interface MessageData {
     id: OperationID,
     value: any
 }
+
+/**
+ * Webソケットで使用するポート
+ */
+export const SOCKET_PORT: number = 50011;

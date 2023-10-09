@@ -1,16 +1,11 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { error, info } from "@gakuto1112/nodejs-logger";
-import { MessageData, OPERATION_ID, OperationID } from "../global/socket_message_type";
+import { MessageData, OPERATION_ID, OperationID, SOCKET_PORT } from "../global/socket_message_type";
 
 /**
  * Webソケットを管理するクラス
  */
 export class SocketServer {
-    /**
-     * Webソケットサーバーを開けるポート番号。他のサービスやWebサーバーと重複しないように注意する。
-     */
-    private readonly PORT: number = 5001;
-
     /**
      * Webソケットサーバーのインスタンス
      */
@@ -71,8 +66,8 @@ export class SocketServer {
      * Webソケットサーバーを実行する。
      */
     public run(): void {
-        this.webSocketServer = new WebSocketServer({port: this.PORT});
-        this.webSocketServer.addListener("listening", () => info(`Listening web socket at port ${this.PORT}.`));
+        this.webSocketServer = new WebSocketServer({port: SOCKET_PORT});
+        this.webSocketServer.addListener("listening", () => info(`Listening web socket at port ${SOCKET_PORT}.`));
         this.webSocketServer.addListener("connection", () => info("Connected to the web socket client."));
         this.webSocketServer.addListener("close", () => info("Web socket server closed."));
         this.webSocketServer.addListener("error", (err: Error) => error(`${err.message}\n${err.stack}`));
