@@ -1,26 +1,6 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { error, info } from "@gakuto1112/nodejs-logger";
-
-/**
- * Webソケットでクライアントに指示する命令ID
- */
-const OPERATION_ID = {
-    /** 情報メッセージ送信 */
-    INFO: 0,
-    /** 警告メッセージ送信 */
-    WARN: 1,
-    /** エラーメッセージ送信 */
-    ERROR: 2,
-    /** 温度データ送信 */
-    TEMPERATURE: 3,
-    /** 湿度データ送信 */
-    HUMIDITY: 4
-}
-
-/**
- * Webソケットでクライアントに指示する命令型
- */
-type OperationID = typeof OPERATION_ID[keyof typeof OPERATION_ID];
+import { MessageData, OPERATION_ID, OperationID } from "../global/socket_message_type";
 
 /**
  * Webソケットを管理するクラス
@@ -43,7 +23,7 @@ export class SocketServer {
      */
     private sendSocket(operationID: OperationID, value: any): void {
         this.webSocketServer?.clients.forEach((client: WebSocket) => {
-            if(client.readyState == WebSocket.OPEN) client.send(JSON.stringify({id: operationID, value: value}));
+            if(client.readyState == WebSocket.OPEN) client.send(JSON.stringify({id: operationID, value: value} as MessageData));
         });
     }
 
@@ -93,7 +73,7 @@ export class SocketServer {
     public run(): void {
         this.webSocketServer = new WebSocketServer({port: this.PORT});
         this.webSocketServer.addListener("listening", () => info(`Listening web socket at port ${this.PORT}.`));
-        this.webSocketServer.addListener("connection", (client: WebSocket) => info("Connected to the web socket client."));
+        this.webSocketServer.addListener("connection", () => info("Connected to the web socket client."));
         this.webSocketServer.addListener("close", () => info("Web socket server closed."));
         this.webSocketServer.addListener("error", (err: Error) => error(`${err.message}\n${err.stack}`));
     }

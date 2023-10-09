@@ -106,3 +106,5 @@ dist
 # User difined
 .vscode
 src/web/js
+src/server/global
+src/web/ts/global
