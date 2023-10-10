@@ -12,27 +12,84 @@ export class Sensors extends SubModule {
     private readonly TEMPERATURE_HUMIDITY_INTERVAL: number = 15;
 
     /**
-     * 現在の温度データ
+     * 測定データの履歴（直近24時間分）
      */
-    private currentTemperature: number = 0;
+    private readonly dataHistories: {[key: string]: number[]} = {
+        temperature: [],
+        humidity: []
+    };
 
     /**
-     * 現在の湿度データ
+     * 現在の測定データ
      */
-    private currentHumidity: number = 0;
+    private readonly currentData: {[key: string]: number} = {
+        temperature: 0,
+        humidity: 0
+    };
+
+    /**
+     * 次のデータの履歴更新までのカウンター
+     */
+    private readonly historyNextUpdateCount: {[key: string]: number} = {
+        temperature: 0,
+        humidity: 0
+    };
+
+    /**
+     * 現在の温度データを返す。
+     * @returns 現在の温度データ
+     */
+    public getCurrentTemperature(): number {
+        return this.currentData.temperature;
+    }
+
+    /**
+     * 現在の湿度データを返す。
+     * @returns 現在の湿度データ
+     */
+    public getCurrentHumidity(): number {
+        return this.currentData.humidity;
+    }
+
+    /**
+     * 温度データの履歴を返す。
+     * @returns 温度データの履歴
+     */
+    public getTemperatureHistory(): number[] {
+        return this.dataHistories.temperature.map((element: number) => {
+            return element;
+        });
+    }
+
+    /**
+     * 湿度データの履歴を返す。
+     * @returns 湿度データの履歴
+     */
+    public getHumidityHistory(): number[] {
+        return this.dataHistories.humidity.map((element: number) => {
+            return element;
+        });
+    }
 
     /**
      * AHT20センサーから情報を取得する。
      */
     private async getAHT20Sensors(): Promise<void> {
+        this.historyNextUpdateCount.temperature -= this.TEMPERATURE_HUMIDITY_INTERVAL;
         try {
             let errorOccurred: boolean = false;
             const aht20Sensor: AHT20 = await AHT20.open();
             try {
                 const newTemperature: number = await aht20Sensor.temperature();
-                if(newTemperature != this.currentTemperature) {
+                if(newTemperature != this.currentData.temperature) {
                     this.parent.getWebServer().getSocketServer().sendTemperature(newTemperature);
-                    this.currentTemperature = newTemperature;
+                    this.currentData.temperature = newTemperature;
+                }
+                if(this.historyNextUpdateCount.temperature <= 0) {
+                    this.dataHistories.temperature.push(newTemperature);
+                    while(this.dataHistories.temperature.length > 24) this.dataHistories.temperature.shift();
+                    this.parent.getWebServer().getSocketServer().sendTemperatureHistory(this.dataHistories.temperature);
+                    this.historyNextUpdateCount.temperature = 3600;
                 }
             }
             catch {
@@ -40,11 +97,18 @@ export class Sensors extends SubModule {
                 this.parent.getWebServer().getSocketServer().sendError("温度データの取得に失敗しました。");
                 errorOccurred = true;
             }
+            this.historyNextUpdateCount.humidity -= this.TEMPERATURE_HUMIDITY_INTERVAL;
             try {
                 const newHumidity: number = await aht20Sensor.humidity();
-                if(newHumidity != this.currentHumidity) {
+                if(newHumidity != this.currentData.humidity) {
                     this.parent.getWebServer().getSocketServer().sendHumidity(newHumidity);
-                    this.currentHumidity = newHumidity;
+                    this.currentData.humidity = newHumidity;
+                }
+                if(this.historyNextUpdateCount.humidity <= 0) {
+                    this.dataHistories.humidity.push(newHumidity);
+                    while(this.dataHistories.humidity.length > 24) this.dataHistories.humidity.shift();
+                    this.parent.getWebServer().getSocketServer().sendHumidityHistory(this.dataHistories.humidity);
+                    this.historyNextUpdateCount.humidity = 3600;
                 }
             }
             catch {

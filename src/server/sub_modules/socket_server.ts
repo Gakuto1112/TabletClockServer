@@ -1,6 +1,7 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { error, info } from "@gakuto1112/nodejs-logger";
 import { MessageData, OPERATION_ID, OperationID, SOCKET_PORT } from "../global/socket_message_type";
+import { WebServer } from "./web_server";
 
 /**
  * Webソケットを管理するクラス
@@ -26,7 +27,7 @@ export class SocketServer {
      * クライアントに情報メッセージを送信する。クライアントが受信するとメッセージボックスにこれを表示する。
      * @param message 送信するメッセージ
      */
-    public sendInfo(message: string) {
+    public sendInfo(message: string): void {
         this.sendSocket(OPERATION_ID.INFO, message);
     }
 
@@ -34,7 +35,7 @@ export class SocketServer {
      * クライアントに警告メッセージを送信する。クライアントが受信するとメッセージボックスにこれを表示する。
      * @param message 送信するメッセージ
      */
-    public sendWarn(message: string) {
+    public sendWarn(message: string): void {
         this.sendSocket(OPERATION_ID.WARN, message);
     }
 
@@ -42,7 +43,7 @@ export class SocketServer {
      * クライアントにエラーメッセージを送信する。クライアントが受信するとメッセージボックスにこれを表示する。
      * @param message 送信するメッセージ
      */
-    public sendError(message: string) {
+    public sendError(message: string): void {
         this.sendSocket(OPERATION_ID.ERROR, message);
     }
 
@@ -50,7 +51,7 @@ export class SocketServer {
      * クライアントに温度データを送信する。クライアントが受信するとクライアントに表示される温度データが更新される。
      * @param data 送信する温度データ
      */
-    public sendTemperature(data: number) {
+    public sendTemperature(data: number): void {
         this.sendSocket(OPERATION_ID.TEMPERATURE, data);
     }
 
@@ -58,8 +59,22 @@ export class SocketServer {
      * クライアントに湿度データを送信する。クライアントが受信するとクライアントに表示される湿度データが更新される。
      * @param data 送信する湿度データ
      */
-    public sendHumidity(data: number) {
+    public sendHumidity(data: number): void {
         this.sendSocket(OPERATION_ID.HUMIDITY, data);
+    }
+
+    /**
+     * クライアントに温度データの履歴を送信する。クライアントが受信するとクライアントに表示される湿度グラフが更新される。
+     */
+    public sendTemperatureHistory(data: number[]): void {
+        this.sendSocket(OPERATION_ID.TEMPERATURE_HISTORY, data);
+    }
+
+    /**
+     * クライアントに湿度データの履歴を送信する。クライアントが受信するとクライアントに表示される湿度グラフが更新される。
+     */
+    public sendHumidityHistory(data: number[]): void {
+        this.sendSocket(OPERATION_ID.HUMIDITY_HISTORY, data);
     }
 
     /**

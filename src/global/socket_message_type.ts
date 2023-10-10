@@ -11,7 +11,11 @@ export const OPERATION_ID = {
     /** 温度データ送信 */
     TEMPERATURE: 3,
     /** 湿度データ送信 */
-    HUMIDITY: 4
+    HUMIDITY: 4,
+    /** 温度履歴データ送信 */
+    TEMPERATURE_HISTORY: 5,
+    /** 湿度履歴データ送信 */
+    HUMIDITY_HISTORY: 6
 } as const;
 
 /**
