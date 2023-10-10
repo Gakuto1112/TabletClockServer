@@ -243,6 +243,20 @@ main > div {
     border: solid 1px darkgray;
 }
 
+.card_1_graph_area::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    background-color: gainsboro;
+}
+
+.dark_mode .card_1_graph_area::before {
+    background-color: dimgray;
+}
+
 .card_1_graph_area > p {
     position: absolute;
     padding: 0 5px;
@@ -253,14 +267,9 @@ main > div {
     background-color: whitesmoke;
 }
 
-.card_1_graph_area::before {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 1px;
-    top: 50%;
-    background-color: gainsboro;
+.dark_mode .card_1_graph_area > p {
+    color: dimgray;
+    background-color: #555;
 }
 
 .card_1_graph_elements_area {
@@ -274,6 +283,10 @@ main > div {
     width: 100%;
     height: 4px;
     background-color: black;
+}
+
+.dark_mode .card_1_graph_elements_area > div {
+    background-color: white;
 }
 
 #card_1_discomfort_index_text {
@@ -293,11 +306,19 @@ main > div {
     transform: translateX(-50%);
 }
 
+.dark_mode #card_1_discomfort_index_arrow {
+    background-color: white;
+}
+
 #card_1_discomfort_index_bar {
     width: 100%;
     height: 6px;
     background: linear-gradient(to right, mediumblue 14.3%, dodgerblue 14.3%, dodgerblue 28.6%, mediumseagreen 28.6%, mediumseagreen 42.9%, greenyellow 42.9%, greenyellow 57.3%, yellow 57.3%, yellow 71.5%, darkorange 71.5%, darkorange 85.8%, firebrick 85.8%);
     border: solid 1px black;
+}
+
+.dark_mode #card_1_discomfort_index_bar {
+    border-color: white;
 }
 
 #card_bar {
