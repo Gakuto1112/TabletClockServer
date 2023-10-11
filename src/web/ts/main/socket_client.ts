@@ -8,6 +8,11 @@ import { MessageBox } from "./message_box";
 type SocketClientEvent = "open" | "error" | "close";
 
 /**
+ * ソケットの状態を示す型
+ */
+type SocketState = "CLOSED" | "CONNECTING" | "CONNECTED";
+
+/**
  * Webソケットクライアントを管理するクラス
  */
 export class SocketClient {
@@ -30,8 +35,25 @@ export class SocketClient {
         close: [],
     };
 
+    /**
+     * 現在のソケットの状態
+     */
+    private socketStatus: SocketState = "CLOSED";
+
+    /**
+     * コンストラクタ
+     * @param parent 親クラスのインスタンス
+     */
     constructor(parent: TabletClock) {
         this.parent = parent
+    }
+
+    /**
+     * 現在のソケットの状態を返す。
+     * @returns 現在のソケットの状態
+     */
+    public getSocketStatus(): SocketState {
+        return this.socketStatus;
     }
 
     /**
@@ -49,9 +71,11 @@ export class SocketClient {
     public connect(): void {
         if(this.webSocketClient == undefined) {
             console.info("[SocketClient]: Connecting to the web socket server...");
+            this.socketStatus = "CONNECTING";
             this.webSocketClient = new WebSocket(`ws://${location.hostname}:${SOCKET_PORT}`);
             this.webSocketClient.addEventListener("open", () => {
                 console.info("[SocketClient]: Connected to the web socket server.");
+                this.socketStatus = "CONNECTED";
                 this.parent.getMessageBox().addMessageQueue({
                     content: "サーバーに接続しました。",
                     type: "INFO"
@@ -84,6 +108,7 @@ export class SocketClient {
             });
             this.webSocketClient.addEventListener("error", () => {
                 console.error("[SocketClient]: Failed to connect to the web socket server.");
+                this.socketStatus = "CLOSED";
                 this.parent.getMessageBox().addMessageQueue({
                     content: "サーバーに接続できませんでした。",
                     type: "ERROR",
@@ -93,6 +118,7 @@ export class SocketClient {
             });
             this.webSocketClient.addEventListener("close", () => {
                 console.info("[SocketClient]: Closed web socket.");
+                this.socketStatus = "CLOSED";
                 const messageBox: MessageBox = this.parent.getMessageBox();
                 if(!messageBox.contains("websocket_connection_error")) {
                     if(!messageBox.contains("websocket_connection_closed")) {
@@ -117,6 +143,7 @@ export class SocketClient {
             this.webSocketClient.close();
             this.webSocketClient = undefined;
             console.info("Disconnected from the server.");
+            this.socketStatus = "CLOSED";
             this.parent.getMessageBox().addMessageQueue({
                 content: "サーバーとの通信を切断しました。",
                 type: "INFO",
