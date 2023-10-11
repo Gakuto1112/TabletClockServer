@@ -14,6 +14,11 @@ type SocketClientEvent = "open" | "error" | "close" | "temperature" | "humidity"
 type SocketState = "CLOSED" | "CONNECTING" | "CONNECTED";
 
 /**
+ * AddEventListener()のeventFunctionのユニオン型
+ */
+type EventFunctionUnion = (() => void) | ((data: number) => void) | ((data: number[]) => void);
+
+/**
  * Webソケットクライアントを管理するクラス
  */
 export class SocketClient {
@@ -30,7 +35,7 @@ export class SocketClient {
     /**
      * イベント時に実行するコールバック関数
      */
-    private readonly eventFunctions: {[key: string]: (() => void)[]} = {
+    private readonly eventFunctions: {[key: string]: EventFunctionUnion[]} = {
         open: [],
         error: [],
         close: [],
@@ -66,7 +71,10 @@ export class SocketClient {
      * @param eventType 登録対象のイベント
      * @param eventFunction 登録対象のイベント関数
      */
-    public addEventListener(eventType: SocketClientEvent, eventFunction: () => void): void {
+    addEventListener(eventType: SocketClientEvent, eventFunction: () => void): void;
+    addEventListener(eventType: SocketClientEvent, eventFunction: (data: number) => void): void;
+    addEventListener(eventType: SocketClientEvent, eventFunction: (data: number[]) => void): void;
+    addEventListener(eventType: SocketClientEvent, eventFunction: EventFunctionUnion): void {
         this.eventFunctions[eventType].push(eventFunction);
     }
 
@@ -85,7 +93,7 @@ export class SocketClient {
                     content: "サーバーに接続しました。",
                     type: "INFO"
                 });
-                this.eventFunctions.open.forEach((eventFunction: () => void) => eventFunction());
+                this.eventFunctions.open.forEach((eventFunction: EventFunctionUnion) => (eventFunction as () => void)());
             });
             this.webSocketClient.addEventListener("message", (event: MessageEvent<any>) => {
                 try {
@@ -95,19 +103,19 @@ export class SocketClient {
                             switch((eventData as MessageData).id) {
                                 case OPERATION_ID.TEMPERATURE:
                                     //現在の温度データ
-                                    this.eventFunctions.temperature.forEach((eventFunction: (data: number) => void) => eventFunction((eventData as MessageData).value as number));
+                                    this.eventFunctions.temperature.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number) => void)((eventData as MessageData).value as number));
                                     break;
                                 case OPERATION_ID.HUMIDITY:
                                     //現在の湿度データ
-                                    this.eventFunctions.humidity.forEach((eventFunction: (data: number) => void) => eventFunction((eventData as MessageData).value as number));
+                                    this.eventFunctions.humidity.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number) => void)((eventData as MessageData).value as number));
                                     break;
                                 case OPERATION_ID.TEMPERATURE_HISTORY:
                                     //温度履歴データ
-                                    this.eventFunctions.temperature_history.forEach((eventFunction: (data: number[]) => void) => eventFunction((eventData as MessageData).value as number[]));
+                                    this.eventFunctions.temperature_history.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number[]) => void)((eventData as MessageData).value as number[]));
                                     break;
                                 case OPERATION_ID.TEMPERATURE_HISTORY:
                                     //湿度履歴データ
-                                    this.eventFunctions.humidity_history.forEach((eventFunction: (data: number[]) => void) => eventFunction((eventData as MessageData).value as number[]));
+                                    this.eventFunctions.humidity_history.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number[]) => void)((eventData as MessageData).value as number[]));
                                     break;
                             }
                             console.groupCollapsed("[SocketClient]: Message received.");
@@ -137,7 +145,7 @@ export class SocketClient {
                     type: "ERROR",
                     name: "websocket_connection_error"
                 });
-                this.eventFunctions.error.forEach((eventFunction: () => void) => eventFunction());
+                this.eventFunctions.error.forEach((eventFunction: EventFunctionUnion) => (eventFunction as () => void)());
             });
             this.webSocketClient.addEventListener("close", () => {
                 console.info("[SocketClient]: Closed web socket.");
@@ -151,7 +159,7 @@ export class SocketClient {
                             type: "WARN"
                         });
                     }
-                    this.eventFunctions.close.forEach((eventFunction: () => void) => eventFunction());
+                    this.eventFunctions.close.forEach((eventFunction: EventFunctionUnion) => (eventFunction as () => void)());
                 }
             });
         }
