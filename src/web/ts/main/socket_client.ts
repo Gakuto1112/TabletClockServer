@@ -1,4 +1,5 @@
-import { MessageData, OPERATION_ID, SOCKET_PORT } from "../global/socket_message_type";
+import { MessageData, OPERATION_ID } from "../global/socket_message_type";
+import { SOCKET_PORT } from "../global/web_socket";
 import { TabletClock } from "../tablet_clock";
 import { MessageBox } from "./message_box";
 

@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { error, info } from "@gakuto1112/nodejs-logger";
-import { MessageData, OPERATION_ID, OperationID, SOCKET_PORT } from "../global/socket_message_type";
-import { WebServer } from "./web_server";
+import { MessageData, OPERATION_ID, OperationID } from "../global/socket_message_type";
+import { SOCKET_PORT } from "../global/web_socket";
 
 /**
  * Webソケットを管理するクラス
