@@ -1,16 +1,12 @@
 import AHT20 from "aht20-sensor";
 import { error } from "@gakuto1112/nodejs-logger";
 import { SubModule } from "./sub_module";
+import { TEMPERATURE_HUMIDITY_INTERVAL } from "../global/sensor_intervals";
 
 /**
  * センサーを管理するクラス
  */
 export class Sensors extends SubModule {
-    /**
-     * 温度・湿度を取得する間隔（秒）
-     */
-    private readonly TEMPERATURE_HUMIDITY_INTERVAL: number = 15;
-
     /**
      * 測定データの履歴（直近24時間分）
      */
@@ -75,7 +71,7 @@ export class Sensors extends SubModule {
      * AHT20センサーから情報を取得する。
      */
     private async getAHT20Sensors(): Promise<void> {
-        this.historyNextUpdateCount.temperature -= this.TEMPERATURE_HUMIDITY_INTERVAL;
+        this.historyNextUpdateCount.temperature -= TEMPERATURE_HUMIDITY_INTERVAL;
         try {
             let errorOccurred: boolean = false;
             const aht20Sensor: AHT20 = await AHT20.open();
@@ -97,7 +93,7 @@ export class Sensors extends SubModule {
                 this.parent.getWebServer().getSocketServer().sendError("温度データの取得に失敗しました。");
                 errorOccurred = true;
             }
-            this.historyNextUpdateCount.humidity -= this.TEMPERATURE_HUMIDITY_INTERVAL;
+            this.historyNextUpdateCount.humidity -= TEMPERATURE_HUMIDITY_INTERVAL;
             try {
                 const newHumidity: number = await aht20Sensor.humidity();
                 if(newHumidity != this.currentData.humidity) {
@@ -129,6 +125,6 @@ export class Sensors extends SubModule {
      */
     public init(): void {
         this.getAHT20Sensors();
-        setInterval(() => this.getAHT20Sensors(), this.TEMPERATURE_HUMIDITY_INTERVAL * 1000);
+        setInterval(() => this.getAHT20Sensors(), TEMPERATURE_HUMIDITY_INTERVAL * 1000);
     }
 }
