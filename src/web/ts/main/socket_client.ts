@@ -6,7 +6,7 @@ import { MessageBox } from "./message_box";
 /**
  * ソケットクライアントとのイベントリスナーのイベント型
  */
-type SocketClientEvent = "open" | "error" | "close";
+type SocketClientEvent = "open" | "error" | "close" | "temperature" | "humidity" | "temperature_history" | "humidity_history";
 
 /**
  * ソケットの状態を示す型
@@ -34,6 +34,10 @@ export class SocketClient {
         open: [],
         error: [],
         close: [],
+        temperature: [],
+        humidity: [],
+        temperature_history: [],
+        humidity_history: []
     };
 
     /**
@@ -88,6 +92,24 @@ export class SocketClient {
                     const eventData: {[key: string]: any} = JSON.parse(event.data);
                     if("id" in eventData && "value" in eventData) {
                         if((eventData as MessageData).id >= 0 && (eventData as MessageData).id < Object.keys(OPERATION_ID).length) {
+                            switch((eventData as MessageData).id) {
+                                case OPERATION_ID.TEMPERATURE:
+                                    //現在の温度データ
+                                    this.eventFunctions.temperature.forEach((eventFunction: (data: number) => void) => eventFunction((eventData as MessageData).value as number));
+                                    break;
+                                case OPERATION_ID.HUMIDITY:
+                                    //現在の湿度データ
+                                    this.eventFunctions.humidity.forEach((eventFunction: (data: number) => void) => eventFunction((eventData as MessageData).value as number));
+                                    break;
+                                case OPERATION_ID.TEMPERATURE_HISTORY:
+                                    //温度履歴データ
+                                    this.eventFunctions.temperature_history.forEach((eventFunction: (data: number[]) => void) => eventFunction((eventData as MessageData).value as number[]));
+                                    break;
+                                case OPERATION_ID.TEMPERATURE_HISTORY:
+                                    //湿度履歴データ
+                                    this.eventFunctions.humidity_history.forEach((eventFunction: (data: number[]) => void) => eventFunction((eventData as MessageData).value as number[]));
+                                    break;
+                            }
                             console.groupCollapsed("[SocketClient]: Message received.");
                             console.info(`id: ${Object.keys(OPERATION_ID)[eventData.id]}`);
                             console.info(`value: ${eventData.value}`);
