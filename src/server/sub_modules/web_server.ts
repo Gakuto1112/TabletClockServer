@@ -1,6 +1,7 @@
 import fs from "fs";
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, request } from "express";
 import { debug, info } from "@gakuto1112/nodejs-logger";
+import { JsonResponse } from "../global/response_data";
 import { SubModule } from "./sub_module";
 import { TabletClockServer } from "../tablet_clock_server";
 import { SocketServer } from "./socket_server";
@@ -64,8 +65,8 @@ export class WebServer extends SubModule {
             else {
                 response.status(404);
                 response.end();
-                this.logHttpRequest(request, response);
             }
+            this.logHttpRequest(request, response);
         });
 
         //stylesheetを返す。
@@ -74,13 +75,12 @@ export class WebServer extends SubModule {
             if(fs.existsSync(filePath)) {
                 response.type("text/css");
                 response.sendFile(filePath);
-                this.logHttpRequest(request, response);
             }
             else {
                 response.status(404);
                 response.end();
-                this.logHttpRequest(request, response);
             }
+            this.logHttpRequest(request, response);
         });
 
         //アイコン画像を返す。
@@ -89,13 +89,20 @@ export class WebServer extends SubModule {
             if(fs.existsSync(filePath)) {
                 response.type("image/svg+xml");
                 response.sendFile(filePath);
-                this.logHttpRequest(request, response);
             }
             else {
                 response.status(404);
                 response.end();
-                this.logHttpRequest(request, response);
             }
+            this.logHttpRequest(request, response);
+        });
+
+        //API
+        //現在の温度を取得
+        this.app.get("/api/get_current_temperature", (request: Request, response: Response) => {
+            response.type("application/json");
+            response.send({value: this.parent.getSensors().getCurrentTemperature()} as JsonResponse);
+            this.logHttpRequest(request, response);
         });
     }
 

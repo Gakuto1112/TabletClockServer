@@ -25,6 +25,14 @@ export class TabletClockServer {
     }
 
     /**
+     * センサークラスのインスタンスを返す。
+     * @returns センサークラスのインスタンス
+     */
+    public getSensors(): Sensors {
+        return this.sensors;
+    }
+
+    /**
      * メイン関数
      */
     public main(): void {

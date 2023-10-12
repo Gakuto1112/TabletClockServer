@@ -1,10 +1,26 @@
+import { TabletClock } from "../tablet_clock";
 import { TabletClockWebModule } from "./tablet_clock_web_module";
+import { CardAbstract } from "./cards/card_abstract";
+import { TemperatureHumidityCard } from "./cards/temperature_humidity_card";
 
 export class Card extends TabletClockWebModule {
+    /**
+     * それぞれのカードのインスタンス。カードと同じ順番で並べる。
+     */
+    private cards: CardAbstract[] = [new TemperatureHumidityCard(this)];
+
     /**
      * 現在のカード
      */
     private currentCard: number = 0;
+
+    /**
+     * 親クラスのインスタンスを返す。
+     * @returns 親クラスのインスタンス
+     */
+    public getParent(): TabletClock {
+        return this.parent;
+    }
 
     /**
      * 実行関数
@@ -47,5 +63,8 @@ export class Card extends TabletClockWebModule {
             document.documentElement.style.setProperty("--card-bar-width", `${500 / cardElement.childElementCount - 20}px`);
         }
         else (document.getElementById("card_bar") as HTMLDivElement).style.visibility = "hidden";
+
+        //それぞれのカードを実行
+        this.cards.forEach((card: CardAbstract) => card.run());
     }
 }
