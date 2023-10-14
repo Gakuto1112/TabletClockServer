@@ -95,8 +95,8 @@ export class TemperatureHumidityCard extends CardAbstract {
         historyData.forEach((data: number) => maxElementDiff = Math.max(Math.abs(data - centeredData), maxElementDiff));
         for(let i = 0; i < 24; i++) {
             const graphElement: HTMLDivElement = graphElements.children.item(i) as HTMLDivElement;
-            if(historyData[i] != undefined) {
-                graphElement.style.marginBottom = `${maxElementDiff > 0 ? 66.07 * ((historyData[i] - (centeredData - maxElementDiff)) / (maxElementDiff * 2)) : 33.03}px`;
+            if(i < historyData.length) {
+                graphElement.style.marginBottom = `${maxElementDiff > 0 ? 66.07 * ((historyData[historyData.length - i - 1] - (centeredData - maxElementDiff)) / (maxElementDiff * 2)) : 33.03}px`;
                 graphElement.classList.remove("invisible");
             }
             else graphElement.classList.add("invisible");
