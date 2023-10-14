@@ -111,6 +111,13 @@ export class WebServer extends SubModule {
             response.send({value: this.parent.getSensors().getCurrentHumidity()} as JsonResponse);
             this.logHttpRequest(request, response);
         });
+
+        //温度履歴を取得
+        this.app.get("/api/get_temperature_history", (request: Request, response: Response) => {
+            response.type("application/json");
+            response.send({value: this.parent.getSensors().getTemperatureHistory()} as JsonResponse);
+            this.logHttpRequest(request, response);
+        });
     }
 
     /**

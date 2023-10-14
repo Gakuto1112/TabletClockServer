@@ -45,10 +45,22 @@ export class TemperatureHumidityCard extends CardAbstract {
     }
 
     /**
+     * 温度履歴データを取得する。
+     */
+    private async getTemperatureHistory(): Promise<void> {
+        const temperatureHistory: number[] | undefined = (await this.getApiData("get_temperature_history")) as number[] | undefined;
+        if(temperatureHistory != undefined) {
+            this.dataHistories.temperature = temperatureHistory;
+            this.updateTemperatureGraph();
+        }
+    }
+
+    /**
      * 現在の温度データを更新する。
      */
     private updateCurrentTemperature(): void {
         (document.getElementById("card_1_temperature") as HTMLSpanElement).innerText = (Math.round(this.currentData.temperature * 10) / 10).toFixed(1);
+        this.updateTemperatureGraph();
         this.updateDiscomfortIndex();
     }
 
@@ -58,6 +70,23 @@ export class TemperatureHumidityCard extends CardAbstract {
     private updateCurrentHumidity(): void {
         (document.getElementById("card_1_humidity") as HTMLSpanElement).innerText = (Math.round(this.currentData.humidity * 10) / 10).toFixed(1);
         this.updateDiscomfortIndex();
+    }
+
+    /**
+     * 温度データグラフを更新する。
+     */
+    private updateTemperatureGraph(): void {
+        const graphElements: HTMLDivElement = document.getElementById("card_1_temperature_graph_elements") as HTMLDivElement;
+        let maxElementDiff = 0;
+        this.dataHistories.temperature.forEach((element: number) => maxElementDiff = Math.max(Math.abs(element - this.currentData.temperature), maxElementDiff));
+        for(let i = 0; i < 24; i++) {
+            const graphElement: HTMLDivElement = graphElements.children.item(i) as HTMLDivElement;
+            if(this.dataHistories.temperature[i] != undefined) {
+                graphElement.style.marginBottom = `${maxElementDiff > 0 ? 66.07 * ((this.dataHistories.temperature[i] - (this.currentData.temperature - maxElementDiff)) / (maxElementDiff * 2)) : 33.03}px`;
+                graphElement.classList.remove("invisible");
+            }
+            else graphElement.classList.add("invisible");
+        }
     }
 
     /**
@@ -80,6 +109,7 @@ export class TemperatureHumidityCard extends CardAbstract {
         socketClient.addEventListener("open", () => {
             this.getCurrentTemperature();
             this.getCurrentHumidity();
+            this.getTemperatureHistory();
         });
         socketClient.addEventListener("temperature", (temperature: number) => {
             this.currentData.temperature = temperature;
@@ -89,11 +119,20 @@ export class TemperatureHumidityCard extends CardAbstract {
             this.currentData.humidity = humidity;
             this.updateCurrentHumidity();
         });
+        socketClient.addEventListener("temperature_history", (temperatureHistory: number[]) => {
+            this.dataHistories.temperature = temperatureHistory;
+            this.updateTemperatureGraph();
+        });
         setInterval(async () => {
             if(this.cardManager.getParent().getSocketClient().getSocketStatus() == "CLOSED") {
                 this.getCurrentTemperature();
                 this.getCurrentHumidity();
             }
         }, TEMPERATURE_HUMIDITY_INTERVAL * 1000);
+        this.cardManager.getParent().getOneHourEvent().addEventListener(() => {
+            if(this.cardManager.getParent().getSocketClient().getSocketStatus() == "CLOSED") {
+                this.getTemperatureHistory();
+            }
+        });
     }
 }
