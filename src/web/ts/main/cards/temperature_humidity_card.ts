@@ -48,7 +48,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 現在の温度データを更新する。
      */
     private updateCurrentTemperature(): void {
-        (document.getElementById("card_1_temperature") as HTMLSpanElement).innerText = (Math.round(this.currentData.temperature * 10) / 10).toString();
+        (document.getElementById("card_1_temperature") as HTMLSpanElement).innerText = (Math.round(this.currentData.temperature * 10) / 10).toFixed(1);
         this.updateDiscomfortIndex();
     }
 
@@ -56,7 +56,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 現在の湿度データを更新する。
      */
     private updateCurrentHumidity(): void {
-        (document.getElementById("card_1_humidity") as HTMLSpanElement).innerText = (Math.round(this.currentData.humidity * 10) / 10).toString();
+        (document.getElementById("card_1_humidity") as HTMLSpanElement).innerText = (Math.round(this.currentData.humidity * 10) / 10).toFixed(1);
         this.updateDiscomfortIndex();
     }
 
