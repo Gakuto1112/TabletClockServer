@@ -49,6 +49,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      */
     private updateCurrentTemperature(): void {
         (document.getElementById("card_1_temperature") as HTMLSpanElement).innerText = (Math.round(this.currentData.temperature * 10) / 10).toString();
+        this.updateDiscomfortIndex();
     }
 
     /**
@@ -56,6 +57,19 @@ export class TemperatureHumidityCard extends CardAbstract {
      */
     private updateCurrentHumidity(): void {
         (document.getElementById("card_1_humidity") as HTMLSpanElement).innerText = (Math.round(this.currentData.humidity * 10) / 10).toString();
+        this.updateDiscomfortIndex();
+    }
+
+    /**
+     * 不快指数を更新する。
+     */
+    private updateDiscomfortIndex(): void {
+        const discomfortIndex: number = 0.81 * this.currentData.temperature + 0.01 * this.currentData.humidity * (0.99 * this.currentData.temperature - 14.3) + 46.3;
+        (document.getElementById("card_1_discomfort_index") as HTMLSpanElement).innerText = discomfortIndex.toFixed(1);
+        (document.getElementById("card_1_discomfort_index_text") as HTMLSpanElement).innerText = discomfortIndex < 50 ? "寒くてたまらない" : (discomfortIndex < 55 ? "寒い" : (discomfortIndex < 60) ? "肌寒い" : (discomfortIndex < 65 ? "何も感じない" : (discomfortIndex < 70 ? "快適": (discomfortIndex < 75 ? "暑くない" : (discomfortIndex < 80 ? "やや熱い" : (discomfortIndex < 85 ? "暑くて汗が出る" : "暑くてたまらない"))))));
+        const discomfortIndexArrowElement: HTMLDivElement = document.getElementById("card_1_discomfort_index_arrow") as HTMLDivElement;
+        discomfortIndexArrowElement.style.marginLeft = `${Math.min(Math.max((discomfortIndex - 50) / 35, 0), 1) * 100}%`;
+        discomfortIndexArrowElement.classList.remove("invisible");
     }
 
     /**

@@ -27,6 +27,10 @@ button {
     cursor: pointer;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 /* 個別 */
 /* 背景 */
 #background {
