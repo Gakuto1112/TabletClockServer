@@ -146,6 +146,7 @@ export class SocketClient {
                     name: "websocket_connection_error"
                 });
                 this.eventFunctions.error.forEach((eventFunction: EventFunctionUnion) => (eventFunction as () => void)());
+                this.webSocketClient = undefined;
             });
             this.webSocketClient.addEventListener("close", () => {
                 console.info("[SocketClient]: Closed web socket.");
@@ -160,6 +161,7 @@ export class SocketClient {
                         });
                     }
                     this.eventFunctions.close.forEach((eventFunction: EventFunctionUnion) => (eventFunction as () => void)());
+                    this.webSocketClient = undefined;
                 }
             });
         }
