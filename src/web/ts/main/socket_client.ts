@@ -113,7 +113,7 @@ export class SocketClient {
                                     //温度履歴データ
                                     this.eventFunctions.temperature_history.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number[]) => void)((eventData as MessageData).value as number[]));
                                     break;
-                                case OPERATION_ID.TEMPERATURE_HISTORY:
+                                case OPERATION_ID.HUMIDITY_HISTORY:
                                     //湿度履歴データ
                                     this.eventFunctions.humidity_history.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number[]) => void)((eventData as MessageData).value as number[]));
                                     break;
