@@ -6,7 +6,7 @@ import { MessageBox } from "./message_box";
 /**
  * ソケットクライアントとのイベントリスナーのイベント型
  */
-type SocketClientEvent = "open" | "error" | "close" | "temperature" | "humidity" | "temperature_history" | "humidity_history";
+type SocketClientEvent = "open" | "error" | "close" | "temperature" | "humidity" | "temperature_history" | "humidity_history" | "brightness";
 
 /**
  * ソケットの状態を示す型
@@ -42,7 +42,8 @@ export class SocketClient {
         temperature: [],
         humidity: [],
         temperature_history: [],
-        humidity_history: []
+        humidity_history: [],
+        brightness: []
     };
 
     /**
@@ -116,6 +117,10 @@ export class SocketClient {
                                 case OPERATION_ID.HUMIDITY_HISTORY:
                                     //湿度履歴データ
                                     this.eventFunctions.humidity_history.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number[]) => void)((eventData as MessageData).value as number[]));
+                                    break;
+                                case OPERATION_ID.BRIGHTNESS:
+                                    //明るさデータ
+                                    this.eventFunctions.brightness.forEach((eventFunction: EventFunctionUnion) => (eventFunction as (data: number) => void)((eventData as MessageData).value as number));
                                     break;
                             }
                             console.groupCollapsed("[SocketClient]: Message received.");

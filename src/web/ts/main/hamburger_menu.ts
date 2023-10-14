@@ -3,13 +3,33 @@ import { MessageBox } from "./message_box";
 import { SocketClient } from "./socket_client";
 
 /**
+ * 画面表示モード（ライトモードかダークモードか）
+ */
+type DisplayMode = "LIGHT" | "DARK";
+
+/**
  * ハンバーガーメニューを管理するクラス
  */
 export class HamburgerMenu extends TabletClockWebModule {
     /**
+     * 表示モードがセンサーオートである時に自動で暗くする明るさ閾値
+     */
+    private readonly DARK_MODE_THRESHOLD: number = 500;
+
+    /**
      * ハンバーガーメニューのタブを隠すタイムアウトのハンドラー。undefinedの場合はハンドラー未登録を示す。
      */
     private tabCloseTimeoutHandler: NodeJS.Timeout | undefined = undefined;
+
+    /**
+     * 明るさセンサーが有効かどうか。表示モードがセンサーオートだとtrueになる。
+     */
+    private brightnessSensorEnabled: boolean = false;
+
+    /**
+     * 明るさデータに基づく現在の表示モード
+     */
+    private currentBrightSensorStatus: DisplayMode = "LIGHT";
 
     /**
      * ハンバーガーメニューを閉じる。
@@ -180,10 +200,12 @@ export class HamburgerMenu extends TabletClockWebModule {
 
         //折り畳みメニュー（表示モード）
         /**
-         * 表示モードをダークモードにする際に実行する関数
+         * 画面表示モード（ライトモードかダークモードか）を設定する。
+         * @param mode 設定する新しいモード
          */
-        function displayModeDark() {
-            document.body.classList.add("dark_mode");
+        function setDisplayMode(mode: DisplayMode) {
+            if(mode == "LIGHT") document.body.classList.remove("dark_mode");
+            else document.body.classList.add("dark_mode");
         }
 
         /**
@@ -191,8 +213,7 @@ export class HamburgerMenu extends TabletClockWebModule {
          * @param event イベント変数
          */
         function displayModeSystemAutoEvent(event: MediaQueryListEvent) {
-            if(event.matches) document.body.classList.add("dark_mode");
-            else document.body.classList.remove("dark_mode");
+            setDisplayMode(event.matches ? "DARK" : "LIGHT");
         }
 
         /**
@@ -201,7 +222,7 @@ export class HamburgerMenu extends TabletClockWebModule {
          */
         function displayModeSystemAuto(thisClass: HamburgerMenu) {
             if(window.matchMedia != undefined) {
-                if(window.matchMedia("(prefers-color-scheme: dark)").matches) document.body.classList.add("dark_mode");
+                setDisplayMode(window.matchMedia("(prefers-color-scheme: dark)").matches ? "DARK" : "LIGHT");
                 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", displayModeSystemAutoEvent);
             }
             else {
@@ -213,6 +234,16 @@ export class HamburgerMenu extends TabletClockWebModule {
             }
         }
 
+        /**
+         * 表示モードをセンサーに基づくものに設定/解除する
+         * @param thisClass このクラスのインスタンス
+         * @param enabled `true`で有効化、`false`で無効化
+         */
+        function setDisplayModeSensorAuto(thisClass: HamburgerMenu, enabled: boolean) {
+            thisClass.brightnessSensorEnabled = enabled;
+            if(enabled) setDisplayMode(thisClass.currentBrightSensorStatus);
+        }
+
         const displayModeSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_display_mode']") as NodeListOf<HTMLInputElement>;
         try {
             const initialDisplayModeRaw: string | null = localStorage.getItem("display_mode");
@@ -220,10 +251,13 @@ export class HamburgerMenu extends TabletClockWebModule {
             displayModeSelections.item(initialDisplayMode).checked = true;
             switch(initialDisplayMode) {
                 case 1:
-                    displayModeDark();
+                    setDisplayMode("DARK");
                     break;
                 case 2:
                     displayModeSystemAuto(this);
+                    break;
+                case 3:
+                    setDisplayModeSensorAuto(this, true);
                     break;
             }
         }
@@ -235,7 +269,7 @@ export class HamburgerMenu extends TabletClockWebModule {
         }
         for(let i = 0; i < displayModeSelections.length; i++) {
             displayModeSelections.item(i).addEventListener("change", () => {
-                document.body.classList.remove("dark_mode");
+                setDisplayModeSensorAuto(this, false);
                 if(window.matchMedia != null) window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", displayModeSystemAutoEvent);
                 try {
                     localStorage.setItem("display_mode", i.toString());
@@ -250,11 +284,14 @@ export class HamburgerMenu extends TabletClockWebModule {
         }
 
         //表示モード -> ライトモード
-        (document.getElementById("options_display_mode_light_button") as HTMLInputElement).addEventListener("change", () => console.info("[HamburgerMenu]: Set display mode to light."));
+        (document.getElementById("options_display_mode_light_button") as HTMLInputElement).addEventListener("change", () => {
+            setDisplayMode("LIGHT");
+            console.info("[HamburgerMenu]: Set display mode to light.");
+        });
 
         //表示モード -> ダークモード
         (document.getElementById("options_display_mode_dark_button") as HTMLInputElement).addEventListener("change", () => {
-            displayModeDark();
+            setDisplayMode("DARK");
             console.info("[HamburgerMenu]: Set display mode to dark.");
         });
 
@@ -265,7 +302,16 @@ export class HamburgerMenu extends TabletClockWebModule {
         });
 
         //表示モード -> センサーに基づく
-        (document.getElementById("options_display_mode_sensor_auto_button") as HTMLInputElement).addEventListener("change", () => console.info("[HamburgerMenu]: Set display mode to sensor auto."));
+        (document.getElementById("options_display_mode_sensor_auto_button") as HTMLInputElement).addEventListener("change", () => {
+            setDisplayModeSensorAuto(this, true);
+            console.info("[HamburgerMenu]: Set display mode to sensor auto.");
+        });
+
+        //明るさセンサーイベント
+        socketClient.addEventListener("brightness", (data: number) => {
+            this.currentBrightSensorStatus = data >= this.DARK_MODE_THRESHOLD ? "LIGHT" : "DARK";
+            if(this.brightnessSensorEnabled) setDisplayMode(this.currentBrightSensorStatus);
+        });
 
         //折り畳みメニュー（背景画像）
         const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
