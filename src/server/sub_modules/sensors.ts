@@ -1,5 +1,5 @@
 import AHT20 from "aht20-sensor";
-import { error } from "@gakuto1112/nodejs-logger";
+import { error, info } from "@gakuto1112/nodejs-logger";
 import { SubModule } from "./sub_module";
 import { TEMPERATURE_HUMIDITY_INTERVAL } from "../global/sensor_intervals";
 
@@ -76,6 +76,7 @@ export class Sensors extends SubModule {
             const aht20Sensor: AHT20 = await AHT20.open();
             try {
                 const newTemperature: number = await aht20Sensor.temperature();
+                info(`Got new temperature: ${newTemperature}℃`);
                 if(newTemperature != this.currentData.temperature) {
                     this.parent.getWebServer().getSocketServer().sendTemperature(newTemperature);
                     this.currentData.temperature = newTemperature;
@@ -85,6 +86,7 @@ export class Sensors extends SubModule {
                     while(this.dataHistories.temperature.length > 24) this.dataHistories.temperature.shift();
                     this.parent.getWebServer().getSocketServer().sendTemperatureHistory(this.dataHistories.temperature);
                     this.isHistoryUpdateNext.temperature = false;
+                    info("Updated temperature history.");
                 }
             }
             catch {
@@ -94,6 +96,7 @@ export class Sensors extends SubModule {
             }
             try {
                 const newHumidity: number = await aht20Sensor.humidity();
+                info(`Got new humidity: ${newHumidity}%`);
                 if(newHumidity != this.currentData.humidity) {
                     this.parent.getWebServer().getSocketServer().sendHumidity(newHumidity);
                     this.currentData.humidity = newHumidity;
@@ -103,6 +106,7 @@ export class Sensors extends SubModule {
                     while(this.dataHistories.humidity.length > 24) this.dataHistories.humidity.shift();
                     this.parent.getWebServer().getSocketServer().sendHumidityHistory(this.dataHistories.humidity);
                     this.isHistoryUpdateNext.humidity = false;
+                    info("Updated temperature history.");
                 }
             }
             catch {
