@@ -78,6 +78,13 @@ export class SocketServer {
     }
 
     /**
+     * クライアントに明るさデータを送信する。クライアントが受信すると表示モードに応じてライト/ダークモードを切り替える。
+     */
+    public sendBrightness(data: number): void {
+        this.sendSocket(OPERATION_ID.BRIGHTNESS, data);
+    }
+
+    /**
      * Webソケットサーバーを実行する。
      */
     public run(): void {

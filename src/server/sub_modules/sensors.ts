@@ -1,7 +1,9 @@
 import AHT20 from "aht20-sensor";
+import { connect } from "mcp-3xxx";
+import { McpDevice } from "mcp-3xxx/build/types/mcp-3xxx";
 import { error, info } from "@gakuto1112/nodejs-logger";
 import { SubModule } from "./sub_module";
-import { TEMPERATURE_HUMIDITY_INTERVAL } from "../global/sensor_intervals";
+import { TEMPERATURE_HUMIDITY_INTERVAL, BRIGHTNESS_INTERVAL } from "../global/sensor_intervals";
 
 /**
  * センサーを管理するクラス
@@ -20,7 +22,8 @@ export class Sensors extends SubModule {
      */
     private readonly currentData: {[key: string]: number} = {
         temperature: 0,
-        humidity: 0
+        humidity: 0,
+        brightness: 0
     };
 
     /**
@@ -123,11 +126,34 @@ export class Sensors extends SubModule {
     }
 
     /**
+     * センサーから明るさを取得する。
+     * @returns 明るさ（0 - 4096）
+     */
+    private async getBrightness(): Promise<void> {
+        try {
+            const mcp: McpDevice = await connect("3208", 0);
+            const newBrightness: number = await mcp.read();
+            mcp.close();
+            info(`Got new brightness: ${newBrightness}`);
+            if(newBrightness != this.currentData.brightness) {
+                this.parent.getWebServer().getSocketServer().sendBrightness(newBrightness);
+                this.currentData.brightness = newBrightness;
+            }
+        }
+        catch(err: any) {
+            error("Failed to get brightness.");
+            console.log(err);
+        }
+    }
+
+    /**
      * 初期化関数
      */
     public init(): void {
         this.getAHT20Sensors();
+        this.getBrightness();
         setInterval(() => this.getAHT20Sensors(), TEMPERATURE_HUMIDITY_INTERVAL * 1000);
+        setInterval(() => this.getBrightness(), BRIGHTNESS_INTERVAL * 1000);
         this.parent.getOneHourEvent().addEventListener(() => {
             this.isHistoryUpdateNext.temperature = true;
             this.isHistoryUpdateNext.humidity = true;
