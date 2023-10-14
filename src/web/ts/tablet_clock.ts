@@ -1,3 +1,4 @@
+import { OneHourEvent } from "./global/one_hour_event";
 import { MessageBox } from "./main/message_box";
 import { Clock } from "./main/clock";
 import { Card } from "./main/card";
@@ -12,6 +13,11 @@ export class TabletClock {
      * Webソケットクライアントのインスタンス
      */
     private readonly socketClient: SocketClient = new SocketClient(this);
+
+    /**
+     * 1時間おきに発火するイベントのインスタンス
+     */
+    private readonly oneHourEvent: OneHourEvent = new OneHourEvent();
 
     /**
      * メッセージボックスのインスタンス
@@ -42,6 +48,14 @@ export class TabletClock {
     }
 
     /**
+     * 1時間おきに発火するイベントのインスタンスを返す。
+     * @returns 1時間おきに発火するイベントのインスタンス
+     */
+    public getOneHourEvent(): OneHourEvent {
+        return this.oneHourEvent;
+    }
+
+    /**
      * メッセージボックスのインスタンスを返す。
      * @returns メッセージボックスのインスタンス
      */
@@ -54,6 +68,7 @@ export class TabletClock {
      */
     public main(): void {
         this.socketClient.connect();
+        this.oneHourEvent.run();
         this.messageBox.run();
         this.clock.run();
         this.cardManager.run();

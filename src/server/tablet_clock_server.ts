@@ -1,4 +1,5 @@
 import { info, setColoredLog, setLogDebugLevel } from "@gakuto1112/nodejs-logger";
+import { OneHourEvent } from "./global/one_hour_event";
 import { WebServer } from "./sub_modules/web_server";
 import { Sensors } from "./sub_modules/sensors";
 
@@ -6,6 +7,11 @@ import { Sensors } from "./sub_modules/sensors";
  * タブレットクロックサーバーのメインクラス
  */
 export class TabletClockServer {
+    /**
+     * 1時間おきに発火するイベントのインスタンス
+     */
+    private readonly oneHourEvent: OneHourEvent = new OneHourEvent();
+
     /**
      * Webサーバー本体のインスタンス
      */
@@ -15,6 +21,14 @@ export class TabletClockServer {
      * センサークラスのインスタンス
      */
     private readonly sensors: Sensors = new Sensors(this);
+
+    /**
+     * 1時間おきに発火するイベントのインスタンスを返す。
+     * @returns 1時間おきに発火するイベントのインスタンス
+     */
+    public getOneHourEvent(): OneHourEvent {
+        return this.oneHourEvent;
+    }
 
     /**
      * Webサーバーのインスタンスを返す。
@@ -39,8 +53,9 @@ export class TabletClockServer {
         setColoredLog(true);
         setLogDebugLevel(true);
         info("System starting...");
-        this.sensors.init();
+        this.getOneHourEvent().run();
         this.webServer.run();
+        this.sensors.init();
         info("System started!");
     }
 }
