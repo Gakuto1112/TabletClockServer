@@ -1,4 +1,5 @@
 import { TEMPERATURE_HUMIDITY_INTERVAL } from "../../global/sensor_intervals";
+import { getApiData } from "../server_api";
 import { CardAbstract } from "./card_abstract";
 import { SocketClient } from "../socket_client";
 
@@ -26,7 +27,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 現在の温度を取得する。
      */
     private async getCurrentTemperature(): Promise<void> {
-        const currentTemperature: number | undefined = (await this.getApiData("get_current_temperature")) as number | undefined;
+        const currentTemperature: number | undefined = (await getApiData("get_current_temperature")) as number | undefined;
         if(currentTemperature != undefined) {
             this.currentData.temperature = currentTemperature;
             this.updateCurrentTemperature();
@@ -37,7 +38,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 現在の湿度を取得する。
      */
     private async getCurrentHumidity(): Promise<void> {
-        const currentHumidity: number | undefined = (await this.getApiData("get_current_humidity")) as number | undefined;
+        const currentHumidity: number | undefined = (await getApiData("get_current_humidity")) as number | undefined;
         if(currentHumidity != undefined) {
             this.currentData.humidity = currentHumidity;
             this.updateCurrentHumidity();
@@ -48,7 +49,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 温度履歴データを取得する。
      */
     private async getTemperatureHistory(): Promise<void> {
-        const temperatureHistory: number[] | undefined = (await this.getApiData("get_temperature_history")) as number[] | undefined;
+        const temperatureHistory: number[] | undefined = (await getApiData("get_temperature_history")) as number[] | undefined;
         if(temperatureHistory != undefined) {
             this.dataHistories.temperature = temperatureHistory;
             this.updateTemperatureGraph();
@@ -59,7 +60,7 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 湿度履歴データを取得する。
      */
     private async getHumidityHistory(): Promise<void> {
-        const humidityHistory: number[] | undefined = (await this.getApiData("get_humidity_history")) as number[] | undefined;
+        const humidityHistory: number[] | undefined = (await getApiData("get_humidity_history")) as number[] | undefined;
         if(humidityHistory != undefined) {
             this.dataHistories.humidity = humidityHistory;
             this.updateHumidityGraph();

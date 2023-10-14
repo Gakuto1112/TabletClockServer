@@ -35,42 +35,6 @@ export class Sensors extends SubModule {
     };
 
     /**
-     * 現在の温度データを返す。
-     * @returns 現在の温度データ
-     */
-    public getCurrentTemperature(): number {
-        return this.currentData.temperature;
-    }
-
-    /**
-     * 現在の湿度データを返す。
-     * @returns 現在の湿度データ
-     */
-    public getCurrentHumidity(): number {
-        return this.currentData.humidity;
-    }
-
-    /**
-     * 温度データの履歴を返す。
-     * @returns 温度データの履歴
-     */
-    public getTemperatureHistory(): number[] {
-        return this.dataHistories.temperature.map((element: number) => {
-            return element;
-        });
-    }
-
-    /**
-     * 湿度データの履歴を返す。
-     * @returns 湿度データの履歴
-     */
-    public getHumidityHistory(): number[] {
-        return this.dataHistories.humidity.map((element: number) => {
-            return element;
-        });
-    }
-
-    /**
      * AHT20センサーから情報を取得する。
      */
     private async getAHT20Sensors(): Promise<void> {
@@ -126,10 +90,46 @@ export class Sensors extends SubModule {
     }
 
     /**
+     * 現在の温度データを返す。
+     * @returns 現在の温度データ
+     */
+    public getCurrentTemperature(): number {
+        return this.currentData.temperature;
+    }
+
+    /**
+     * 現在の湿度データを返す。
+     * @returns 現在の湿度データ
+     */
+    public getCurrentHumidity(): number {
+        return this.currentData.humidity;
+    }
+
+    /**
+     * 温度データの履歴を返す。
+     * @returns 温度データの履歴
+     */
+    public getTemperatureHistory(): number[] {
+        return this.dataHistories.temperature.map((element: number) => {
+            return element;
+        });
+    }
+
+    /**
+     * 湿度データの履歴を返す。
+     * @returns 湿度データの履歴
+     */
+    public getHumidityHistory(): number[] {
+        return this.dataHistories.humidity.map((element: number) => {
+            return element;
+        });
+    }
+
+    /**
      * センサーから明るさを取得する。
      * @returns 明るさ（0 - 4096）
      */
-    private async getBrightness(): Promise<void> {
+    private async getBrightnessSensor(): Promise<void> {
         try {
             const mcp: McpDevice = await connect("3208", 0);
             const newBrightness: number = await mcp.read();
@@ -147,13 +147,21 @@ export class Sensors extends SubModule {
     }
 
     /**
+     * 明るさデータを返す。
+     * @returns 明るさデータ
+     */
+    public getBrightness(): number {
+        return this.currentData.brightness;
+    }
+
+    /**
      * 初期化関数
      */
     public init(): void {
         this.getAHT20Sensors();
-        this.getBrightness();
+        this.getBrightnessSensor();
         setInterval(() => this.getAHT20Sensors(), TEMPERATURE_HUMIDITY_INTERVAL * 1000);
-        setInterval(() => this.getBrightness(), BRIGHTNESS_INTERVAL * 1000);
+        setInterval(() => this.getBrightnessSensor(), BRIGHTNESS_INTERVAL * 1000);
         this.parent.getOneHourEvent().addEventListener(() => {
             this.isHistoryUpdateNext.temperature = true;
             this.isHistoryUpdateNext.humidity = true;

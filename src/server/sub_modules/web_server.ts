@@ -125,6 +125,13 @@ export class WebServer extends SubModule {
             response.send({value: this.parent.getSensors().getHumidityHistory()} as JsonResponse);
             this.logHttpRequest(request, response);
         });
+
+        //明るさを取得
+        this.app.get("/api/get_brightness", (request: Request, response: Response) => {
+            response.type("application/json");
+            response.send({value: this.parent.getSensors().getBrightness()} as JsonResponse);
+            this.logHttpRequest(request, response);
+        });
     }
 
     /**

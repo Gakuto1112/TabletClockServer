@@ -1,6 +1,8 @@
+import { BRIGHTNESS_INTERVAL } from "../global/sensor_intervals";
 import { TabletClockWebModule } from "./tablet_clock_web_module";
 import { MessageBox } from "./message_box";
 import { SocketClient } from "./socket_client";
+import { getApiData } from "./server_api";
 
 /**
  * 画面表示モード（ライトモードかダークモードか）
@@ -308,10 +310,30 @@ export class HamburgerMenu extends TabletClockWebModule {
         });
 
         //明るさセンサーイベント
-        socketClient.addEventListener("brightness", (data: number) => {
-            this.currentBrightSensorStatus = data >= this.DARK_MODE_THRESHOLD ? "LIGHT" : "DARK";
-            if(this.brightnessSensorEnabled) setDisplayMode(this.currentBrightSensorStatus);
-        });
+        /**
+         * 明るさデータを取得して処理をする。
+         * @param thisClass このクラスのインスタンス
+         */
+        async function getBrightness(thisClass: HamburgerMenu): Promise<void> {
+            const brightness: number | undefined = (await getApiData("get_brightness")) as number | undefined;
+            if(brightness != undefined) processBrightness(thisClass, brightness);
+        }
+
+        /**
+         * 明るさセンサーの値を基に処理を行う。
+         * @param thisClass このクラスのインスタンス
+         * @param brightness 明るさの値
+         */
+        function processBrightness(thisClass: HamburgerMenu, brightness: number): void {
+            thisClass.currentBrightSensorStatus = brightness >= thisClass.DARK_MODE_THRESHOLD ? "LIGHT" : "DARK";
+            if(thisClass.brightnessSensorEnabled) setDisplayMode(thisClass.currentBrightSensorStatus);
+        }
+
+        socketClient.addEventListener("open", () => getBrightness(this));
+        socketClient.addEventListener("brightness", (data: number) => processBrightness(this, data));
+        setInterval(async () => {
+            if(this.parent.getSocketClient().getSocketStatus() == "CLOSED") getBrightness(this);
+        }, BRIGHTNESS_INTERVAL * 1000);
 
         //折り畳みメニュー（背景画像）
         const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
