@@ -89,17 +89,10 @@ button {
 /* メイン表示部分 */
 main {
     position: absolute;
-    width: calc(100% - 30px * 2);
-    min-width: 1114px;
-    padding: 0 30px;
-    bottom: 10px;
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-}
-
-main > div {
-    height: fit-content;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    pointer-events: none;
 }
 
 /* 暗くするフィルター */
@@ -120,14 +113,12 @@ main > div {
 
 /* 時計表示部分 */
 #clock_area {
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: end;
-    width: 7ex;
-    margin-bottom: 30px;
-    white-space: nowrap;
+    top: 50px;
+    transform: translateX(-50%);
     font-size: 128px;
     font-weight: bold;
 }
@@ -159,11 +150,12 @@ main > div {
 
 /* カード表示部分 */
 #card_area {
-    grid-column: 2;
-    grid-row: 2;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
+    right: 20px;
+    bottom: 12px;
     perspective: 1000px;
 }
 
