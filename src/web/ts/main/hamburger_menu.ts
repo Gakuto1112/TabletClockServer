@@ -334,31 +334,5 @@ export class HamburgerMenu extends TabletClockWebModule {
         setInterval(async () => {
             if(this.parent.getSocketClient().getSocketStatus() == "CLOSED") getBrightness(this);
         }, BRIGHTNESS_INTERVAL * 1000);
-
-        //折り畳みメニュー（背景画像）
-        const backgroundSelections: NodeListOf<HTMLInputElement> = document.querySelectorAll("input[name='options_background']") as NodeListOf<HTMLInputElement>;
-        try {
-            const initialBackgroundRaw: string | null = localStorage.getItem("options");
-            backgroundSelections.item(initialBackgroundRaw != null ? Number(initialBackgroundRaw) : 0).checked = true;
-        }
-        catch(_error: any) {
-            this.parent.getMessageBox().addMessageQueue({
-                content: "設定値を読み込めませんでした。",
-                type: "ERROR"
-            });
-        }
-        for(let i = 0; i < backgroundSelections.length; i++) {
-            backgroundSelections.item(i).addEventListener("change", () => {
-                try {
-                    localStorage.setItem("options", i.toString());
-                }
-                catch(error: any) {
-                    this.parent.getMessageBox().addMessageQueue({
-                        content: "設定値を保存できませんでした。",
-                        type: "ERROR"
-                    });
-                }
-            });
-        }
     }
 }
