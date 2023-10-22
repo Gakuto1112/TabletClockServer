@@ -24,6 +24,11 @@ export class TemperatureHumidityCard extends CardAbstract {
     };
 
     /**
+     * ブラウザがキャンバス描画に対応しているかどうか。
+     */
+    private isCanvasSupported: boolean | undefined;
+
+    /**
      * 現在の温度を取得する。
      */
     private async getCurrentTemperature(): Promise<void> {
@@ -87,20 +92,25 @@ export class TemperatureHumidityCard extends CardAbstract {
 
     /**
      * グラフ表示を更新する。
-     * @param graphElements 更新対象のグラフの要素の親div要素
+     * @param graphCanvas 更新対象のグラフのキャンバス要素
      * @param historyData 履歴データセット
      * @param centeredData グラフの中央にする値
      */
-    private updateGraph(graphElements: HTMLDivElement, historyData: number[], centeredData: number): void {
-        let maxElementDiff: number = 0;
-        historyData.forEach((data: number) => maxElementDiff = Math.max(Math.abs(data - centeredData), maxElementDiff));
-        for(let i = 0; i < 24; i++) {
-            const graphElement: HTMLDivElement = graphElements.children.item(i) as HTMLDivElement;
-            if(i < historyData.length) {
-                graphElement.style.marginBottom = `${maxElementDiff > 0 ? 66.07 * ((historyData[historyData.length - i - 1] - (centeredData - maxElementDiff)) / (maxElementDiff * 2)) : 33.03}px`;
-                graphElement.classList.remove("invisible");
+    private updateGraph(graphCanvas: HTMLCanvasElement, historyData: number[], centeredData: number): void {
+        if(this.isCanvasSupported && historyData.length >= 2) {
+            let maxElementDiff: number = 0;
+            historyData.forEach((data: number) => maxElementDiff = Math.max(Math.abs(data - centeredData), maxElementDiff));
+            const context: CanvasRenderingContext2D = graphCanvas.getContext("2d") as CanvasRenderingContext2D;
+            context.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+            context.lineWidth = 1;
+            context.strokeStyle = "black";
+            context.beginPath();
+            for(let i = 0; i < historyData.length; i++) {
+                if(i == 0) context.moveTo(graphCanvas.width, maxElementDiff > 0 ? graphCanvas.height * (1 - ((historyData[historyData.length - 1] - (centeredData - maxElementDiff)) / (maxElementDiff * 2))) : graphCanvas.height / 2);
+                else context.lineTo(graphCanvas.width * (1 / 24 * (23 - i)), maxElementDiff > 0 ? graphCanvas.height * (1 - ((historyData[historyData.length - i - 1] - (centeredData - maxElementDiff)) / (maxElementDiff * 2))) : graphCanvas.height / 2);
+                console.log(graphCanvas.width *  (1 / 24 * (23 - i)), maxElementDiff > 0 ? graphCanvas.height * (1 - ((historyData[historyData.length - i - 1] - (centeredData - maxElementDiff)) / (maxElementDiff * 2))) : graphCanvas.height / 2)
             }
-            else graphElement.classList.add("invisible");
+            context.stroke();
         }
     }
 
@@ -108,14 +118,14 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 温度データグラフを更新する。
      */
     private updateTemperatureGraph(): void {
-        this.updateGraph(document.getElementById("card_1_temperature_graph_elements") as HTMLDivElement, this.dataHistories.temperature, this.currentData.temperature);
+        this.updateGraph(document.getElementById("card_1_temperature_graph") as HTMLCanvasElement, this.dataHistories.temperature, this.currentData.temperature);
     }
 
     /**
      * 湿度データグラフを更新する。
      */
     private updateHumidityGraph(): void {
-        this.updateGraph(document.getElementById("card_1_humidity_graph_elements") as HTMLDivElement, this.dataHistories.humidity, this.currentData.humidity);
+        this.updateGraph(document.getElementById("card_1_humidity_graph") as HTMLCanvasElement, this.dataHistories.humidity, this.currentData.humidity);
     }
 
     /**
@@ -134,6 +144,17 @@ export class TemperatureHumidityCard extends CardAbstract {
      * 実行関数
      */
     public run(): void {
+        //キャンバス初期化
+        (document.querySelectorAll("canvas") as NodeListOf<HTMLCanvasElement>).forEach((element: HTMLCanvasElement) => {
+            element.width = element.clientWidth;
+            element.height = element.clientHeight;
+        });
+
+        //キャンバス描画対応の確認
+        this.isCanvasSupported = (document.querySelector("canvas") as HTMLCanvasElement).getContext != undefined;
+        if(!this.isCanvasSupported) console.warn("[TemperatureHumidityCard]: Canvas is not supported on your browser. Temperature and humidity graph will not rendered.");
+
+        //各種イベント登録
         const socketClient: SocketClient = this.cardManager.getParent().getSocketClient();
         socketClient.addEventListener("open", () => {
             this.getCurrentTemperature();
