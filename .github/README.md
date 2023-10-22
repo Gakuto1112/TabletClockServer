@@ -36,8 +36,8 @@ Instead of Google Nest Hub, I considered that I get a small display device (with
   - For iPad, use [Safari](https://www.apple.com/safari/).
   - Cannot use iPhone (will not go to full screen).
 
-## 回路図
-![回路図](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
+## Schematic
+![schematic](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
 
 ## セットアップ
 概要だけ説明します。詳しい手順は省きます[^2]。
