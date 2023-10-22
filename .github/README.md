@@ -10,15 +10,19 @@ When I cleaned up on my desk and I found that I made more free space than I expe
 
 Instead of Google Nest Hub, I considered that I get a small display device (with touch function) and show the screen from [Raspberry Pi](https://www.raspberrypi.com/). However, I thought that it was expensive to purchase a new display device just to show the clock. After thinking about it a lot, I remembered that I have a tablet device that I don't use very often (at home) and decided to create this system to make it more effective.
 
-## 機能一覧
-- 現在の日時を表示します。
-- センサーから取得した温度、湿度が表示されます。
-  - 現在の温度、湿度はグラフに横線としても表示されます。
-- 過去24時間にセンサーから取得した温度、湿度がグラフで表示されます。
-- MySQLによって1時間おきに取得された温度、湿度のデータが蓄積されます。
-- 現在の天気と今後24時間の天気予報が表示されます（[Open-Meteo](https://open-meteo.com)）。
-- 現在の時刻と天気を基に背景の色が変化します。
-- 真っ暗に近い環境下では自動でダークモードが有効になり、光量が大きく押さえられます[^1]。
+## Features
+### Already implemented
+- Shows current date and time.
+- Shows temperature and humidity from sensors.
+  - Shows temperature and humidity changes over the last 24 hours with line graph.
+  - Shows current discomfort index.
+- Supports dark mode.
+  - Changes light or dark mode depending on current brightness.
+
+### Plan to be implemented
+- Shows current wether and wether forecast.
+- Shows upcoming schedules from [Google Calendar](https://calendar.google.com)
+- Changes the background into your favorite images.
 
 ## 必要なもの
 - [Raspberry Pi 4](https://www.raspberrypi.org/) x1
