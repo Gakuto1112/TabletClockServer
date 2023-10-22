@@ -30,7 +30,8 @@
     "build": "node ./src/npm/build.js",
     "start": "node ./src/npm/tablet_clock.js",
     "prepack": "node ./src/npm/init.js",
-    "copy-global-files": "node ./src/npm/copy_global_files.js"
+    "copy-global-files": "node ./src/npm/copy_global_files.js",
+    "debug": "node ./src/npm/debug.js"
   },
   "dependencies": {
     "@gakuto1112/nodejs-logger": "^1.0.0",

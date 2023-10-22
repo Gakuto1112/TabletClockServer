@@ -1,4 +1,4 @@
-import { info, setColoredLog, setLogDebugLevel, setRootPath } from "@gakuto1112/nodejs-logger";
+import { info, setColoredLog, setRootPath } from "@gakuto1112/nodejs-logger";
 import { OneHourEvent } from "./global/one_hour_event";
 import { WebServer } from "./sub_modules/web_server";
 import { Sensors } from "./sub_modules/sensors";
@@ -67,7 +67,6 @@ export class TabletClockServer {
     public main(): void {
         setRootPath(`${this.getRootPath()}/src`);
         setColoredLog(true);
-        setLogDebugLevel(true);
         info("System starting...");
         this.getOneHourEvent().run();
         this.webServer.run();
