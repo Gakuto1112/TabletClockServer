@@ -112,6 +112,46 @@ From here, there are 2 ways to install.
 
 8. After running the system, you can access the tablet clock page on your browser at `http://<system_local_ip>:5000`.
 
+## How to use
+### The side tab
+The side tab will be appeared when you tap on the background. It will be closed automatically when you don't touch it for a while.
+
+![The side tab](./README_images/side_tab.jpg)
+
+There are four buttons in it.
+
+#### 1 - Open/Close hamburger menu button
+Opens/Closes hamburger menu.
+
+#### 2 - Connect/Disconnect server button
+Connects/Disconnects the server. When the client is connecting to the server, a check mark (✓) will be appeared. The client will try to connect to the server when loading the page, so you don't have to click this button every time when loading the page.
+
+#### 3 - Enter/Exit full screen button
+Enters/Exits full screen mode. It will be appeared in translucent if your device or browser doesn't support full screen mode.
+
+#### 4 - Enter/Exit keep awake button
+Enters/Exits keep awake mode. The clock can prevent your device from entering sleep when it enabled. It will be appeared in translucent if your device or browser doesn't support full screen mode, or you use `http` scheme (not `https`).
+
+### The hamburger menu
+The hamburger menu will appeared when you click [open/close hamburger menu button](#1---openclose-hamburger-menu-button). You can change settings of the tablet clock page from here. These settings are stored in your device and applied to the your device only.
+
+![The hamburger menu](./README_images/hamburger_menu.jpg)
+
+#### Display mode
+Changes the display mode (light mode or dark mode). There are four options.
+
+##### Light mode
+Always uses light mode.
+
+##### Dark mode
+Always uses dark mode.
+
+##### System auto
+Uses light mode or dark mode depending on the display mode of your os/browser.
+
+#### Sensor auto
+Uses light mode or dark mode depending on the sensor output.
+
 ## 設定
 [./config/](config)に各種設定ファイルが置いてあります。
 
