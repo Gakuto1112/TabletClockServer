@@ -149,5 +149,5 @@ Always uses dark mode.
 ##### System auto
 Uses light mode or dark mode depending on the display mode of your os/browser.
 
-#### Sensor auto
+##### Sensor auto
 Uses light mode or dark mode depending on the sensor output.
