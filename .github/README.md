@@ -5,8 +5,10 @@ This web-based system transforms your unused tablet devices into used table cloc
 
 (The main image is currently preparing. I'm sorry!)
 
-## 経緯
-机上を整理していたら思ったよりもスペースができ、ここに何かを置こうかと考えたところ、[Google Nest Hub](https://store.google.com/jp/product/nest_hub_2nd_gen)のようなものを置いてみてはどうだろうかと思い、商品ページ等を見て検討していました。しかし、Google Nest Hubの機能に過不足を感じる（部屋の温度と湿度の表示が欲しかった）上、自分でもそれっぽいものを作ってみたいという思いがありました。そこで、代わりに（タッチ機能付きの）小型ディスプレイを置いてそこにRaspberry Piからインターフェースを表示させるという方法を検討しましたが、時計を表示させるためだけにディスプレイを新たに購入するのは高いと感じていました。それからも色々考えていたところ、ふと、（家では）あまり使用していないタブレットがある事を思い出し、これを有効活用すべく、これを作成する事になりました。
+## Background
+When I cleaned up on my desk and I found that I made more free space than I expected on it. Then, I thought that I put something like [Google Nest Hub](https://store.google.com/product/nest_hub_2nd_gen) and saw its product page. However, I realized that its functions are not enough for me (I want to know the temperature and humidity in my room), and I came to want to make a similar system by my self.
+
+Instead of Google Nest Hub, I considered that I get a small display device (with touch function) and show the screen from [Raspberry Pi](https://www.raspberrypi.com/). However, I thought that it was expensive to purchase a new display device just to show the clock. After thinking about it a lot, I remembered that I have a tablet device that I don't use very often (at home) and decided to create this system to make it more effective.
 
 ## 機能一覧
 - 現在の日時を表示します。
