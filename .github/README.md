@@ -31,6 +31,8 @@ Instead of Google Nest Hub, I considered that I get a small display device (with
   - [MCP3208-CI/P (A/D converter)](https://akizukidenshi.com/catalog/g/gI-00238/) x1
   - [CdS cell (brightness sensor)](https://akizukidenshi.com/catalog/g/gI-00110/) x1
   - [10kΩ resistor](https://akizukidenshi.com/catalog/g/gR-25103/) x1
+  - Circuit board ([bread board](https://akizukidenshi.com/catalog/g/gP-05294/), [universal circuit board](https://akizukidenshi.com/catalog/g/gP-03229/), etc.)
+  - Wire ([jumper wire](https://akizukidenshi.com/catalog/g/gC-05159/), etc.)
 - A device to show clock
   - Recommended to use tablet devices.
   - For iPad, use [Safari](https://www.apple.com/safari/).
