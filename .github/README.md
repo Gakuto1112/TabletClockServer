@@ -41,25 +41,76 @@ Instead of Google Nest Hub, I considered that I get a small display device (with
 ## Schematic
 ![schematic](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
 
-## セットアップ
-概要だけ説明します。詳しい手順は省きます[^2]。
+## Setup
+### Setup Raspberry Pi and circuit
+1. Setup your Raspberry Pi. You need to make the bash shell (or other shells) available.
+2. Make the circuit refer to the [schematic](#schematic).
+2. Setup your Raspberry Pi.
 
-1. [回路図](#回路図)を参考に、回路を組んでください。
-2. Raspberry Piに[Node.js](https://nodejs.org/)と[MariaDB](https://mariadb.org/)（MySQLサーバー）をインストールします。
-   - Node.jsは初期から入っているかと思います。必要に応じてNode.jsのアップデートを行ってください。
-3. 必要に応じて、このアプリケーション専用のMySQLユーザを作成して下さい。
-   - グローバルに`CREATE`、`tabletclock_temphumid.temp_humid`に`INSERT`と`SELECT`の権限を与えて下さい。
-4. このレポジトリをクローンして下さい。
-5. 作業ディレクトリをクロックしたレポジトリのルートに設定し、`npm install`を実行して必要なモジュール群をインストールして下さい。
-6. 4.でダウンロードしたOAuthクライアントのjsonファイルを`credentials.json`に名前変更して、[./config/google_calendar/](./config/google_calendar/)に置いて下さい。
-7. [各種設定ファイル](config/)を編集し、[設定](#設定)を行って下さい。
-8. `ts-node TabletClockServer.ts`を実行してアプリケーションを実行して下さい。
-   - `ts-node`が使用出来ない場合、`node_modules/.bin/ts-node TabletClockServer.ts`でも実行できます。
-9. 置時計にするデバイスで`http://<サーバーのローカルip>:5000`にアクセスすると置時計のUIが表示されます。
-   - サーバーと置時計デバイスは同じネットワークに接続して下さい。
-   - 置時計デバイスの自動スリープを無効にするのがおすすめです。
-10. 左上のフルスクリーンボタンを押してフルスクリーンに切り替えて下さい。
-11. サーバーと切断した場合は、右上に再接続ボタンが表示されますので、押してサーバーと再接続して下さい。
+### Setup the system
+1. Install [Node.js](https://nodejs.org) by typing following commands on the shell (`$` is not part of the commands).
+   ```sh
+   $ sudo apt update
+   $ sudo apt install nodejs npm
+   ```
+
+2. Install Node.js version manager (n).
+   ```sh
+   $ sudo npm install n -g
+   ```
+
+3. Install Node.js v20.
+   ```sh
+   $ sudo n 20
+   ```
+
+From here, there are 2 ways to install.
+
+#### A - The way to install from npm
+4. Create a new directory for the system.
+   ```sh
+   $ mkdir TabletClock
+   ```
+
+5. Install the system.
+   ```sh
+   $ npm install @gakuto1112/tablet-clock
+   ```
+
+6. Run the system.
+   ```sh
+   $ npx tablet-clock
+   ```
+
+#### B - The way to install from this repository
+4. Clone this repository.
+   - If your Raspberry Pi doesn't have [Git](https://git-scm.com/) system, you need to install it.
+   ```sh
+   $ git clone https://github.com/Gakuto1112/TabletClockServer.git
+   ```
+
+5. Install dependencies of the system.
+   ```sh
+   $ npm install
+   ```
+
+6. Prepare source files of the system.
+   - You may see some errors when executing the second command, but there is no problem.
+   ```sh
+   $ cd ./src/npm
+   $ ../../node_modules/.bin/tsc
+   $ cd ../../
+   $ npm run build
+   ```
+
+7. Run the system.
+   ```sh
+   $ npm start
+   ```
+
+---
+
+8. After running the system, you can access the tablet clock page on your browser at `http://<system_local_ip>:5000`.
 
 ## 設定
 [./config/](config)に各種設定ファイルが置いてあります。
