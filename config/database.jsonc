@@ -1,4 +1,0 @@
-{
-	"mysqlUser": "", //MySQLに接続するユーザー名（root）
-	"mysqlPassword": "" //MySQLに接続するパスワード
-}

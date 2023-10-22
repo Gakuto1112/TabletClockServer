@@ -1,6 +1,0 @@
-{
-	"busNumber": 1, //I2Cのバス番号
-	"temperatureHumiditySensorInterval": 15, //温湿度センサーの値の更新間隔（秒）
-	"brightnessSensorInterval": 5, //明るさの値の更新間隔
-	"darkModeThreshold": 0.1 //ダークモードに切り替える閾値（0-1）
-}
