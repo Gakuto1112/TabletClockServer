@@ -42,24 +42,74 @@
 ![回路図](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
 
 ## セットアップ
-概要だけ説明します。詳しい手順は省きます[^2]。
+### Raspberry Piと回路のセットアップ
+1. Raspberry Piをセットアップします。bashシェル（他のシェルも可）が使えるようにして下さい。
+2. [回路図](#回路図)を参考に、回路を組んでください。
 
-1. [回路図](#回路図)を参考に、回路を組んでください。
-2. Raspberry Piに[Node.js](https://nodejs.org/)と[MariaDB](https://mariadb.org/)（MySQLサーバー）をインストールします。
-   - Node.jsは初期から入っているかと思います。必要に応じてNode.jsのアップデートを行ってください。
-3. 必要に応じて、このアプリケーション専用のMySQLユーザを作成して下さい。
-   - グローバルに`CREATE`、`tabletclock_temphumid.temp_humid`に`INSERT`と`SELECT`の権限を与えて下さい。
-4. このレポジトリをクローンして下さい。
-5. 作業ディレクトリをクロックしたレポジトリのルートに設定し、`npm install`を実行して必要なモジュール群をインストールして下さい。
-6. 4.でダウンロードしたOAuthクライアントのjsonファイルを`credentials.json`に名前変更して、[./config/google_calendar/](./config/google_calendar/)に置いて下さい。
-7. [各種設定ファイル](config/)を編集し、[設定](#設定)を行って下さい。
-8. `ts-node TabletClockServer.ts`を実行してアプリケーションを実行して下さい。
-   - `ts-node`が使用出来ない場合、`node_modules/.bin/ts-node TabletClockServer.ts`でも実行できます。
-9. 置時計にするデバイスで`http://<サーバーのローカルip>:5000`にアクセスすると置時計のUIが表示されます。
-   - サーバーと置時計デバイスは同じネットワークに接続して下さい。
-   - 置時計デバイスの自動スリープを無効にするのがおすすめです。
-10. 左上のフルスクリーンボタンを押してフルスクリーンに切り替えて下さい。
-11. サーバーと切断した場合は、右上に再接続ボタンが表示されますので、押してサーバーと再接続して下さい。
+### システムのセットアップ
+1. 以下のコマンドをシェルに入力して、[Node.js](https://nodejs.org)をインストールします（`$`はコマンドではありません）。
+   ```sh
+   $ sudo apt update
+   $ sudo apt install nodejs npm
+   ```
+
+2. Node.jsのバージョン管理システム（n）をインストールします。
+   ```sh
+   $ sudo npm install n -g
+   ```
+
+3. Node.js v20をインストールします。
+   ```sh
+   $ sudo n 20
+   ```
+
+ここからは2通りのセットアップ方法があります。
+
+#### A - npmからインストールする方法
+4. システム用の新規ディレクトリを作成します。
+   ```sh
+   $ mkdir TabletClock
+   ```
+
+5. システムをインストールします。
+   ```sh
+   $ npm install @gakuto1112/tablet-clock
+   ```
+
+6. システムを実行します。
+   ```sh
+   $ npx tablet-clock
+   ```
+
+#### B - このレポジトリからインストールする方法
+4. このレポジトリをクローンします。
+   - お手持ちのRaspberry Piに[Git](https://git-scm.com/)インストールされていない場合は、インストールして下さい。
+   ```sh
+   $ git clone https://github.com/Gakuto1112/TabletClockServer.git
+   ```
+
+5. システムの依存パッケージをインストールします。
+   ```sh
+   $ npm install
+   ```
+
+6. システムのソースファイルを準備します。
+   - 2つ目のコマンドを実行する際にエラーが表示される場合がありますが、問題ありません。
+   ```sh
+   $ cd ./src/npm
+   $ ../../node_modules/.bin/tsc
+   $ cd ../../
+   $ npm run build
+   ```
+
+7. システムを実行します。
+   ```sh
+   $ npm start
+   ```
+
+---
+
+8. システム実行後、ブラウザで`http://<システムのローカルip>:5000`からタブレットクロックのページにアクセスできます。
 
 ## 設定
 [./config/](config)に各種設定ファイルが置いてあります。
