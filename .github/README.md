@@ -21,20 +21,20 @@ Instead of Google Nest Hub, I considered that I get a small display device (with
 
 ### Plan to be implemented
 - Shows current wether and wether forecast.
-- Shows upcoming schedules from [Google Calendar](https://calendar.google.com)
+- Shows upcoming schedules from [Google Calendar](https://calendar.google.com).
 - Changes the background into your favorite images.
 
-## 必要なもの
-- [Raspberry Pi 4](https://www.raspberrypi.org/) x1
-  - （過去のRaspberry Piでも動作しますが、新しいものの方がより動作が安定します。）
-  - [AHT21B温湿度センサー](https://akizukidenshi.com/catalog/g/gK-17394/) x1
-  - [MCP3208-CI/P ADコンバータ](https://akizukidenshi.com/catalog/g/gI-00238/) x1
-  - [CdSセル](https://akizukidenshi.com/catalog/g/gI-00110/) x1
-  - [10kΩ抵抗](https://akizukidenshi.com/catalog/g/gR-25103/) x1
-- 置時計デバイス
-  - タブレット端末が推奨です。
-  - iPadの場合はSafariを使用して下さい。
-  - iPhoneは使用できません（フルスクリーンに移行しません）。
+## Things needed
+- [Raspberry Pi 4](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/) x1
+  - (Works on older Raspberry Pi, but newer ones are more stable.)
+  - [AHT21B (temperature and humidity sensor)](https://akizukidenshi.com/catalog/g/gK-17394/) x1
+  - [MCP3208-CI/P (A/D converter)](https://akizukidenshi.com/catalog/g/gI-00238/) x1
+  - [CdS cell (brightness sensor)](https://akizukidenshi.com/catalog/g/gI-00110/) x1
+  - [10kΩ resistor](https://akizukidenshi.com/catalog/g/gR-25103/) x1
+- A device to show clock
+  - Recommended to use tablet devices.
+  - For iPad, use [Safari](https://www.apple.com/safari/).
+  - Cannot use iPhone (will not go to full screen).
 
 ## 回路図
 ![回路図](./README_images/raspberry_pi_curcuit_diagram.drawio.svg)
