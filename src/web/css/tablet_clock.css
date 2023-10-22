@@ -282,6 +282,11 @@ canvas {
     height: 100%;
 }
 
+.dark_mode canvas {
+    color: black;
+    filter: invert(100%);
+}
+
 #card_1_discomfort_index_text {
     margin-top: 10px !important;
 }
