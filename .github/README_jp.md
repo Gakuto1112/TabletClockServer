@@ -27,10 +27,12 @@
 ## 必要なもの
 - [Raspberry Pi 4](https://www.raspberrypi.org/) x1
   - （過去のRaspberry Piでも動作しますが、新しいものの方がより動作が安定します。）
-  - [AHT21B温湿度センサー](https://akizukidenshi.com/catalog/g/gK-17394/) x1
-  - [MCP3208-CI/P ADコンバータ](https://akizukidenshi.com/catalog/g/gI-00238/) x1
-  - [CdSセル](https://akizukidenshi.com/catalog/g/gI-00110/) x1
-  - [10kΩ抵抗](https://akizukidenshi.com/catalog/g/gR-25103/) x1
+  - [AHT21B（温湿度センサー）](https://akizukidenshi.com/catalog/g/gK-17394/) x1
+  - [MCP3208-CI/P（ADコンバータ）](https://akizukidenshi.com/catalog/g/gI-00238/) x1
+  - [CdSセル（明るさセンサー）](https://akizukidenshi.com/catalog/g/gI-00110/) x1
+  - [10kΩ抵抗器](https://akizukidenshi.com/catalog/g/gR-25103/) x1
+  - 回路基板（[ブレッドボード](https://akizukidenshi.com/catalog/g/gP-05294/)、[ユニバーサル基板](https://akizukidenshi.com/catalog/g/gP-03229/)等）
+  - ワイヤー（[ジャンパーワイヤー]((https://akizukidenshi.com/catalog/g/gC-05159/))等）
 - 置時計デバイス
   - タブレット端末が推奨です。
   - iPadの場合はSafariを使用して下さい。
