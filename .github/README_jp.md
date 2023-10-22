@@ -1,3 +1,5 @@
+言語：　[English](./README.md)　|　**日本語**
+
 # TabletClockServer
 使用していないタブレットを便利な置時計にするWebアプリを提供する、Raspberry Pi上で動作させる事を想定したWebサーバーです。
 
