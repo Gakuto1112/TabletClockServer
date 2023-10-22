@@ -121,7 +121,7 @@ The side tab will be appeared when you tap on the background. It will be closed 
 There are four buttons in it.
 
 #### 1 - Open/Close hamburger menu button
-Opens/Closes hamburger menu.
+Opens/Closes [hamburger menu](#the-hamburger-menu).
 
 #### 2 - Connect/Disconnect server button
 Connects/Disconnects the server. When the client is connecting to the server, a check mark (✓) will be appeared. The client will try to connect to the server when loading the page, so you don't have to click this button every time when loading the page.
