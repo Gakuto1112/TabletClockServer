@@ -3,7 +3,7 @@ Language: 　**English**　|　[日本語](./README_jp.md)
 # TabletClock
 This web-based system transforms your unused tablet devices into used table clocks.
 
-(The main image is currently preparing. I'm sorry!)
+![Main image](./README_images/main.jpg)
 
 ## Background
 When I cleaned up on my desk and I found that I made more free space than I expected on it. Then, I thought that I put something like [Google Nest Hub](https://store.google.com/product/nest_hub_2nd_gen) and saw its product page. However, I realized that its functions are not enough for me (I want to know the temperature and humidity in my room), and I came to want to make a similar system by my self.
