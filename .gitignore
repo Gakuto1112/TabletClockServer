@@ -105,6 +105,8 @@ dist
 
 # User difined
 .vscode
-**.js
-src/server/global
+src/npm/js
+src/server/js
+src/server/ts/global
+src/web/js
 src/web/ts/global

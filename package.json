@@ -15,23 +15,20 @@
     "url": "https://github.com/Gakuto1112/TabletClockServer/issues"
   },
   "files": [
-    "src/npm/**.js",
-    "src/server/**.js",
-    "src/server/**/**.js",
+    "src/npm/js/tablet_clock.js",
+    "src/server/js",
     "src/web/css",
     "src/web/html",
     "src/web/icons",
     "src/web/js"
   ],
   "bin": {
-    "tablet-clock": "./src/npm/tablet_clock.js"
+    "tablet-clock": "./src/npm/js/tablet_clock.js"
   },
   "scripts": {
-    "build": "node ./src/npm/build.js",
-    "start": "node ./src/npm/tablet_clock.js",
-    "prepack": "node ./src/npm/init.js",
-    "copy-global-files": "node ./src/npm/copy_global_files.js",
-    "debug": "node ./src/npm/debug.js"
+    "start": "node ./src/npm/js/tablet_clock.js",
+    "build": "node ./src/npm/js/build.js",
+    "debug": "node ./src/npm/js/debug.js"
   },
   "dependencies": {
     "@gakuto1112/nodejs-logger": "^1.0.0",
