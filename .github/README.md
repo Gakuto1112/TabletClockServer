@@ -48,7 +48,7 @@ Instead of Google Nest Hub, I considered that I get a small display device (with
 2. Setup your Raspberry Pi.
 
 ### Setup the system
-1. Install [Node.js](https://nodejs.org) by typing following commands on the shell (`$` is not part of the commands).
+1. Install [Node.js](https://nodejs.org) by typing following commands on the shell (run one line at a time. `$` is not part of the commands).
    ```sh
    $ sudo apt update
    $ sudo apt install nodejs npm
@@ -95,12 +95,11 @@ From here, there are 2 ways to install.
    ```
 
 6. Prepare source files of the system.
-   - You may see some errors when executing the second command, but there is no problem.
    ```sh
-   $ cd ./src/npm
-   $ ../../node_modules/.bin/tsc
+   $ cd ./src/shell/
+   $ sh ./update_global_files.shell
+   $ sh ./build.sh
    $ cd ../../
-   $ npm run build
    ```
 
 7. Run the system.

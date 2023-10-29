@@ -47,7 +47,7 @@
 2. [回路図](#回路図)を参考に、回路を組んでください。
 
 ### システムのセットアップ
-1. 以下のコマンドをシェルに入力して、[Node.js](https://nodejs.org)をインストールします（`$`はコマンドではありません）。
+1. 以下のコマンドをシェルに入力して、[Node.js](https://nodejs.org)をインストールします（1行ずつ実行して下さい、`$`はコマンドではありません）。
    ```sh
    $ sudo apt update
    $ sudo apt install nodejs npm
@@ -94,12 +94,11 @@
    ```
 
 6. システムのソースファイルを準備します。
-   - 2つ目のコマンドを実行する際にエラーが表示される場合がありますが、問題ありません。
    ```sh
-   $ cd ./src/npm
-   $ ../../node_modules/.bin/tsc
+   $ cd ./src/shell/
+   $ sh ./update_global_files.shell
+   $ sh ./build.sh
    $ cd ../../
-   $ npm run build
    ```
 
 7. システムを実行します。
