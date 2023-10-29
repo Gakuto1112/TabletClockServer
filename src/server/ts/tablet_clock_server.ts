@@ -55,7 +55,7 @@ export class TabletClockServer {
             if(filePath != null) return filePath;
         };
         Error.stackTraceLimit = 3;
-        const result: string = ((new Error().stack as string).replace(/\\/g, "/").match(/(.+)\/src\/server\/tablet_clock_server\.[jt]s/) as RegExpMatchArray)[1];
+        const result: string = ((new Error().stack as string).replace(/\\/g, "/").match(/(.+)\/src\/server\/[jt]s\/tablet_clock_server\.[jt]s/) as RegExpMatchArray)[1];
         Error.prepareStackTrace = undefined;
         Error.stackTraceLimit = 10;
         return result;
