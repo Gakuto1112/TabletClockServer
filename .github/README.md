@@ -150,3 +150,21 @@ Uses light mode or dark mode depending on the display mode of your os/browser.
 
 ##### Sensor auto
 Uses light mode or dark mode depending on the sensor output.
+
+## Npm commands
+This package includes some npm commands. These commands are available when cloning this repository directory. You don't have to use these commands when installing from npm. These commands must be run at the root directory of this package. You needs to run the following commands when you run npm commands for the first time:
+
+```sh
+$ cd ./src/shell/
+$ sh ./update_global_files.shell
+$ sh ./build.sh
+```
+
+### npm start
+Launches the system. It is equivalent to `npx tablet-clock` when installing from npm.
+
+### npm run build
+Builds the system.
+
+### npm run debug
+Launches the system with debug mode. Also builds the system before launching.
