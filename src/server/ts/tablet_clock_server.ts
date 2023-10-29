@@ -50,15 +50,7 @@ export class TabletClockServer {
      * 実行ファイルのルートパスを取得する。
      */
     public getRootPath(): string {
-        Error.prepareStackTrace = (_error: Error, stackTraces: NodeJS.CallSite[]) => {
-            const filePath: string | undefined = stackTraces[2].getFileName();
-            if(filePath != null) return filePath;
-        };
-        Error.stackTraceLimit = 3;
-        const result: string = ((new Error().stack as string).replace(/\\/g, "/").match(/(.+)\/src\/server\/[jt]s\/tablet_clock_server\.[jt]s/) as RegExpMatchArray)[1];
-        Error.prepareStackTrace = undefined;
-        Error.stackTraceLimit = 10;
-        return result;
+        return (__dirname.replace(/\\/g, "/").match(/(.+)\/src\/server\/[jt]s/) as RegExpMatchArray)[1];
     }
 
     /**
