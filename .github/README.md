@@ -1,7 +1,7 @@
 Language: 　**English**　|　[日本語](./README_jp.md)
 
 # TabletClock
-This web-based system transforms your unused tablet devices into used table clocks.
+This web-based system transforms your unused tablet devices into useful table clocks.
 
 ![Main image](./README_images/main.jpg)
 
