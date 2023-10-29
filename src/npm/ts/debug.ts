@@ -11,7 +11,7 @@ function debug(): void {
 
     //デバッグモードでシステムを起動
     console.info("Starting the system with debug mode...");
-    execSync(`node .${process.platform == "win32" ? "\\" : "/"}tablet_clock_server.js`, {
+    execSync(`node .${process.platform == "win32" ? "\\" : "/"}tablet_clock_server.js -d`, {
         cwd: "./src/server/js"
     });
 }

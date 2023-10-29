@@ -1,4 +1,4 @@
-import { info, setColoredLog, setRootPath } from "@gakuto1112/nodejs-logger";
+import { info, setColoredLog, setLogDebugLevel, setRootPath } from "@gakuto1112/nodejs-logger";
 import { OneHourEvent } from "./global/one_hour_event";
 import { WebServer } from "./sub_modules/web_server";
 import { Sensors } from "./sub_modules/sensors";
@@ -74,6 +74,11 @@ export class TabletClockServer {
         info("System started!");
     }
 }
+
+//引数の確認
+process.argv.forEach((arg: string, i: number) => {
+    if(arg == "-d") setLogDebugLevel(true);
+});
 
 const tabletClockServer: TabletClockServer = new TabletClockServer();
 tabletClockServer.main();
