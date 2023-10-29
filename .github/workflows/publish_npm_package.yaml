@@ -1,0 +1,41 @@
+name: Publish npm package
+
+on:
+  release:
+    types:
+      - released
+      - prereleased
+
+jobs:
+  publish:
+    name: Publish npm package
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - run: sudo apt -y update
+      - run: sudo apt -y install rsync
+      - name: Setup Node.js@20.8.0
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: 20.8.0
+          registry-url: 'https://registry.npmjs.org/'
+          cache: npm
+      - name: Install dependent npm modules
+        run: npm install
+      - run: cd ./src/
+      - name: Copy global files
+        run: sh ./update_global_files.sh
+        working-directory: ./src/shell
+      - name: Compile TypeScript sources
+        run: sh ./build.sh
+        working-directory: ./src/shell
+      - name: Generate README for npm package
+        working-directory: ./.github
+        run: ../node_modules/.bin/ts-node ./prepare_readme.ts
+      - name: Publish package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
