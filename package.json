@@ -33,7 +33,7 @@
   "dependencies": {
     "@gakuto1112/nodejs-logger": "^1.0.0",
     "aht20-sensor": "^1.0.1",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "mcp-3xxx": "^1.0.1",
     "ws": "^8.17.1"
   },
